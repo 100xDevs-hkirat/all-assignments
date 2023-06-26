@@ -1,7 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const app = express();
 
 app.use(express.json());
+app.use(bodyParser.json())
 
 let ADMINS = [];
 let USERS = [];
@@ -49,6 +51,4 @@ app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
 });
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+module.exports = app
