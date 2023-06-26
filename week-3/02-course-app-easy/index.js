@@ -86,6 +86,14 @@ app.put("/admin/courses/:courseId", (req, res) => {
 
 app.get("/admin/courses", (req, res) => {
   // logic to get all courses
+  logInAdmin(req, res).then((index) => {
+    if (index <= -1) {
+      res.status(400).send("No Admin with such creds exists");
+    } else {
+      isUserLoggedIn = true;
+      res.status(201).json(COURSES);
+    }
+  });
 });
 
 // User routes
