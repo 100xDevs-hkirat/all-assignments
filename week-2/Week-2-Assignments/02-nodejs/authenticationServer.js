@@ -30,8 +30,63 @@
  */
 
 const express = require("express")
+const bodyParser = require('body-parser');
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+let database = []
+
+app.post('/signup', (req, res) => {
+  for(let i = 0; i< database.length; i++){
+    if(database[i].email == req.body.email ){
+      res.status(400).send("User already exists");
+      return;
+    }
+  }
+  const user = {
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName
+  };
+
+  database.push(user);
+  res.status(201).send("Signup successful");
+});
+
+app.post('/login', (req,res) => {
+  for(let i = 0; i< database.length; i++){
+    if(database[i].email == req.body.email && database[i].password == req.body.password ){
+      res.status(200).send(database[i]);
+      return;
+    }
+  }
+  res.status(401).send("User not Found!")
+})
+
+app.get('/data', (req,res) => {
+  let users = []
+  
+  for(let i = 0; i< database.length; i++){
+    if(database[i].email === req.headers.email && database[i].password === req.headers.password ){
+      for(let j = 0; j< database.length; j++){
+        users.push(database)
+        res.json({users});
+      }
+      return;
+    }
+    else{
+      res.sendStatus(401)
+    }
+  }
+})
+
+
+
+// app.listen(PORT, () => {
+//   console.log(`Server is listening on port ${PORT}`);
+// });
 
 module.exports = app;

@@ -20,6 +20,40 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
+const port = 3000
 
+let filesArr= []
+let fpath = 'C:/Users/adity/.vscode/Week-2-Assignments/02-nodejs/files/'
+
+app.get('/files', (req,res) => {
+  fs.readdir(fpath, (err, files)=>{
+    if (err) {
+      res.status(500).send("Couldn't read the folder")
+    }
+    files.forEach((file) => {
+      console.log(file);
+      filesArr.push(file)
+    });
+    res.status(200).json(filesArr)
+  })
+})
+
+app.get('/file/:filename', (req,res) => {
+  let fileName = req.params.filename
+  fs.readFile(fpath + fileName, 'utf-8', (err,data) => {
+    if(err) {
+      res.status(404).send('File not found')
+    }
+    res.status(200).send(data)
+  })
+})
+
+app.all('*', (req, res) => {
+  res.status(404).send('Route not found');
+});
+
+// app.listen(port, () => {
+//   console.log(`Server is listening on port ${port}`);
+// });
 
 module.exports = app;

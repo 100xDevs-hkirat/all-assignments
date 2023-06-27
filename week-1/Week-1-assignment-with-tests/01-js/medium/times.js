@@ -8,5 +8,14 @@ Hint - use Date class exposed in JS
 */
 
 function calculateTime(n) {
-    return 0.01;
-}
+    let count = 0;
+    for (let i = 1; i <= n; i++) {
+      count = count + i;
+    }
+    console.log(count);
+  }
+  
+  const curr = new Date();
+  calculateTime(1000000000);
+  const fin = new Date();
+  console.log("runtime: " + (fin.getTime() - curr.getTime()) / 1000 + " seconds");

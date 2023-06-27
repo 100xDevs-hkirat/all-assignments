@@ -6,8 +6,15 @@
   - `npm run test-palindrome`
 */
 
-function isPalindrome(str) {
-  return true;
-}
+function isPalindrome(str1){
+  str1 = str1.toLowerCase().replace(/^a-z0-9/, '')
+    for(let i= 0; i< (str1.length)/2; i++){
+        if(str1[i] != str1.at((i-1)-2*i))
+            return false
+    }
+    return true
+  }
+module.exports = isPalindrome
 
-module.exports = isPalindrome;
+
+

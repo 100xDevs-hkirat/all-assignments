@@ -1,0 +1,96 @@
+<head>
+    <title>
+        Hello
+    </title>
+</head>
+
+<script>
+    function todosCallback(data) {
+        console.log(data);
+        var parentElement = document.getElementById("mainArea");
+        // parentElement.innerHTML = JSON.stringify(data);
+
+        for (let i = 0; i < data.length; i++) {
+            var childElement = document.createElement("div")
+            var grandchild1 = document.createElement("span")
+            grandchild1.innerHTML = data[i].title
+            
+            var grandchild2 = document.createElement("span")
+            grandchild2.innerHTML = data[i].desc
+
+            var grandchild3 = document.createElement("button")
+            grandchild3.innerHTML = "delete"
+
+            childElement.appendChild(grandchild1)
+            childElement.appendChild(grandchild2)
+            childElement.appendChild(grandchild3)
+
+            parentElement.appendChild(childElement);
+        }
+    }
+
+    function getDataCallback(resp) {
+        resp.json().then(todosCallback);
+    }
+
+    function getData() {
+        fetch("http://localhost:3000/todos", {
+            method: "GET",
+        }).then(getDataCallback)
+    }
+
+    getData();
+
+    function parsedData(data){
+        // parentElement.innerHTML = JSON.stringify(data);
+        var parentElement = document.getElementById("mainArea");
+        var childElement = document.createElement("div")
+        
+        var grandchild1 = document.createElement("span")
+        grandchild1.innerHTML = data.title
+        
+        var grandchild2 = document.createElement("span")
+        grandchild2.innerHTML = data.desc
+
+        var grandchild3 = document.createElement("button")
+        grandchild3.innerHTML = "delete"
+        // grandchild3.setAttribute("onclick", "deleteTodo(" + data[i].id + ")")
+
+        childElement.appendChild(grandchild1)
+        childElement.appendChild(grandchild2)
+        childElement.appendChild(grandchild3)
+
+        parentElement.appendChild(childElement);
+        
+    }
+    function callback(resp){
+        resp.json().then(parsedData)
+    }
+    function onPress() {
+        let title = document.getElementById("titleInp").value;
+        let desc = document.getElementById("descInp").value;
+        fetch("http://localhost:3000/todos", {
+            method: "POST",
+            body: JSON.stringify({
+                "title": title,
+                "desc": desc
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(callback)
+    }
+
+</script>
+
+<body>
+    <h1>guten tag</h1>
+    title:
+    <input type="text" id="titleInp"></input>
+    desc:
+    <input type="text" id="descInp"></input>
+    <button onclick="onPress()">send todo</button>
+    <div id="mainArea">
+        
+    </div>
+</body>
