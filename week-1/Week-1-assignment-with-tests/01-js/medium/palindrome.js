@@ -6,26 +6,16 @@
   - `npm run test-palindrome`
 */
 
-function isAlphabet(char) {
-  return /[a-zA-Z]/.test(char);
-}
-
 function isPalindrome(str) {
-  str = str.toLowerCase();
+  str = str.replace(/[^a-zA-Z]/g, '').toLowerCase();
   let i = 0;
   let j = str.length - 1;
   while (i < j) {
-    if (!isAlphabet(str.charAt(i))) {
-      i++;
-    } else if (!isAlphabet(str.charAt(j))) {
-      j--;
-    } else {
-      if (str.charAt(i) !== str.charAt(j)) {
-        return false;
-      }
-      i++;
-      j--;
+    if (str.charAt(i) !== str.charAt(j)) {
+      return false;
     }
+    i++;
+    j--;
   }
   return true;
 }
