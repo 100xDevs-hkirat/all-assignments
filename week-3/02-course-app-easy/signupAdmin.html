@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Course App For Admin</title>
+    </head>
+    <body>
+        <br><br>
+        username:<input type="text" id="username">
+        <br><br>
+        password:<input type="text" id="password">
+        <br><br>
+        <button onClick="onPress()">SignUp</button>
+
+        <script>
+            function onPress(){
+                let username=document.getElementById("username").value
+                let password=document.getElementById("password").value
+                fetch("http://localhost:3000/admin/signup",{
+                    method : "POST",
+                    body:JSON.stringify({
+                        username:username,
+                        password:password
+                    }),
+                       headers: {
+                           "Content-Type": "application/json"
+                              }
+                }).then(data=>data.json()).then(data=>{
+                    if(data=="Admin created successfully"){
+                        console.log(data)
+                        setTimeout(()=>{window.location.href = "loginAdmin"},1000)
+                    }
+                    })
+            }
+        </script>
+    </body>
+
+</html>

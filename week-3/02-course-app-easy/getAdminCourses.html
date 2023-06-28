@@ -1,0 +1,74 @@
+<htmL>
+    <head>
+        <title>
+            courses list
+        </title>
+    </head>
+    <body>
+        <b>Click below to get all courses</b>
+        <br><br>
+        <button onclick="getCourses()">Get Courses</button>
+        <script>
+
+            function updateCourse(id){
+                fetch("http://localhost:3000/admin/courses/"+id,{
+                    method:"PUT",
+                    body:JSON.stringify({
+                        published:"True"
+                                        }),
+                                        headers: {
+                           "Content-Type": "application/json"
+                              }
+                }).then(data=>data.json()).then(response=>{
+                    console.log(response)
+                })
+            }
+         
+         function getCourses(){
+              
+              fetch("http://localhost:3000/admin/courses",{
+                method:"GET"
+              })
+              .then((body)=>body.json()).then((courses)=>
+              {
+                  let parent=document.getElementById("main")
+              for(let i=0;i<courses.length;i++){
+                  let div=document.createElement("div")
+                  let id=document.createElement("span")
+                  id.innerHTML=courses[i].id
+                  let title=document.createElement("span")
+                  title.innerHTML=courses[i].title
+                  let description=document.createElement("span")
+                  description.innerHTML=courses[i].description
+                  let price=document.createElement("span")
+                  price.innerHTML=courses[i].price
+                  let imagelink=document.createElement("span")
+                  imagelink.innerHTML=courses[i].imagelink
+                  let published=document.createElement("span")
+                  published.innerHTML=courses[i].published
+                  let update=document.createElement("button")
+                  update.innerHTML="Update"
+                  update.setAttribute("onClick", "updateCourse("+courses[i].id+")");
+                  let br=document.createElement("br")
+                  div.appendChild(id)
+                  div.appendChild(title)
+                  div.appendChild(description)
+                  div.appendChild(price)
+                  div.appendChild(imagelink)
+                  div.appendChild(published)
+                  div.appendChild(update)
+                  div.appendChild(br)
+                  parent.appendChild(div)
+              }
+              })
+          }
+              
+             
+               
+            
+        </script>
+        <div id="main">
+            courses are:
+        </div>
+    </body>
+</htmL>

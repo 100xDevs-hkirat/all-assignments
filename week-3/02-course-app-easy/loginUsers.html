@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Course App For Users</title>
+    </head>
+    <body>
+        <br><br>
+        username:<input type="text" id="username">
+        <br><br>
+        password:<input type="text" id="password">
+        
+        <br><br>
+        <button onClick="onPress()">Login</button>
+
+        <script>
+            function onPress(){
+                let username=document.getElementById("username").value
+                let password=document.getElementById("password").value
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+
+                fetch("http://localhost:3000/users/login",{
+                    method : "POST",
+                    body:JSON.stringify({
+                        username:username,
+                        password:password
+                    }),
+                       headers: {
+                           "Content-Type": "application/json"
+                              }
+                }).then(data=>data.json()).then(response=>{
+                    if(response=="Logged in successfully"){
+                        console.log(response)
+                        setTimeout(()=>{window.location.href="showAllCourses"},1000)
+                    }else{
+                        console.log(response)
+                    }
+                })
+            }
+        </script>
+    </body>
+
+</html>

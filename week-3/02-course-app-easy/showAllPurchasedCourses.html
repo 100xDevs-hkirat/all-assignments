@@ -1,0 +1,55 @@
+<htmL>
+    <head>
+        <title>
+            courses list
+        </title>
+    </head>
+    <body>
+        <b>Click below to get Purchased courses</b>
+        <br><br>
+        <button onclick="getCourses()">Get Courses</button>
+        <script>
+         
+         function getCourses(){
+              
+              fetch("http://localhost:3000/users/purchasedCourses",{
+                method:"GET"
+              })
+              .then((body)=>body.json()).then((courses)=>
+              {
+                  let parent=document.getElementById("main")
+              for(let i=0;i<courses.length;i++){
+                  let div=document.createElement("div")
+                  let id=document.createElement("span")
+                  id.innerHTML=courses[i].id
+                  let title=document.createElement("span")
+                  title.innerHTML=courses[i].title
+                  let description=document.createElement("span")
+                  description.innerHTML=courses[i].description
+                  let price=document.createElement("span")
+                  price.innerHTML=courses[i].price
+                  let imagelink=document.createElement("span")
+                  imagelink.innerHTML=courses[i].imagelink
+                  
+                  let br=document.createElement("br")
+                  div.appendChild(id)
+                  div.appendChild(title)
+                  div.appendChild(description)
+                  div.appendChild(price)
+                  div.appendChild(imagelink)
+                  
+                  div.appendChild(br)
+                  parent.appendChild(div)
+              }
+              })
+          }
+              
+             
+               
+            
+        </script>
+        <div id="main">
+            courses are:
+        </div>
+    </body>
+</htmL>

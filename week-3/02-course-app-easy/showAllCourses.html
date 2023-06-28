@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>
+            All available courses
+        </title>
+    </head>
+    <body>
+        <b>Click below to get available courses</b>
+        <br><br>
+        <button onclick="onPress()">Click Here</button>
+
+        <script>
+                const username = localStorage.getItem('username');
+                 const password = localStorage.getItem('password');
+        function buyCourse(id){
+            fetch("http://localhost:3000/users/courses/"+id,{
+                method:"POST",
+                body:JSON.stringify({
+                    username:username,
+                    password:password
+                }), headers: {
+                           "Content-Type": "application/json"
+                              }
+            }).then(data=>data.json()).then(response=>{
+                if(response=="course Bought Successfully")
+                console.log(response)
+                window.location.href="getPurchasedCourses"
+                setTimeout(()=>{},1000)
+            })
+        }
+
+            function onPress(){
+                fetch("http://localhost:3000/users/courses",{
+                    method:"GET"
+                }).then(data=>data.json()).then((courses)=>
+              {
+                  let parent=document.getElementById("main")
+              for(let i=0;i<courses.length;i++){
+                  let div=document.createElement("div")
+                  let id=document.createElement("span")
+                  id.innerHTML=courses[i].id
+                  let title=document.createElement("span")
+                  title.innerHTML=courses[i].title
+                  let description=document.createElement("span")
+                  description.innerHTML=courses[i].description
+                  let price=document.createElement("span")
+                  price.innerHTML=courses[i].price
+                  let imagelink=document.createElement("span")
+                  imagelink.innerHTML=courses[i].imagelink
+                  let published=document.createElement("span")
+                  published.innerHTML=courses[i].published
+                  let buy=document.createElement("button")
+                  buy.innerHTML="Buy"
+                  buy.setAttribute("onClick", "buyCourse("+courses[i].id+")");
+                  let br=document.createElement("br")
+                  div.appendChild(id)
+                  div.appendChild(title)
+                  div.appendChild(description)
+                  div.appendChild(price)
+                  div.appendChild(imagelink)
+                  div.appendChild(published)
+                  div.appendChild(buy)
+                  div.appendChild(br)
+                  parent.appendChild(div)
+              }
+              })
+            }
+        </script>
+        <div id="main"></div>
+    </body>
+</html>

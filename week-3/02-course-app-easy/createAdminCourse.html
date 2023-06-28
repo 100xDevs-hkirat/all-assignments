@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>Course App</title>
+    </head>
+    <body>
+        <br><br>
+        title:<input type="text" id="title">
+        <br><br>
+        description:<input type="text" id="description">
+        <br><br>
+        price:<input type="text" id="price">
+        <br><br>
+        imagelink:<input type="text" id="imagelink">
+        <br><br>
+        published:<input type="text" id="published">
+        <br><br>
+        <button onClick="onPress()">Create-Course</button>
+
+        <script>
+            const username = localStorage.getItem('username');
+                 const password = localStorage.getItem('password');
+            function onPress(){
+                let title=document.getElementById("title").value
+                let description=document.getElementById("description").value
+                let price=document.getElementById("price").value
+                let imagelink=document.getElementById("imagelink").value
+                let published=document.getElementById("published").value
+
+                fetch("http://localhost:3000/admin/courses",{
+                    method : "POST",
+                    body:JSON.stringify({
+                        username:username,
+                        password:password,
+                        title:title,
+                        description:description,
+                        price:price,
+                        imagelink:imagelink,
+                        published:published
+                    }),
+                       headers: {
+                           "Content-Type": "application/json"
+                              }
+                }).then(data=>data.json()).then(response=>{
+                    if(response=="Course created successfully"){
+                    console.log(response)
+                    setTimeout(()=>{window.location.href="getAdminCourses"},1000)
+                    }
+                })
+            }
+
+
+            
+        </script>
+    </body>
+
+</html>
