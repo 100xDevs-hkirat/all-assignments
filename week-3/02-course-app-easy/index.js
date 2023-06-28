@@ -11,6 +11,7 @@ let PURCHASES = [];
 // Admin routes
 app.post("/admin/signup", (req, res) => {
   // logic to sign up admin
+  res.json("success");
 });
 
 app.post("/admin/login", (req, res) => {
