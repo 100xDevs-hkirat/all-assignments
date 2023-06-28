@@ -6,24 +6,23 @@
 
 <script>
     function todosCallback(data) {
-        console.log(data);
+        console.log("data is: " + data);
         var parentElement = document.getElementById("mainArea");
-        // parentElement.innerHTML = JSON.stringify(data);
 
         for (let i = 0; i < data.length; i++) {
-            var childElement = document.createElement("div")
-            var grandchild1 = document.createElement("span")
-            grandchild1.innerHTML = data[i].title
-            
-            var grandchild2 = document.createElement("span")
-            grandchild2.innerHTML = data[i].desc
+            var childElement = document.createElement("div");
+            var grandchild1 = document.createElement("span");
+            grandchild1.innerHTML = data[i].title;
 
-            var grandchild3 = document.createElement("button")
-            grandchild3.innerHTML = "delete"
+            var grandchild2 = document.createElement("span");
+            grandchild2.innerHTML = data[i].desc;
 
-            childElement.appendChild(grandchild1)
-            childElement.appendChild(grandchild2)
-            childElement.appendChild(grandchild3)
+            var grandchild3 = document.createElement("button");
+            grandchild3.innerHTML = "delete";
+
+            childElement.appendChild(grandchild1);
+            childElement.appendChild(grandchild2);
+            childElement.appendChild(grandchild3);
 
             parentElement.appendChild(childElement);
         }
@@ -36,50 +35,58 @@
     function getData() {
         fetch("http://localhost:3000/todos", {
             method: "GET",
-        }).then(getDataCallback)
+        }).then(getDataCallback);
     }
 
     getData();
 
-    function parsedData(data){
-        // parentElement.innerHTML = JSON.stringify(data);
-        var parentElement = document.getElementById("mainArea");
-        var childElement = document.createElement("div")
-        
-        var grandchild1 = document.createElement("span")
-        grandchild1.innerHTML = data.title
-        
-        var grandchild2 = document.createElement("span")
-        grandchild2.innerHTML = data.desc
+    function parsedData(data) {
+  var parentElement = document.getElementById("mainArea");
 
-        var grandchild3 = document.createElement("button")
-        grandchild3.innerHTML = "delete"
-        // grandchild3.setAttribute("onclick", "deleteTodo(" + data[i].id + ")")
+  var childElement = document.createElement("div");
 
-        childElement.appendChild(grandchild1)
-        childElement.appendChild(grandchild2)
-        childElement.appendChild(grandchild3)
+  var grandchild1 = document.createElement("span");
+  grandchild1.innerHTML = data.title;
 
-        parentElement.appendChild(childElement);
-        
+  var grandchild2 = document.createElement("span");
+  grandchild2.innerHTML = data.desc;
+
+  var grandchild3 = document.createElement("button");
+  grandchild3.innerHTML = "delete";
+
+  childElement.appendChild(grandchild1);
+  childElement.appendChild(grandchild2);
+  childElement.appendChild(grandchild3);
+
+  parentElement.appendChild(childElement);
+}
+
+function callback(resp) {
+  resp.json().then(function(data) {
+    parsedData(data);
+  });
+}
+
+function onPress() {
+  var title = document.getElementById("titleInp").value;
+  var desc = document.getElementById("descInp").value;
+
+  fetch("http://localhost:3000/todos", {
+    method: "POST",
+    body: JSON.stringify({
+      "title": title,
+      "desc": desc
+    }),
+    headers: {
+      "Content-Type": "application/json"
     }
-    function callback(resp){
-        resp.json().then(parsedData)
-    }
-    function onPress() {
-        let title = document.getElementById("titleInp").value;
-        let desc = document.getElementById("descInp").value;
-        fetch("http://localhost:3000/todos", {
-            method: "POST",
-            body: JSON.stringify({
-                "title": title,
-                "desc": desc
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(callback)
-    }
+  })
+  .then(callback)
+  .catch(function(error) {
+    console.log(error);
+  });
+}
+
 
 </script>
 
@@ -90,7 +97,5 @@
     desc:
     <input type="text" id="descInp"></input>
     <button onclick="onPress()">send todo</button>
-    <div id="mainArea">
-        
-    </div>
+    <div id="mainArea"></div>
 </body>
