@@ -1,8 +1,15 @@
 const http = require("http");
 const server = require("./index");
 
-const username = "testuser";
-const password = "testpassword";
+const admin = {
+  username: "TestAdmin",
+  password: "TestAdminPass",
+};
+
+const user = {
+  username: "TestUser",
+  password: "TestUserPass",
+};
 
 describe("API Tests", () => {
   let globalServer;
@@ -22,8 +29,8 @@ describe("API Tests", () => {
 
   it("should allow admins to signup", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: admin.username,
+      password: admin.password,
     });
 
     const options = {
@@ -44,8 +51,8 @@ describe("API Tests", () => {
 
   it("shouldn't allow duplicate usernames for admins", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: admin.username,
+      password: admin.password,
     });
 
     const options = {
@@ -62,7 +69,7 @@ describe("API Tests", () => {
   });
 
   it("shouldn't allow admins to signup with bad request body", async () => {
-    const requestBody = JSON.stringify({ username: username });
+    const requestBody = JSON.stringify({ username: admin.username });
 
     const options = {
       method: "POST",
@@ -79,8 +86,8 @@ describe("API Tests", () => {
 
   it("should allow admins to login", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: admin.username,
+      password: admin.password,
     });
 
     const options = {
@@ -101,7 +108,7 @@ describe("API Tests", () => {
 
   it("shouldn't allow admins to login on invalid credentials", async () => {
     const requestBody = JSON.stringify({
-      username: username,
+      username: admin.username,
       password: "incorrectPass",
     });
 
@@ -119,7 +126,7 @@ describe("API Tests", () => {
   });
 
   it("shouldn't allow admins to login with bad request body", async () => {
-    const requestBody = JSON.stringify({ username: username });
+    const requestBody = JSON.stringify({ username: admin.username });
 
     const options = {
       method: "POST",
@@ -148,8 +155,8 @@ describe("API Tests", () => {
       path: "/admin/courses",
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: admin.username,
+        password: admin.password,
       },
     };
 
@@ -179,8 +186,8 @@ describe("API Tests", () => {
       path: `/admin/courses/${courseId}`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: admin.username,
+        password: admin.password,
       },
     };
 
@@ -207,8 +214,8 @@ describe("API Tests", () => {
       path: `/admin/courses/invald-course-id`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: admin.username,
+        password: admin.password,
       },
     };
 
@@ -223,8 +230,8 @@ describe("API Tests", () => {
       path: `/admin/courses`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: admin.username,
+        password: admin.password,
       },
     };
 
@@ -238,8 +245,8 @@ describe("API Tests", () => {
 
   it("should allow users to signup", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: user.username,
+      password: user.password,
     });
 
     const options = {
@@ -260,8 +267,8 @@ describe("API Tests", () => {
 
   it("shouldn't allow duplicate usernames for users", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: user.username,
+      password: user.password,
     });
 
     const options = {
@@ -278,7 +285,7 @@ describe("API Tests", () => {
   });
 
   it("shouldn't allow users to signup with bad request body", async () => {
-    const requestBody = JSON.stringify({ username: username });
+    const requestBody = JSON.stringify({ username: user.username });
 
     const options = {
       method: "POST",
@@ -295,8 +302,8 @@ describe("API Tests", () => {
 
   it("should allow users to login", async () => {
     const requestBody = JSON.stringify({
-      username: username,
-      password: password,
+      username: user.username,
+      password: user.password,
     });
 
     const options = {
@@ -317,7 +324,7 @@ describe("API Tests", () => {
 
   it("shouldn't allow users to login on invalid credentials", async () => {
     const requestBody = JSON.stringify({
-      username: username,
+      username: user.username,
       password: "incorrectPass",
     });
 
@@ -335,7 +342,7 @@ describe("API Tests", () => {
   });
 
   it("shouldn't allow users to login with bad request body", async () => {
-    const requestBody = JSON.stringify({ username: username });
+    const requestBody = JSON.stringify({ username: user.username });
 
     const options = {
       method: "POST",
@@ -356,8 +363,8 @@ describe("API Tests", () => {
       path: `/users/courses`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: user.username,
+        password: user.password,
       },
     };
 
@@ -375,8 +382,8 @@ describe("API Tests", () => {
       path: `/users/courses/${courseId}`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: user.username,
+        password: user.password,
       },
     };
 
@@ -395,8 +402,8 @@ describe("API Tests", () => {
       path: `/users/courses/invald-course-id`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: user.username,
+        password: user.password,
       },
     };
 
@@ -411,8 +418,8 @@ describe("API Tests", () => {
       path: `/users/purchasedCourses`,
       headers: {
         "Content-Type": "application/json",
-        username: username,
-        password: password,
+        username: user.username,
+        password: user.password,
       },
     };
 
@@ -420,6 +427,30 @@ describe("API Tests", () => {
 
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).length).toBeTruthy();
+  });
+
+  it("shouldn't allow users to access admin routes", async () => {
+    const requestBody = JSON.stringify({
+      title: "updated course title",
+      description: "updated course description",
+      price: 100,
+      imageLink: "https://linktoimage.com",
+      published: true,
+    });
+
+    const options = {
+      method: "PUT",
+      path: `/admin/courses/${courseId}`,
+      headers: {
+        "Content-Type": "application/json",
+        username: user.username,
+        password: user.password,
+      },
+    };
+
+    const response = await sendRequest(options, requestBody);
+
+    expect(response.statusCode).toBe(401);
   });
 });
 
