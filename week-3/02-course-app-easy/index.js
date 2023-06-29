@@ -16,7 +16,7 @@ app.post('/admin/signup', (req, res) => {
     return admin.username === username;
   });
   if (admin) {
-    res.status(400).send('Admin already exists');
+    res.status(400).send({ message: 'Admin already exists' });
   }
   ADMINS.push({ username, password });
   res.status(201).send('Admin created successfully')
@@ -25,11 +25,11 @@ app.post('/admin/signup', (req, res) => {
 app.post('/admin/login', (req, res) => {
   // logic to log in admin
   const { username, password } = req.headers;
-  const admin = ADMINS.find(admin=>{
+  const admin = ADMINS.find(admin=> {
     return admin.username === username && admin.password === password;
   });
   if (admin) {
-    return res.status(200).send('Logged in successfully');
+    return res.status(200).send( { message: 'Logged in successfully' });
   } else {
     res.status(400).send('Admin doesn\'t exist');
   }
