@@ -79,12 +79,17 @@ app.put('/admin/courses/:courseId', (req, res) => {// logic to edit a course
     let courseIndex = findCourse(courseId);
    
     if(courseIndex !== -1){
-      COURSES[courseIndex].title = updatedCourseDetails.title;
+      /* COURSES[courseIndex].title = updatedCourseDetails.title;
       COURSES[courseIndex].description = updatedCourseDetails.description;
       COURSES[courseIndex].price = updatedCourseDetails.price;
       COURSES[courseIndex].imageLink = updatedCourseDetails.imageLink;
-      COURSES[courseIndex].published = updatedCourseDetails.published;
-  
+      COURSES[courseIndex].published = updatedCourseDetails.published; */
+      
+      let course = COURSES[courseIndex];
+      for(key in course){
+        if(key !== 'id')//Request Body does not Have ID
+          course[key] = updatedCourseDetails[key];
+      }
       return res.json({ message: 'Course updated successfully' })
     }else{
       return res.status(400).json({ message: 'Course with the course Id does not exist' });
