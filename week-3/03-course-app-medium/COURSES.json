@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "image": "https://example.com/intro-programming.jpg",
+    "published": true
+  },
+  {
+    "id": 2,
+    "title": "Web Development Fundamentals",
+    "description": "Learn the fundamentals of web development",
+    "price": 3,
+    "image": "https://example.com/web-dev-fundamentals.jpg",
+    "published": true
+  },
+  {
+    "id": 3,
+    "title": "Python for Beginners",
+    "description": "A beginner's guide to Python programming",
+    "price": 7,
+    "image": "https://example.com/python-beginners.jpg",
+    "published": true
+  },
+  {
+    "id": 4,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "image": "https://example.com/js-masterclass.jpg",
+    "published": true
+  },
+  {
+    "id": 5,
+    "title": "Data Structures and Algorithms",
+    "description": "Learn essential data structures and algorithms",
+    "price": 4,
+    "image": "https://example.com/data-structures-algorithms.jpg",
+    "published": false
+  },
+  {
+    "id": 6,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "published": true
+  },
+  {
+    "id": 7,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "published": true
+  },
+  {
+    "id": 8,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "published": true
+  },
+  {
+    "id": 9,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "published": true
+  },
+  {
+    "id": 10,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "published": true
+  }
+]

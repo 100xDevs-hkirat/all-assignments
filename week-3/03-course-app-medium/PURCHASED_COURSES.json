@@ -1,0 +1,26 @@
+[
+  {
+    "id": 3,
+    "title": "Python for Beginners",
+    "description": "A beginner's guide to Python programming",
+    "price": 7,
+    "image": "https://example.com/python-beginners.jpg",
+    "published": true
+  },
+  {
+    "id": 4,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "image": "https://example.com/js-masterclass.jpg",
+    "published": true
+  },
+  {
+    "id": 4,
+    "title": "JavaScript Masterclass",
+    "description": "Become an expert in JavaScript",
+    "price": 9,
+    "image": "https://example.com/js-masterclass.jpg",
+    "published": true
+  }
+]
