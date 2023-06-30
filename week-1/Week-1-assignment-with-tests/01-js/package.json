@@ -1,0 +1,21 @@
+{
+  "name": "01",
+  "version": "1.0.0",
+  "description": "You are provided empty JavaScript files (or having function signatures) in this directory.  You have to follow the instructions given in each file and write the code in the same file to complete the assignment.",
+  "main": "anagram.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test-anagram": "npx jest ./tests/anagram.test.js",
+    "test-calculator": "npx jest ./tests/calculator.test.js",
+    "test-duplicate-transactions": "npx jest ./tests/duplicate-transactions.test.js",
+    "test-expenditure-analysis": "npx jest ./tests/expenditure-analysis.test.js",
+    "test-palindrome": "npx jest ./tests/palindrome.test.js",
+    "test-todo-list": "npx jest ./tests/todo-list.test.js",
+    "test-all": "npx jest ./tests/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
