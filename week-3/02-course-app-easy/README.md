@@ -4,7 +4,11 @@
 1. Admins should be able to sign up
 2. Admins should be able to create courses
    1. Course has a title, description, price, and image link
+<<<<<<< HEAD
    2. Course should be able to be published or unpublished
+=======
+   2. Course should be able to be published
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 3. Admins should be able to edit courses
 4. Users should be able to sign up
 5. Users should be able to purchase courses

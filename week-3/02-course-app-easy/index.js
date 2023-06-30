@@ -10,6 +10,7 @@ let COURSES = [];
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
+<<<<<<< HEAD
   var user = req.body;
   var already_exist = false;
   for (var i =0; i < ADMINS.length; i++){
@@ -24,10 +25,13 @@ app.post('/admin/signup', (req, res) => {
     ADMINS.push(user);
     res.send({message: "Admin created successfully"});
   }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.post('/admin/login', (req, res) => {
   // logic to log in admin
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password
   var valid_user = false;
@@ -42,10 +46,13 @@ app.post('/admin/login', (req, res) => {
  } else{
   res.statusCode(401);
  }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.post('/admin/courses', (req, res) => {
   // logic to create a course
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password;
   var course = req.body;
@@ -70,10 +77,13 @@ app.post('/admin/courses', (req, res) => {
   } else{
     res.statusCode(401);
   }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.put('/admin/courses/:courseId', (req, res) => {
   // logic to edit a course
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password;
   var course = req.body;
@@ -102,10 +112,13 @@ app.put('/admin/courses/:courseId', (req, res) => {
   } else{
     res.statusCode(401);
   }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.get('/admin/courses', (req, res) => {
   // logic to get all courses
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password;
   var valid_user = false;
@@ -123,11 +136,14 @@ app.get('/admin/courses', (req, res) => {
     res.json({courses: all_courses});
   }
 
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
+<<<<<<< HEAD
   var user = req.body;
   var already_exist = false;
   for (var i =0; i < USERS.length; i++){
@@ -148,10 +164,13 @@ app.post('/users/signup', (req, res) => {
     res.send({message: "User created successfully"});
   }
 
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password
   var valid_user = false;
@@ -166,10 +185,13 @@ app.post('/users/login', (req, res) => {
    } else{
     res.statusCode(401);
    }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.get('/users/courses', (req, res) => {
   // logic to list all courses
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password
   var valid_user = false;
@@ -184,10 +206,13 @@ app.get('/users/courses', (req, res) => {
   } else{
     res.statusCode(401);
   }
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.post('/users/courses/:courseId', (req, res) => {
   // logic to purchase a course
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password
   var valid_user = false;
@@ -211,10 +236,13 @@ app.post('/users/courses/:courseId', (req, res) => {
     }
   } else{res.statusCode(401);}
 
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
+<<<<<<< HEAD
   var username = req.headers.username;
   var password = req.headers.password
   var valid_user = false;
@@ -231,6 +259,8 @@ app.get('/users/purchasedCourses', (req, res) => {
       }
     }
   } else {res.statusCode(401);}
+=======
+>>>>>>> 7914b2ead7e0dde9a1280e2e30bc2ad18ad29187
 });
 
 app.listen(3000, () => {
