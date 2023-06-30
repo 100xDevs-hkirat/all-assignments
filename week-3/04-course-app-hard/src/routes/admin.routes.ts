@@ -11,7 +11,7 @@ import isAdmin from "../middlewares/isAdmin";
 import isAuthorized from "../middlewares/isAuthorized";
 
 // Admin routes
-router.post("/signup", signup);
+router.post("/signup", adminControllers.signup);
 
 router.post("/login", login);
 
