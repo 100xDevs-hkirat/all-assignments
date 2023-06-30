@@ -1,24 +1,23 @@
 import express from "express";
 const router = express();
-import { signup } from "../controllers/admin.controllers";
+import * as adminControllers from "../controllers/admin.controllers";
+import isAdmin from "../middlewares/isAdmin";
+import isAuthorized from "../middlewares/isAuthorized";
 
 // Admin routes
-router.post("/signup", signup);
+router.post("/signup", adminControllers.signup);
 
-router.post("/admin/login", (req, res) => {
-  // logic to log in admin
-});
+router.post("/login", adminControllers.login);
 
-router.post("/admin/courses", (req, res) => {
-  // logic to create a course
-});
+router.post("/courses", isAuthorized, isAdmin, adminControllers.createCourse);
 
-router.put("/admin/courses/:courseId", (req, res) => {
-  // logic to edit a course
-});
+router.put(
+  "/courses/:courseId",
+  isAuthorized,
+  isAdmin,
+  adminControllers.updateCourse
+);
 
-router.get("/admin/courses", (req, res) => {
-  // logic to get all courses
-});
+router.get("/courses", isAuthorized, isAdmin, adminControllers.getCourses);
 
 export default router;
