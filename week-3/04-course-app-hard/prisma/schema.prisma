@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(cuid()) @map("_id")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  username     String     @unique
+  password  String
+  role      AuthRole   @default(USER)
+  Purchase  Purchase[]
+}
+
+model Course {
+  id          String     @id @default(cuid()) @map("_id")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  title       String
+  description String
+  price       Float
+  imageLink   String
+  published   Boolean
+  Purchase    Purchase[]
+}
+
+model Purchase {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
