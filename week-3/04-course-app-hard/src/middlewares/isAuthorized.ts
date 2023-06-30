@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "./errorHandler.middleware";
 import jwt, { Secret } from "jsonwebtoken";
-import { AuthRole } from "@prisma/client";
+import { AuthRole, PrismaClient } from "@prisma/client";
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || "secret";
 
@@ -17,7 +17,11 @@ interface User {
   role: AuthRole;
 }
 
-const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
+const isAuthorized = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!token) {
@@ -29,6 +33,16 @@ const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = jwt.verify(token, JWT_SECRET);
     const user = decodedToken as User;
     req.user = user;
+    const prisma = new PrismaClient();
+    const userExist = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+
+    if (!userExist) {
+      throw new CustomError("User not found", 404);
+    }
     next();
   } catch (error) {
     next(error);

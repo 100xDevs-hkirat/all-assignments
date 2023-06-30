@@ -1,25 +1,23 @@
 import express from "express";
 const router = express();
+import {
+  login,
+  signup,
+  getCourses,
+  purchaseCourse,
+  getPurchasedCourses,
+} from "../controllers/user.controllers";
+import isAuthorized from "../middlewares/isAuthorized";
 
 // User routes
-router.post("/users/signup", (req, res) => {
-  // logic to sign up user
-});
+router.post("/signup", signup);
 
-router.post("/users/login", (req, res) => {
-  // logic to log in user
-});
+router.post("/login", login);
 
-router.get("/users/courses", (req, res) => {
-  // logic to list all courses
-});
+router.get("/courses", isAuthorized, getCourses);
 
-router.post("/users/courses/:courseId", (req, res) => {
-  // logic to purchase a course
-});
+router.post("/courses/:courseId", isAuthorized, purchaseCourse);
 
-router.get("/users/purchasedCourses", (req, res) => {
-  // logic to view purchased courses
-});
+router.get("/purchasedCourses", isAuthorized, getPurchasedCourses);
 
 export default router;
