@@ -14,13 +14,13 @@
 
     - For any other route not defined in the server return 404
 
+<<<<<<< HEAD
     Testing the server - run `npx jest tests/fileServer.test.js` command in terminal
  */
     const express = require('express');
     const fs = require('fs');
     const path = require('path');
     const app = express();
-    
     app.get('/files', (req, res) => {
       fs.readdir(path.join(__dirname, './files/'), (err, files) => {
         if (err) {
@@ -29,7 +29,6 @@
         res.status(200).json(files);
       })
     });
-    
     app.get('/file/:filename', (req, res) => {
       var filePath = path.join(__dirname, './files/', req.params.filename);
       fs.readFile(filePath, 'utf8', (err, data) => {
@@ -43,3 +42,4 @@
       return res.status(404).send("Route not found");
     });
     module.exports = app;
+

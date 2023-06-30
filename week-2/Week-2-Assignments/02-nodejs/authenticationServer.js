@@ -26,6 +26,7 @@
 
   - For any other route not defined in the server return 404
 
+<<<<<<< HEAD
   Testing the server - run `npx jest tests/authenticationServer.tes
 t.js` command in terminal
  */
