@@ -39,10 +39,11 @@ app.post("/admin/courses", (req, res) => {
     res.sendStatus(401);
   }
 
+  const courseId = Math.floor(Math.random() * 10000000000);
   const index = ADMINS.findIndex((item) => item.username === username);
   if (index !== -1 && ADMINS[index]["password"] === password) {
     const course = {
-      courseId: Math.floor(Math.random() * 10000000000),
+      courseId: courseId,
       title: "course title",
       description: "course description",
       price: 100,
@@ -51,7 +52,7 @@ app.post("/admin/courses", (req, res) => {
     };
 
     COURSES.push(course);
-    const mes = { message: "Course created successfully", courseId: 1 };
+    const mes = { message: "Course created successfully", courseId: courseId };
     res.json(mes);
   } else {
     res.send("invalid credentials");
