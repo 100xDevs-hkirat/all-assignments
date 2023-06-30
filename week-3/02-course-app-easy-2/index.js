@@ -1,53 +1,42 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const {config} = require('dotenv');
+const { adminSignup, adminLogin } = require('./controllers/admin.controller');
+const isAdmin = require('./middlewares/isAdmin');
+const { createCourse, editCourse, getCourses } = require('./controllers/course.controller');
+const { userSignup, userLogin, purchaseCourse, getPurchasedCourses } = require('./controllers/user.controller');
+const isUser = require('./middlewares/isUser');
 const app = express();
 
 app.use(express.json());
+config();
 
-let ADMINS = [];
-let USERS = [];
-let COURSES = [];
+// Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1/course-app-easy')
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...'));
 
 // Admin routes
-app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
-});
+app.post('/admin/signup', adminSignup);
 
-app.post('/admin/login', (req, res) => {
-  // logic to log in admin
-});
+app.post('/admin/login', adminLogin);
 
-app.post('/admin/courses', (req, res) => {
-  // logic to create a course
-});
+app.post('/admin/courses', isAdmin, createCourse);
 
-app.put('/admin/courses/:courseId', (req, res) => {
-  // logic to edit a course
-});
+app.put('/admin/courses/:courseId', isAdmin, editCourse);
 
-app.get('/admin/courses', (req, res) => {
-  // logic to get all courses
-});
+app.get('/admin/courses', isAdmin, getCourses);
 
 // User routes
-app.post('/users/signup', (req, res) => {
-  // logic to sign up user
-});
+app.post('/users/signup', userSignup);
 
-app.post('/users/login', (req, res) => {
-  // logic to log in user
-});
+app.post('/users/login', userLogin);
 
-app.get('/users/courses', (req, res) => {
-  // logic to list all courses
-});
+app.get('/users/courses', isUser, getCourses);
 
-app.post('/users/courses/:courseId', (req, res) => {
-  // logic to purchase a course
-});
+app.post('/users/courses/:courseId', isUser, purchaseCourse);
 
-app.get('/users/purchasedCourses', (req, res) => {
-  // logic to view purchased courses
-});
+app.get('/users/purchasedCourses', isUser, getPurchasedCourses);
 
 app.listen(3000, () => {
   console.log('Server is listening on port 3000');
