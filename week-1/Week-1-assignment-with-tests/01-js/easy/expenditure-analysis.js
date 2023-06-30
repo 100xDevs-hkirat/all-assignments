@@ -8,8 +8,39 @@
   - `npm run test-expenditure-analysis`
 */
 
-function calculateTotalSpentByCategory(transactions) {
-  return [];
+
+function calculateTotalSpentByCategory(transactions) 
+{
+    let cat="";
+    let flag=1;
+    let ind=0;
+    let pri=0;
+    let outarr=[];
+
+    for(let i = 0; i<transactions.length; i++)
+    {
+        cat = transactions[i].category;
+        pri = transactions[i].price;
+        flag=0;
+
+        for(let j = 0; j<outarr.length; j++)
+        {
+            if(cat==outarr[j].category)
+            {
+                outarr[j].totalSpent += pri;
+                flag=1;
+                break;
+            }
+        }
+
+        if(flag==0)
+        {
+            ind = outarr.length;
+            outarr[ind] = {category: cat, totalSpent: pri};
+        }
+    }
+
+    return outarr;
 }
 
 module.exports = calculateTotalSpentByCategory;
