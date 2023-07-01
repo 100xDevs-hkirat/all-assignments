@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   username: String,
   password: String,
-  purchasedCourses: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
 });
 
 const AdminSchema = new mongoose.Schema({
