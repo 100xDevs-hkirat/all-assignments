@@ -1,12 +1,18 @@
 {
-  "name": "02-course-app-easy",
+  "name": "03-course-app-medium",
   "version": "1.0.0",
-  "description": "### Description 1. Admins should be able to sign up 2. Admins should be able to create courses    1. Course has a title, description, price, and image link    2. Course should be able to be published or unpublished 3. Admins should be able to edit courses 4. Users should be able to sign up 5. Users should be able to purchase courses 6. Users should be able to view purchased courses 7. Users should be able to view all courses",
+  "description": "### Description 1. Admins should be able to sign up 2. Admins should be able to create courses    1. Course has a title, description, price, and image link    2. Course should be able to be published or unpublished 3. Admins should be able to edit courses 4. Users should be able to sign up 5. Users should be able to purchase courses 6. Users should be able to view purchased courses 7. Users should be able to view all courses 8. Data should be fetched from and saved to files",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.3.9",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "uuid": "^9.0.0"
+  }
 }

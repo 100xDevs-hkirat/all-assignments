@@ -1,0 +1,29 @@
+[
+  {
+    "id": "d624ee7e-a48b-4007-9cf9-767a52216368",
+    "title": "Course 1",
+    "description": "This is a new Course is from USER 1 for testing purposes",
+    "price": 2000,
+    "imgLink": "linkToImage.com",
+    "published": true,
+    "user": { "userID": "f1faac15-4793-4130-92fa-785e54233529" }
+  },
+  {
+    "id": "cfc214ff-5530-4bff-b04f-a086fcd9484e",
+    "title": "New Course by User 2",
+    "description": "This is a new Course is from USER 2 for testing purposes",
+    "price": 1000,
+    "imgLink": "linkToImage.com",
+    "published": true,
+    "user": { "userID": "65309394-533c-4494-911e-2710c7adbe82" }
+  },
+  {
+    "id": "62799834-9c49-4a27-badc-432f3933b2f0",
+    "title": "Web D Course",
+    "description": "This is a new Course is from USER 2 for teaching web dev.",
+    "price": 3500,
+    "imgLink": "linkToImage.com",
+    "published": true,
+    "user": { "userID": "65309394-533c-4494-911e-2710c7adbe82" }
+  }
+]
