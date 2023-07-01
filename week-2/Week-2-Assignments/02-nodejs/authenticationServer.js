@@ -29,9 +29,90 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+const users = [];
+
+const GetAll = (req, res) => {
+  var email = req.headers.email;
+  var password = req.headers.password;
+  let userFound = findUsername(email);
+
+  if (userFound == -1 && userFound.password !== password) {
+    res.sendStatus(401);
+  } else {
+    let usersToReturn = [];
+    for (let i = 0; i < users.length; i++) {
+      usersToReturn.push({
+        firstName: users[i].firstName,
+        lastName: users[i].lastName,
+        email: users[i].email,
+      });
+    }
+    res.json({
+      usersToReturn,
+    });
+  }
+};
+function findUsername(email) {
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].email == email) {
+      return users[i];
+    }
+  }
+  return -1;
+}
+const signup = (req, res) => {
+  if (
+    !req.body.email ||
+    !req.body.password ||
+    !req.body.firstName ||
+    !req.body.lastName
+  ) {
+    res.status(404).send();
+  }
+
+  let foundUser = findUsername(req.body.email);
+  if (foundUser == -1) {
+    return res.status(404).send();
+  } else {
+    let user = {
+      id: Math.floor(Math.random() * 100000),
+      username: req.body.username,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    };
+    data.push(user);
+    res.send("Successfully created a user");
+  }
+};
+
+const signin = (req, res) => {
+  let userFound = findUsername(req.body.email);
+  if (userFound == -1) {
+    return res.status(401).send();
+  }
+  if (userFound.password != req.body.password) {
+    return res.status(401).send();
+  }
+  res.status(200).json(
+    res.json({
+      firstName: userFound.firstName,
+      lastName: userFound.lastName,
+      email: userFound.email,
+    })
+  );
+};
+
+app.post("/signup", signup);
+app.post("/signin", signin);
+app.get("/data", GetAll);
+
+app.all("*", (req, res) => {
+  res.status(404).send("Route not found");
+});
 
 module.exports = app;

@@ -39,11 +39,132 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const path = require("path");
+
+const PORT = 3000;
 
 const app = express();
+const PATH = "./files/todo.json";
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+function WriteDate(data) {
+  data = JSON.stringify(data);
+  fs.writeFile(PATH, data + "\n", { flag: "a" }, (err) => {
+    if (err) throw err;
+  });
+}
+
+function findById(id, data) {
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].id == id) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function findByData(id, data) {
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].id == id) {
+      return data[i];
+    }
+  }
+
+  return -1;
+}
+
+const GetAll = (req, res) => {
+  fs.readFile(__dirname + PATH, "utf-8", (err, data) => {
+    if (err) {
+      throw err;
+    }
+    res.send(JSON.parse(data));
+  });
+};
+
+const GetById = (req, res) => {
+  let data = findById(req.params.id);
+  if (data == -1) {
+    res.status(404).send();
+  }
+  res.json(data);
+};
+
+const CreateTodo = (req, res) => {
+  let body = req.body;
+  let NewBody = { id: uuidv4(), ...body };
+  data.push(NewBody);
+  WriteDate(NewBody);
+  res.json(NewBody);
+};
+
+const Update = (req, res) => {
+  fs.readFile(PATH, "utf-8", (err, data) => {
+    if (err) throw err;
+    let todoJson = JSON.parse(data);
+    let response = findByData(req.params.id, todoJson);
+    if (response === -1) {
+      res.status(404).send();
+    }
+    let update = req.body;
+    for (var item of Object.keys(update)) {
+      response[item] = update[item];
+    }
+    fs.writeFile(PATH, JSON.stringify(todoJson), (err, data) => {
+      if (err) throw err;
+    });
+    res.json(response);
+  });
+};
+
+const Delete = (req, res) => {
+  fs.readFile(PATH, "utf-8", (err, data) => {
+    if (err) throw err;
+    const todoJson = JSON.parse(data);
+    let todoIndex = findById(req.params.id, todoJson);
+    if (todoIndex === -1) {
+      res.status(404).send();
+    } else {
+      todoJson.splice(todoIndex, 1);
+      fs.writeFile(PATH, JSON.stringify(todoJson), (err, data) => {
+        if (err) throw err;
+      });
+      res.status(200).send();
+    }
+  });
+};
+app.get("/todos", GetAll);
+app.get("/todos/:id", GetById);
+app.post("/todos", CreateTodo);
+app.put("/todos/:id", Update);
+app.delete("/todos/:id", Delete);
+
+app.get("/", (req, res) => {
+  console.log(__dirname);
+  // res.sendFile(path.join(__dirname, "./index.html"));
+  res.send("Hello world");
+});
+
+app.use((req, res, next) => {
+  res.status(404).send();
+});
+
+const ServerSetUp = () => {
+  app.listen(PORT, () => {
+    console.log(`Server started at port ${PORT}`);
+    let file = path.join(__dirname, "index.html");
+    console.log(__dirname);
+    console.log(file);
+  });
+};
+
+ServerSetUp();
 
 module.exports = app;
