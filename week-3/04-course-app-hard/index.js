@@ -8,37 +8,123 @@ app.use(express.json());
 
 const SECRET = "arunchaitanya";
 
-let ADMINS = [];
-let USERS = [];
-let COURSES = [];
-
 const authenticationMiddleware = async (req, res, next) => {
-  if (!req.headers.authentication) return res.status(401).send("Unauthorized");
-  const token = req.headers.authentication.split(" ")[1];
-  const user = await jwt.verify(token, SECRET);
-  
+  if (!req.headers.authorization) return res.status(401).send("Unauthorized");
+  const token = req.headers.authorization.split(" ")[1];
+  const user = jwt.verify(token, SECRET);
+  req.user = user;
+  next();
 };
 
+const isAdminMiddleware = async (req, res, next) => {
+  if (req.user.role === "admin") {
+    next();
+  } else {
+    return res.status(401).send("Unauthorized");
+  }
+};
+
+const userJwt = async (username, userId, isAdmin) => {
+  const token = await jwt.sign(
+    {
+      username,
+      userId,
+      role: isAdmin ? "admin" : "user",
+    },
+    SECRET
+  );
+  return token;
+};
 // Admin routes
-app.post("/admin/signup", (req, res) => {
-  // logic to sign up admin
+app.post("/admin/signup", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const userInDb = await AdminModel.findOne({ username });
+    if (userInDb) {
+      return res
+        .status(401)
+        .send("User with this username already have an account");
+    }
+    if (username && password) {
+      const admin = await AdminModel.create({ username, password });
+      const token = await userJwt(admin.username, admin._id, true);
+      return res
+        .status(201)
+        .send({ message: "Admin created successfully", token });
+    } else {
+      return res.status(401).send("please provide correct email and password");
+    }
+  } catch (e) {
+    return res.status(500).send("Something went wrong. Please try again");
+  }
 });
 
-app.post("/admin/login", (req, res) => {
+app.post("/admin/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (username && password) {
+      const user = await AdminModel.findOne({ username, password });
+      if (!user) {
+        return res.status(401).send("Unauthorized");
+      }
+      const admin = await AdminModel.create({ username, password });
+      const token = await userJwt(admin.username, admin._id, true);
+      return res.status(200).send({ message: "Logged in successfully", token });
+    } else {
+      return res.status(401).send("please provide email and password");
+    }
+  } catch (e) {
+    return res.status(500).send("Something went wrong. Please try again");
+  }
   // logic to log in admin
 });
 
-app.post("/admin/courses", (req, res) => {
-  // logic to create a course
-});
+app.post(
+  "/admin/courses",
+  authenticationMiddleware,
+  isAdminMiddleware,
+  async (req, res) => {
+    try {
+      const course = await CourseModel.create(req.body);
+      return res
+        .status(201)
+        .send({ message: "Course created successfully", courseId: course._id });
+    } catch (e) {
+      return res.status(500).send("Something went wrong. Please try again");
+    }
+  }
+);
 
-app.put("/admin/courses/:courseId", (req, res) => {
-  // logic to edit a course
-});
+app.put(
+  "/admin/courses/:courseId",
+  authenticationMiddleware,
+  isAdminMiddleware,
+  async (req, res) => {
+    const courseId = req.params.courseId;
+    try {
+      await CourseModel.findByIdAndUpdate(courseId, req.body);
+      return res.status(200).send({ message: "Course updated successfully" });
+    } catch (e) {
+      return res.status(500).send("Something went wrong. Please try again");
+    }
+    // logic to edit a course
+  }
+);
 
-app.get("/admin/courses", (req, res) => {
-  // logic to get all courses
-});
+app.get(
+  "/admin/courses",
+  authenticationMiddleware,
+  isAdminMiddleware,
+  async (req, res) => {
+    try {
+      const courses = await CourseModel.find({});
+      return res.status(200).send({ courses });
+    } catch (e) {
+      return res.status(500).send("Something went wrong. Please try again");
+    }
+    // logic to get all courses
+  }
+);
 
 // User routes
 app.post("/users/signup", (req, res) => {
