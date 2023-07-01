@@ -17,6 +17,72 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+  add(a) {
+    this.result += a;
+  }
+  subtract(a) {
+    this.result -= a;
+  }
+  multiply(a) {
+    this.result *= a;
+  }
+  divide(a) {
+    if (a === 0) throw new Error('divide by zero');
+    this.result /= a;
+  }
+  clear(a) {
+    this.result = 0;
+  }
+  getResult() {
+    return this.result;
+  }
+  calculate(exp) {
+    let res = 0;
+    while (exp.indexOf('(') >= 0 || exp.indexOf(')') >= 0) {
+      const start = exp.indexOf('(');
+      let end = start + 1;
+      let count = 1;
+      while (end < exp.length && count !== 0) {
+        if (exp[end] === '(') count++;
+        else if (exp[end] === ')') count--;
+        end++;
+      }
+      if (start === -1 || count > 0) throw new Error('invalid parantheses');
+      const subExp = exp.slice(start + 1, end - 1);
+      exp =
+        exp.substring(0, start) + this.calculate(subExp) + exp.substring(end);
+    }
+    if (exp.indexOf('+') >= 0) {
+      const idx = exp.indexOf('+');
+      const left = this.calculate(exp.substring(0, idx));
+      const right = this.calculate(exp.substring(idx + 1));
+      res = left + right;
+    } else if (exp.indexOf('-') >= 0) {
+      const idx = exp.indexOf('-');
+      const left = this.calculate(exp.substring(0, idx));
+      const right = this.calculate(exp.substring(idx + 1));
+      res = left - right;
+    } else if (exp.indexOf('*') >= 0) {
+      const idx = exp.indexOf('*');
+      const left = this.calculate(exp.substring(0, idx));
+      const right = this.calculate(exp.substring(idx + 1));
+      res = left * right;
+    } else if (exp.indexOf('/') >= 0) {
+      const idx = exp.indexOf('/');
+      const left = this.calculate(exp.substring(0, idx));
+      const right = this.calculate(exp.substring(idx + 1));
+      if (right === 0) throw new Error('divide by zero');
+      res = left / right;
+    } else {
+      res = parseFloat(exp);
+    }
+    if (isNaN(res)) throw new Error('invalid characters');
+    return (this.result = res);
+  }
+}
 
 module.exports = Calculator;

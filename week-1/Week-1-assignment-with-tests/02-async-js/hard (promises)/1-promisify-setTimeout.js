@@ -3,4 +3,10 @@
 */
 
 function wait(n) {
+  return new Promise((res) => {
+    setTimeout(res, n * 1000);
+  });
 }
+
+const start = new Date();
+wait(2).then(() => console.log((new Date() - start) / 1000));

@@ -7,7 +7,11 @@
 */
 
 function isPalindrome(str) {
-  return true;
+  str = str
+    .toUpperCase()
+    .split('')
+    .filter((ch) => ch >= 'A' && ch <= 'Z');
+  return str.join('') === str.reverse().join('');
 }
 
 module.exports = isPalindrome;

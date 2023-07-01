@@ -41,9 +41,73 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 const app = express();
-
 app.use(bodyParser.json());
+
+function readFromFile(res, callback) {
+  fs.readFile('./todos.txt', 'utf-8', (err, data) => {
+    if (err) return res.status(500).send('Internal server error');
+    res.locals.todos = JSON.parse(data || []);
+    callback();
+  });
+}
+
+function writeToFile(todos, res, callback) {
+  fs.writeFile('./todos.txt', JSON.stringify(todos), (err) => {
+    if (err) return res.status(500).send('Internal server error');
+    callback();
+  });
+}
+
+app.use((_, res, next) => {
+  readFromFile(res, () => next());
+});
+
+app
+  .route('/todos')
+  .get((_, res) => {
+    res.send(JSON.stringify(res.locals.todos));
+  })
+  .post((req, res) => {
+    const todos = res.locals.todos;
+    const id = uuidv4();
+    todos.push({
+      id,
+      ...req.body,
+    });
+    writeToFile(todos, res, () => res.status(201).send({ id }));
+  });
+
+app.use('/todos/:id', (req, res, next) => {
+  const index = res.locals.todos.findIndex((todo) => todo.id === req.params.id);
+  if (index < 0) res.status(404).send('Not Found');
+  res.locals.index = index;
+  next();
+});
+
+app
+  .route('/todos/:id')
+  .get((_, res) => {
+    res.send(res.locals.todos[res.locals.index]);
+  })
+  .put((req, res) => {
+    const todos = res.locals.todos;
+    const index = res.locals.index;
+    todos[index] = {
+      ...todos[index],
+      ...req.body,
+    };
+    writeToFile(todos, res, () => res.send(todos[index]));
+  })
+  .delete((_, res) => {
+    const todos = res.locals.todos;
+    todos.splice(res.locals.index, 1);
+    writeToFile(todos, res, () => res.send());
+  });
+
+app.use((_, res) => res.status(404).send('Route not found'));
 
 module.exports = app;
