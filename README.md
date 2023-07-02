@@ -1,0 +1,1 @@
+This repository has the assignments i'll do while learning the MERN stack'
