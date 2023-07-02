@@ -15,13 +15,13 @@ function sort(st){
 }
 
 function isAnagram(str1, str2) {
+  //This is a comment
   if(sort(str1.toUpperCase()) === sort(str2.toUpperCase())){
     return true;
   }
   else{
     return false;
   }
-
 }
 
 module.exports = isAnagram;
