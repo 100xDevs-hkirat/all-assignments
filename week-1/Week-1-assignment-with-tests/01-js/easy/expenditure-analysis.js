@@ -9,7 +9,24 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  return [];
+  //var len = length(transactions);
+  const output = transactions.reduce(function(acc,curr){
+    if(acc[curr.category]){
+      acc[curr.category] += curr.price;
+    }
+    else{
+      acc[curr.category] = curr.price;
+    }
+    return acc;
+  },{})
+  //output = npm run test-expenditure-analysis
+  var keys = Object.keys(output);
+  let answer = [];
+  for(var i = 0; i<keys.length; i++){
+    var obj = {category: keys[i], totalSpent: output[keys[i]]};
+    answer.push(obj);
+  }
+  return answer;
 }
 
 module.exports = calculateTotalSpentByCategory;
