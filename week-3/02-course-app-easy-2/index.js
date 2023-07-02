@@ -97,7 +97,8 @@ app.post("/users/login", (req, res) => {
   const { username, password } = req.headers;
   const user = USERS.find(u => u.username === username && u.password === password);
   if (user) {
-    const token = generateJwt({ username, password });
+    // const token = generateJwt(user);
+    const token = generateJwt({ username, password }); // no need cause we are extracting username in generateJwt
     res.json({ message: "Logged in successfully", token });
   } else {
     res.status(403).json({ message: "User already exists" });
