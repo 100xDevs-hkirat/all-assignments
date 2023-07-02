@@ -6,8 +6,21 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-anagram`
 */
+function sort(st){
+  var arr = st.split("");
+  arr = arr.sort();
+  var sortedStre = arr.join("");
+  return sortedStre;
+
+}
 
 function isAnagram(str1, str2) {
+  if(sort(str1.toUpperCase()) === sort(str2.toUpperCase())){
+    return true;
+  }
+  else{
+    return false;
+  }
 
 }
 
