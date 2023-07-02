@@ -6,8 +6,23 @@
   - `npm run test-palindrome`
 */
 
+function removeSpace(str){
+  var newString = "";
+  for (var i = str.length - 1; i >= 0; i--) { 
+    if(!(str[i] == " "))
+        newString += str[i];
+    }
+  return newString;
+  
+}
 function isPalindrome(str) {
-  return true;
+  str = str.toLowerCase();
+  str = str.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"").split("").reverse().join("");
+  str = removeSpace(str);
+  var rev = str.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"").split("").reverse().join("");
+  rev = removeSpace(str);
+  if(rev === str)  return true;
+  else return false;
 }
 
 module.exports = isPalindrome;
