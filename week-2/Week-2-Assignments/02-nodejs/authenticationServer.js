@@ -30,8 +30,84 @@
  */
 
 const express = require("express")
-const PORT = 3000;
+const port = 3000;
 const app = express();
+const bodyParser = require("body-parser")
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
 
+let users = [];
+let flag=0;
+let l=0;
+
+app.use(bodyParser.json())
+
+app.post('/signup', (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  let firstName = req.body.firstName;
+  let lastName = req.body.lastName;
+  l=1;
+  if(flag==0) {
+    users[0] = {
+      "username": username,
+      "password": password,
+      "lastName": lastName,
+      "firstName": firstName,
+      "id": randomid()
+    };
+    flag++;
+    l=0;
+    res.status(201).send('Created');
+  }
+  
+  for(let i=0; i<users.length; i++) {
+    if(users[i].username==username) {
+      l=0;
+      res.status(400).send('Bad Request');
+    }
+  }
+    if(l) {
+      users[users.length] = {
+        "username": username,
+        "password": password,
+        "lastName": lastName,
+        "firstName": firstName,
+        "id": randomid()
+      };
+      res.status(201).send('Created');
+    }
+})
+
+app.post('/login', (req,res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  if(flag==0)
+  {
+    res.status(401).send('Unauthorized');
+  }
+  l=1;
+  for(let i=0; i<users.length; i++) {
+    if(users[i].username==username && users[i].password==password) {
+      let user = {
+        "firstName": users[i].firstName,
+        "lastName": users[i].lastName,
+        "id": users[i].id
+      }
+      l=0;
+      res.send(user)
+    }
+  }
+  if(l) {
+    res.status(401).send('Unauthorized');
+  }
+})
+
+function randomid() {
+  return Math.random();
+}
+
+// app.listen(port, () => {
+//   console.log(`App listening on port ${port}`)
+// })
 module.exports = app;
