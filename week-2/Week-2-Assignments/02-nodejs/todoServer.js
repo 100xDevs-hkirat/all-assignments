@@ -45,5 +45,49 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
-
+const todos = [];
+app.get("/todos", (req, res) => {
+  res.status(200).json(todos);
+});
+app.get("/todos/:id", (req, res) => {
+  const todoIndex = todos.findIndex(
+    (todo) => parseInt(req.params.id) === todo.id
+  );
+  if (todoIndex == -1) res.status(404).send("NOT FOUND");
+  res.status(200).json(todos[todoIndex]);
+});
+app.post("/todos", (req, res) => {
+  const newTodo = {
+    id: Math.floor(Math.random() * 100000),
+    title: req.body.title,
+    description: req.body.description,
+  };
+  todos.push(newTodo);
+  res.status(201).json(newTodo);
+});
+app.put("/todos/:id", (req, res) => {
+  const todoIndex = todos.findIndex(
+    (todo) => parseInt(req.params.id) === todo.id
+  );
+  if (todoIndex === -1) {
+    res.status(404).send("NOT FOUND");
+  } else {
+    todos[todoIndex].title = req.body.title;
+    todos[todoIndex].description = req.body.description;
+    res.status(200).json(todos[todoIndex]);
+  }
+});
+app.delete("/todos/:id", (req, res) => {
+  const todoIndex = todos.findIndex(
+    (todo) => parseInt(req.params.id) === todo.id
+  );
+  if (todoIndex === -1) {
+    res.status(404).send("NOT FOUND");
+  } else {
+    todos.splice(todoIndex, 1);
+    res.status(200).send("Deleted");
+  }
+});
+app.use((req, res, next) => res.status(404).send());
+// app.listen(port, () => console.log(`App Started at port ${port}`));
 module.exports = app;
