@@ -32,6 +32,60 @@
 const express = require("express")
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
-
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+const users = [];
+app.post("/signup", (req, res) => {
+  const userIndex = users.findIndex((user) => user.email === req.body.email);
+  console.log(users);
+  if (userIndex == -1) {
+    const newUser = {
+      id: Math.floor(Math.random() * 10000),
+      email: req.body.email,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    };
+    users.push(newUser);
+    res.status(201).send("Signup successful");
+  } else res.status(400).send("Username already exists");
+});
+app.post("/login", (req, res) => {
+  const userIndex = users.findIndex(
+    (user) =>
+      user.email === req.body.email && user.password === req.body.password
+  );
+  if (userIndex < 0) res.status(401).send("Unauthorized");
+  else {
+    const responseObj = {
+      id: users[userIndex].id,
+      email: users[userIndex].email,
+      firstName: users[userIndex].firstName,
+      lastName: users[userIndex].lastName,
+    };
+    res.status(200).json(responseObj);
+  }
+});
+app.get("/data", (req, res) => {
+  const userIndex = users.findIndex((user) => {
+    return (
+      user.email === req.headers.email && user.password === req.headers.password
+    );
+  });
+  if (userIndex < 0) res.status(401).send("Unauthorized");
+  else {
+    const responseArrObj = { users: [] };
+    users.forEach((user) => {
+      const responseObj = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+      responseArrObj.users.push(responseObj);
+    });
+    res.status(200).json(responseArrObj);
+  }
+});
+app.use((req, res, next) => res.status(404).send("Route not found"));
+// app.listen(PORT, () => console.log(`App started at port ${PORT}`));
 module.exports = app;
