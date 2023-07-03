@@ -57,25 +57,6 @@ function validateToken(req, res, next) {
   });
 }
 
-function isAdmin(username, password) {
-  let isUserAdmin = false;
-  ADMINS.forEach((admin) => {
-    if (admin.username === username && admin.password === password)
-      isUserAdmin = true;
-  })
-  return isUserAdmin;
-}
-
-function isUser(username, password) {
-  let isValidUser = false;
-  USERS.forEach((user) => {
-    if (user.username === username && user.password === password)
-      isValidUser = true;
-  })
-  return isValidUser;
-}
-
-
 function validateUsername(username) {
   if (username && typeof username === 'string') return;
   throw new Error("Invalid Username");
@@ -86,27 +67,6 @@ function validatePassword(password) {
   throw new Error("Invalid password");
 }
 
-function authenticateAdmin(req) {
-  const userName = req.headers.username || null;
-  const password = req.headers.password || null;
-  validateUsername(userName);
-  validatePassword(password);
-  if (isAdmin(userName, password)) {
-    return true;
-  }
-  return false;
-}
-
-function authenticateUser(req) {
-  const userName = req.headers.username || null;
-  const password = req.headers.password || null;
-  validateUsername(userName);
-  validatePassword(password);
-  if (isUser(userName, password)) {
-    return true;
-  }
-  return false;
-}
 // { title: 'course title', description: 'course description', price: 100, imageLink: 'https://linktoimage.com', published: true }
 function validateCourse(body) {
   if (!body.title || typeof body.title !== 'string')
@@ -132,7 +92,6 @@ app.post('/admin/signup', async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
   const user = { username: userName, password: password };
-  ADMINS.push(user);
   const dbUser = await Admin.create(user);
   const token = generateToken(user);
   return res.status(200).json({ message: 'Admin created successfully', token: token });
@@ -153,7 +112,6 @@ app.post('/admin/login', async (req, res) => {
 
 app.post('/admin/courses', validateToken, async (req, res) => {
   try {
-    const username = req.user.username;
     validateCourse(req.body);
     const currentCourse = {
       title: req.body.title,
@@ -162,7 +120,6 @@ app.post('/admin/courses', validateToken, async (req, res) => {
       imageLink: req.body.imageLink,
       published: req.body.published
     }
-    COURSES.push(currentCourse)
     let course = await Courses.create(currentCourse);
     return res.status(200).json({ message: 'Course created successfully', courseId: course.id })
   }
@@ -172,8 +129,7 @@ app.post('/admin/courses', validateToken, async (req, res) => {
 });
 
 app.put('/admin/courses/:courseId', validateToken, async (req, res) => {
-  try {
-    const username = req.user.username;
+  try { 
     const courseId = req.params.courseId;
     validateCourse(req.body);
     const updatedCourse = await Courses.findByIdAndUpdate(courseId, req.body, { new: true });
@@ -187,7 +143,6 @@ app.put('/admin/courses/:courseId', validateToken, async (req, res) => {
 
 app.get('/admin/courses', validateToken, async (req, res) => {
   try {
-    const username = req.user.username;
     let courses = await Courses.find({});
     courses = courses.map(course => {
       return {
@@ -238,7 +193,6 @@ app.post('/users/login', async (req, res) => {
 
 app.get('/users/courses', validateToken, async (req, res) => {
   try {
-    const username = req.user.username;
     let courses = await Courses.find({});
     courses = courses.map(course => {
       return {
@@ -270,14 +224,13 @@ app.post('/users/courses/:courseId', validateToken, async (req, res) => {
   catch (error) {
     return res.status(400).json({ message: error.message });
   }
-  // logic to purchase a course
 });
 
 app.get('/users/purchasedCourses', validateToken, async (req, res) => {
   try {
     const username = req.user.username;
     const user = await User.findOne({ username}).populate('purchasedCourses');
-    return res.status(200).json({ purchasedCourses: user.purchasedCourses })
+    return res.status(200).json({ purchasedCourses: user.purchasedCourses });
   }
   catch (error) {
     return res.status(400).json({ message: error.message });
