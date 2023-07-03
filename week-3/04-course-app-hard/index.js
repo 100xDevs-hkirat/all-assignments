@@ -15,10 +15,11 @@ const Admin = mongoose.model('admin', adminSchema);
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
-  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'course' }]
+  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'courses'}]
 });
-const User = mongoose.model('user', userSchema);
+userSchema.index({ username: 1, purchasedCourses: 1 }, { unique: true });
 
+const User = mongoose.model('user', userSchema);
 
 const courses = new mongoose.Schema({
   title: String,
@@ -129,7 +130,7 @@ app.post('/admin/courses', validateToken, async (req, res) => {
 });
 
 app.put('/admin/courses/:courseId', validateToken, async (req, res) => {
-  try { 
+  try {
     const courseId = req.params.courseId;
     validateCourse(req.body);
     const updatedCourse = await Courses.findByIdAndUpdate(courseId, req.body, { new: true });
@@ -181,9 +182,9 @@ app.post('/users/signup', async (req, res) => {
 
 app.post('/users/login', async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.headers.username , password: req.headers.password});
+    const user = await User.findOne({ username: req.headers.username, password: req.headers.password });
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-    const token = generateToken({username : user.username, password : user.password});
+    const token = generateToken({ username: user.username, password: user.password });
     return res.status(200).json({ message: 'Logged in successfully', token: token });
   }
   catch (error) {
@@ -216,8 +217,10 @@ app.post('/users/courses/:courseId', validateToken, async (req, res) => {
   try {
     const username = req.user.username;
     const courseId = req.params.courseId;
-    const user = await User.findOne({username : username});
-    user.purchasedCourses.push(courseId);
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+    const user = await User.findOne({ username: username });
+    user.purchasedCourses.push(course);
     await user.save();
     return res.status(200).json({ message: 'Course purchased successfully' });
   }
@@ -229,7 +232,7 @@ app.post('/users/courses/:courseId', validateToken, async (req, res) => {
 app.get('/users/purchasedCourses', validateToken, async (req, res) => {
   try {
     const username = req.user.username;
-    const user = await User.findOne({ username}).populate('purchasedCourses');
+    const user = await User.findOne({ username }).populate('purchasedCourses');
     return res.status(200).json({ purchasedCourses: user.purchasedCourses });
   }
   catch (error) {
