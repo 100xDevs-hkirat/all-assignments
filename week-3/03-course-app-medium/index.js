@@ -3,7 +3,6 @@ const app = express();
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { Admin } = require("mongodb");
-const { parseArgs } = require("util");
 
 app.use(express.json());
 
