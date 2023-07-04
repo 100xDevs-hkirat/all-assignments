@@ -28,6 +28,21 @@ exports.getAllCourses = async (req, res) => {
   }
 };
 
+exports.getOneCourse = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId);
+    if (!course) {
+      return res.status(404).send('No course found with that ID');
+    }
+    res.status(200).json({
+      status: 'success',
+      course,
+    });
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+};
+
 exports.updateCourse = async (req, res, next) => {
   try {
     const course = await Course.findByIdAndUpdate(
@@ -45,7 +60,8 @@ exports.updateCourse = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: { course },
+      message: `Course updated with id ${req.params.courseId}`,
+      course,
     });
   } catch (error) {
     res.status(404).send(error.message);
