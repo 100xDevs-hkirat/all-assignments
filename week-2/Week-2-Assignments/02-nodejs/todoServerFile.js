@@ -39,16 +39,27 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-var TODOS = [];
 var todosId = 1;
 const PORT = 3000;
+const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
+const todosFilePath = path.join(__dirname, "files", "todos.json");
 
 app.get("/todos", (req, res) => {
-  return res.status(200).send(TODOS);
+  fs.readFile(todosFilePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error in reading file");
+    }
+    if (data === "") {
+      data = "[]";
+    }
+    return res.status(200).send(JSON.parse(data));
+  });
 });
 
 app.post("/todos", (req, res) => {
@@ -56,28 +67,53 @@ app.post("/todos", (req, res) => {
   const completed = req.body.completed;
   const description = req.body.description;
   const todoId = todosId++;
-  TODOS.push({
+  const todo = {
     title: title,
     completed: completed,
     description: description,
     id: todoId,
+  };
+  fs.readFile(todosFilePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error in reading file");
+    }
+    let todos = JSON.parse(data);
+    todos.push(todo);
+    fs.writeFile(todosFilePath, JSON.stringify(todos), () => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("Error in writing file");
+      }
+      console.log("File written successfully");
+      return res.status(201).send({ id: todoId });
+    });
   });
-  return res.status(201).send({ id: todoId });
 });
 
 app.get("/todos/:id", (req, res) => {
   const todoId = parseInt(req.params.id);
-  let todoInd = -1;
-  for (let i = 0; i < TODOS.length; i++) {
-    if (todoId === TODOS[i].id) {
-      todoInd = i;
+  fs.readFile(todosFilePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error in reading file");
     }
-  }
-  if (todoInd === -1) {
-    return res.status(404).send("Not Found");
-  } else {
-    return res.status(200).send(TODOS[todoInd]);
-  }
+    if (data === "") {
+      data = "[]";
+    }
+    const todos = JSON.parse(data);
+    let todoInd = -1;
+    for (let i = 0; i < todos.length; i++) {
+      if (todoId === todos[i].id) {
+        todoInd = i;
+      }
+    }
+    if (todoInd === -1) {
+      return res.status(404).send("Not Found");
+    } else {
+      return res.status(200).send(todos[todoInd]);
+    }
+  });
 });
 
 app.put("/todos/:id", (req, res) => {
@@ -85,42 +121,76 @@ app.put("/todos/:id", (req, res) => {
   const title = req.body.title;
   const completed = req.body.completed;
   const description = req.body.description;
-  let todoInd = -1;
-  for (let i = 0; i < TODOS.length; i++) {
-    if (todoId === TODOS[i].id) {
-      todoInd = i;
+  fs.readFile(todosFilePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error in reading file");
     }
-  }
-  if (todoInd === -1) {
-    return res.status(404).send("Not Found");
-  } else {
-     if (title !== undefined) {
-        TODOS[todoInd].title = title;
+    if (data === "") {
+      data = "[]";
+    }
+    const todos = JSON.parse(data);
+    let todoInd = -1;
+    for (let i = 0; i < todos.length; i++) {
+      if (todoId === todos[i].id) {
+        todoInd = i;
+      }
+    }
+    if (todoInd === -1) {
+      return res.status(404).send("Not Found");
+    } else {
+      if (title !== undefined) {
+        todos[todoInd].title = title;
       }
       if (completed !== undefined) {
-        TODOS[todoInd].completed = completed;
+        todos[todoInd].completed = completed;
       }
       if (description !== undefined) {
-        TODOS[todoInd].description = description;
+        todos[todoInd].description = description;
       }
-    return res.status(200).send(TODOS[todoInd]);
-  }
+      fs.writeFile(todosFilePath, JSON.stringify(todos), () => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error in writing file");
+        }
+        console.log("File written successfully");
+        return res.status(200).send(todos[todoInd]);
+      });
+    }
+  });
 });
 
 app.delete("/todos/:id", (req, res) => {
   const todoId = parseInt(req.params.id);
-  let todoInd = -1;
-  for (let i = 0; i < TODOS.length; i++) {
-    if (todoId === TODOS[i].id) {
-      todoInd = i;
+  fs.readFile(todosFilePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error in reading file");
     }
-  }
-  if (todoInd === -1) {
-    return res.status(404).send("Not Found");
-  } else {
-    TODOS.splice(todoInd, 1);
-    return res.status(200).send("OK");
-  }
+    if (data === "") {
+      data = "[]";
+    }
+    const todos = JSON.parse(data);
+    let todoInd = -1;
+    for (let i = 0; i < todos.length; i++) {
+      if (todoId === todos[i].id) {
+        todoInd = i;
+      }
+    }
+    if (todoInd === -1) {
+      return res.status(404).send("Not Found");
+    } else {
+      todos.splice(todoInd, 1);
+      fs.writeFile(todosFilePath, JSON.stringify(todos), () => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error in writing file");
+        }
+        console.log("File written successfully");
+        return res.status(200).send("OK");
+      });
+    }
+  });
 });
 
 // app.listen(PORT, () => {

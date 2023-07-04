@@ -6,7 +6,15 @@
   - `npm run test-palindrome`
 */
 
-function isPalindrome(str) {
+function isPalindrome(s) {
+  s = s.toLowerCase().trim();
+  s = s.replace(/[\.,?! ]/g, "");
+  const slen = s.length;
+  for (let i = 0; i < parseInt(slen / 2); i++) {
+    if (s[i] !== s[slen - i - 1]) {
+      return false;
+    }
+  }
   return true;
 }
 
