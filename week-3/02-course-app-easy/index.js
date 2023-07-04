@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 
@@ -7,6 +8,7 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
+const Secret_key = "MI68258";
 // Admin routes
 app.post("/admin/signup", (req, res) => {
   // logic to sign up admin
@@ -16,7 +18,13 @@ app.post("/admin/signup", (req, res) => {
     password: req.headers.password,
   };
   if (ADMINS.push(data) && data.username) {
-    return res.status(200).send("Admin Created successfulyy");
+    const payload = {
+      username: req.headers.username,
+      password: req.headers.password,
+    };
+    const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
+    res.header("Authorization", `Bearer ${token}`);
+    res.status(200).send("Admin Created successfulyy");
   } else {
     return res
       .status(401)
