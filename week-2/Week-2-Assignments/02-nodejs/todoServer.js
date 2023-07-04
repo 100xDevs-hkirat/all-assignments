@@ -42,8 +42,133 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const jsonPath = './data/todos.json';
+const fs = require("fs");
+
 const app = express();
 
 app.use(bodyParser.json());
+
+function getTimeStamp() {
+  return Math.floor(Date.now()/100);
+}
+
+// Allow cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+})
+
+// Get all todo items
+app.get('/todos', (req, res) => {
+  fs.readFile(jsonPath, "utf8", (err, data) => {
+    if (err) throw err;
+    res.json({status:true, data:JSON.parse(data)});
+  });
+  
+});
+
+// Find index of a specific todo item by ID
+function findIndex(arr, id) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].id === id) return i;
+  }
+  return -1;
+}
+
+// Get a specific todo item by ID
+app.get('/todos/:id', (req, res) => {
+  fs.readFile(jsonPath, "utf8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    const todoIndex = findIndex(todos, parseInt(req.params.id));
+    if (todoIndex === -1) {
+      res.status(404).json({ status:false, message: 'Todo not found'});
+    } else {
+      res.json( {status:true, data:todos[todoIndex]});
+    }
+  });
+});
+
+// Create a new todo item
+app.post('/todos', (req, res) => {
+  const newTodo = {
+    id: getTimeStamp(), // unique random id
+    title: req.body.title,
+    description: req.body.description
+  };
+  fs.readFile(jsonPath, "utf8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    todos.push(newTodo);
+    fs.writeFile(jsonPath, JSON.stringify(todos), (err) => {
+      if (err) throw err;
+      res.status(201).json({status:true, todo:newTodo});
+    });
+  });
+});
+
+// Update an existing todo item by ID
+app.put('/todos/:id', (req, res) => {
+  fs.readFile(jsonPath, "utf8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    const todoIndex = findIndex(todos, parseInt(req.params.id));
+    if (todoIndex === -1) {
+      res.status(404).json({ status:false, message: 'Todo not found'});
+    }
+    else {
+      const updatedTodo = {
+        id: todos[todoIndex].id,
+        title: req.body.title,
+        description: req.body.description
+      };
+      todos[todoIndex] = updatedTodo;
+      fs.writeFile(jsonPath, JSON.stringify(todos), (err) => {
+        if (err) res.status(500).json({ status:false, message: 'Something went wrong'});
+        res.status(200).json({status:true, todo:updatedTodo});
+      });
+    }
+  });
+});
+
+// Remove an existing todo item by ID
+function removeAtIndex(arr, index) {
+  let newArray = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (i !== index) newArray.push(arr[i]);
+  }
+  return newArray;
+}
+
+// Delete a todo item by ID
+app.delete('/todos/:id', (req, res) => {
+  fs.readFile(jsonPath, "utf8", (err, data) => {
+    if(err) res.status(500).json({ status:false, message: 'Something went wrong'});
+    let todos = JSON.parse(data);
+    const todoIndex = findIndex(todos, parseInt(req.params.id));
+    if(todoIndex == -1) {
+      res.status(404).json({ status:false, message: 'Todo not found'});
+    }
+    else {
+      todos = removeAtIndex(todos, todoIndex);
+      fs.writeFile(jsonPath, JSON.stringify(todos), (err) => {
+        if (err) res.status(500).json({ status:false, message: 'Something went wrong'});
+        res.status(200).send({status:true, message: 'Todo item deleted successfully'});
+      });
+    }
+  });
+})
+
+app.get('*', (req, res) => {
+  res.status(404).json({ status:false, message: 'Page not found'});
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
 
 module.exports = app;
