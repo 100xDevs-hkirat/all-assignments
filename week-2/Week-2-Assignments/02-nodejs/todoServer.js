@@ -39,11 +39,102 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
+const fs = require('fs');
 const express = require('express');
-const bodyParser = require('body-parser');
-
 const app = express();
+const PORT = 3000;
 
+const cors = require('cors');
+app.use(cors());
+
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+
+let todos = [];
+
+fs.readFile('./files/todos.json', 'utf8', (err, data) => {
+  if (err) throw err;
+  todos = JSON.parse(data);
+});
+
+app.get('/todos', (req, res) => {
+  res.status(200).json(todos);
+});
+
+app.get('/todos/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const todo = todos.find((el) => id === el.id);
+
+  if (todo) {
+    res.status(200).json(todo);
+  } else {
+    res.status(404).json({
+      message: 'Error! todo not found',
+    });
+  }
+});
+
+app.post('/todos', (req, res) => {
+  const { title, description } = req.body;
+  const newTodo = {
+    id: Math.floor(Math.random() * 1000000),
+    title,
+    description,
+  };
+  todos.push(newTodo);
+
+  const updatedTodos = JSON.stringify(todos);
+
+  fs.writeFile('./files/todos.json', updatedTodos, (err) => {
+    if (err) res.status(401).json({ message: 'error, could not add todo' });
+    console.log('file saved');
+  });
+  res.status(201).json(newTodo);
+});
+
+app.put('/todos/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const todoIndex = todos.findIndex((el) => id === el.id);
+
+  if (todoIndex === -1) {
+    res.status(404).send('Todo not found');
+  } else {
+    todos[todoIndex] = { ...todos[todoIndex], ...req.body };
+
+    const updatedTodos = JSON.stringify(todos);
+    fs.writeFile('./files/todos.json', updatedTodos, (err) => {
+      if (err) res.status(401).json({ message: 'error, could not add todo' });
+      console.log('file saved');
+    });
+    res.json(todos[todoIndex]);
+  }
+});
+
+app.delete('/todos/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const todoIndex = todos.findIndex((el) => id === el.id);
+
+  if (todoIndex === -1) {
+    res.status(404).send('Todo not found');
+  } else {
+    todos.splice(todoIndex, 1);
+    const updatedTodos = JSON.stringify(todos);
+    fs.writeFile('./files/todos.json', updatedTodos, (err) => {
+      if (err) res.status(401).json({ message: 'error, could not add todo' });
+      console.log('file saved');
+    });
+    res.status(200).send(`${id} todo deleted`);
+  }
+});
+
+app.all('*', (req, res) => {
+  res.status(404).send();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on PORT ${PORT}`);
+});
 
 module.exports = app;
