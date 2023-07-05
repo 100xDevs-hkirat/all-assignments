@@ -1,0 +1,18 @@
+[
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688579758276
+  },
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688579770074
+  }
+]
