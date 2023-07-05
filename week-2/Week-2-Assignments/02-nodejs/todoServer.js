@@ -41,13 +41,15 @@
  */
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 
 const app = express();
 
 app.use(bodyParser.json());
-// app.listen(3000);
+app.use(cors());
+app.listen(3000, () => console.log("Server started on port 3000"));
 const todos = [];
 const TODO_DB = "./todoDB.json";
 
