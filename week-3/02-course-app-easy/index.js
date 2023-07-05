@@ -40,13 +40,14 @@ app.post("/admin/login", (req, res) => {
     username: req.headers.username,
     password: req.headers.password,
   };
-  console.log(req.headers.username);
   const index = ADMINS.findIndex((item) => item.username == cred.username);
   console.log(index);
   if (index != -1 && ADMINS[index].isAdmin) {
     if (ADMINS[index].password != cred.password) {
       return res.status(404).send("Invalid Password");
     } else {
+      const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
+      res.header("Authorization", `Bearer ${token}`);
       res.status(200).send("Admin logged successfully ");
     }
   } else {
@@ -56,6 +57,28 @@ app.post("/admin/login", (req, res) => {
 
 app.post("/admin/courses", (req, res) => {
   // logic to create a course
+  const detail = {
+    id: Math.random(1000) * 1000,
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.title,
+    published: req.body.publish,
+  };
+  const inToken = req.headers.authorization.split(" ")[1];
+  const token = jwt.verify(inToken, Secret_key);
+  console.log(token.username);
+  if (token) {
+    const ind = ADMINS.findIndex((item) => item.username == token.username);
+    console.log(ind);
+    if (ind != -1 && ADMINS[ind].isAdmin) {
+      COURSES.push(detail);
+      res.status(200).send("Course successfully addedd");
+    } else {
+      res.status(404).send("sorry Only admin can create the course");
+    }
+  } else {
+    res.status(404).send("Invalid Authentication : Unauthorixed token value");
+  }
 });
 
 app.put("/admin/courses/:courseId", (req, res) => {
