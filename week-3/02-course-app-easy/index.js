@@ -6,13 +6,33 @@ app.use(express.json());
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
+// function authenication(req, res, next) {
+//   let admin = ADMINS.find((a, b) => a.email === req.email && b.password === req.password) 
 
+// }
 // Admin routes
+
+
+app.get('/details', (req, res) => {
+  if(ADMINS.length) {
+    res.json({ADMINS})
+    console.log(ADMINS)
+  } else {
+    return res.status(401).send("Unauthorized");
+  }
+})
+
 app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
+  const admin = req.body;
+  if (ADMINS.find((a) => a.email === admin.email)) {
+    res.json({ message: 'Admin already exists' });
+  } else {
+    ADMINS.push(admin);
+    res.json({ message: "Admin entered successfully"});
+  }
 });
 
-app.post('/admin/login', (req, res) => {
+app.post('/admin/login',  (req, res) => {
   // logic to log in admin
 });
 
