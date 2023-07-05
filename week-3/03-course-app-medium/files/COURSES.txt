@@ -1,0 +1,5 @@
+[{"title":"course title1","description":"course description","price":100,"imageLink":"https://linktoimage.com","published":true,"courseId":1},
+{"title":"course title2","description":"course description","price":200,"imageLink":"https://linktoimage.com","published":false,"courseId":2},
+{"title":"course title3","description":"course description","price":300,"imageLink":"https://linktoimage.com","published":false,"courseId":3},
+{"title":"course title4","description":"course description","price":400,"imageLink":"https://linktoimage.com","published":false,"courseId":4},
+{"title":"course title5","description":"course description","price":500,"imageLink":"https://linktoimage.com","published":true,"courseId":5}]
