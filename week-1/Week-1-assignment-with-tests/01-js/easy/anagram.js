@@ -8,7 +8,25 @@
 */
 
 function isAnagram(str1, str2) {
+  if(str1.length !== str2.length){
+   return "String are not anagram";
+  }
 
+  let asc1=0, asc2=0;
+  
+  for( let i of str1){
+    asc1 = asc1+ i.charCodeAt(0);
+  }
+  for( let i of str2){
+    asc2 = asc2+ i.charCodeAt(0);
+  }
+
+  if(asc2 === asc1){
+    return "String are anagram";
+  }
+
+ return "String are not anagram";
 }
+console.log(isAnagram("lion","nkol"));
 
 module.exports = isAnagram;

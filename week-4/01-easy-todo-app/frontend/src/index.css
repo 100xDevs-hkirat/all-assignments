@@ -1,0 +1,129 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+header { 
+    background-color: #0fa3b1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4rem;
+
+}
+h1{
+    color: #edf6f9 ;
+    font-weight: 600;
+
+}
+
+form {
+    position: relative;
+    width: 480px;
+    margin: 2rem auto 1rem auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 1px 5px 1px rgb(62, 145, 139);
+}
+form input {
+    width: 100%;
+    border: none;
+    padding: 5px 10px;
+    outline: none;
+    font-size: 1.3rem;
+    border-bottom: 1px rgba(211, 208, 208, 0.5) solid ;
+}
+
+.description{
+  width: 100%;
+  border: none;
+  padding: 4px 10px;
+  outline: none;
+  font-size: 1rem;
+  font-family: inherit;
+  height: 4rem;
+}
+
+form button {
+    position: absolute;
+    border-radius: 2rem;
+    width: 5rem;
+    bottom: 5px;
+    right: 5px;
+    outline: none;
+    border: none;
+    height: 2rem;
+    background-color: #bbd0ff;
+}
+main {
+    display: flex;
+    flex-wrap: wrap;
+}
+.content {
+    background-color: rgb(164, 228, 206);
+    margin: 1rem 1rem;
+    display: flex;
+    width: 15rem;
+    border-radius: 10px;
+    flex-direction: column;
+    padding: 5px 5px;
+    box-shadow: 0 2px 5px #ccc;
+    
+
+}
+
+.content h2 {
+    font-size: 1.5rem;
+    color: rgb(173, 161, 161);
+    padding-bottom: .5rem;
+    margin: 0 auto;
+    color: #006d77;
+    font-family: 'Roboto mono', sans-serif;
+}
+.content h3 {
+    font-size: 1rem;
+    padding: 0 0 1rem 0;
+    font-family: 'Roboto mono', sans-serif;
+    color: #0fa3b1;
+}
+
+.btn-div{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.btn-div button {
+    width: 50%;
+    height: 1.8rem;
+    margin: 2px 2px ;
+    border-radius: 1rem;
+    background-color: #f1f2f7;
+}
+.edit {
+    border: 2px solid green;
+
+}
+.delete {
+border: 2px solid red;
+}
+
+.content input {
+    height: 2rem;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 5px;
+    padding: 0 0 0 5px ;
+    color: #0fa3b1;
+    outline: none;
+}
+button:hover {
+    background-color: #b1c5c7;
+}
