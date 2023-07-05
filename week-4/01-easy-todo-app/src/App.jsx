@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:4000/todos')
@@ -14,26 +15,47 @@ function App() {
   }, []);
 
   const addTodo = () => {
-    console.log('Add clicked');
+    console.log('Add clicked' + todo);
+    fetch('http://localhost:4000/todos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: todo,
+        description: todo,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => console.log(result));
   };
 
-  const removeTodo = () => {
+  const removeTodo = (id) => {
     console.log('Remove clicked');
+    fetch(`http://localhost:4000/todos/${id}`, {
+      method: 'DELETE',
+    }).then((res) => console.log(res));
+  };
+
+  const handleInputChange = (event) => {
+    setTodo(event.target.value);
   };
   return (
     <>
       <div>
         <h1>Easy Todo App</h1>
-        <input type='text' />
-        <button onClick={addTodo}>Add</button>
+        <input type='text' onChange={handleInputChange} />
+        <button onClick={addTodo} disabled={todo === ''}>
+          Add
+        </button>
       </div>
       {todos.map((todo) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }} key={todo.id}>
           <div>
             <h3>{todo.title}</h3>
             <p>{todo.description}</p>
           </div>
-          <button onClick={removeTodo}>x</button>
+          <button onClick={() => removeTodo(todo.id)}>x</button>
         </div>
       ))}
     </>
