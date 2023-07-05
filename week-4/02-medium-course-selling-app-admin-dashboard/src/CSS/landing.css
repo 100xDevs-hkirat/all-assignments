@@ -1,0 +1,56 @@
+.landingContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.landing{
+    padding-top: 10rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.landingLinks{
+    padding: 30px;
+    display: flex;
+   
+
+
+}
+
+.landingLogin{
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+    text-align: center;
+    background-color: rgb(86, 191, 191);
+    border-radius: 20px;
+    
+}
+
+.landingRegister{
+    color: black;
+    padding: 10px;
+
+    margin-right: 1rem;
+    text-decoration: none;
+    text-align: center;
+    background-color: rgb(86, 191, 191);
+    border-radius: 20px;
+}
+
+.landingRegister:hover{
+
+    border: 1px solid rgb(86, 191, 191);
+    background-color: black;
+    color: rgb(86, 191, 191);
+}
+
+.landingLogin:hover{
+
+    border: 1px solid rgb(86, 191, 191);
+    background-color: black;
+    color: rgb(86, 191, 191);
+}

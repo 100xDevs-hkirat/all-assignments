@@ -1,0 +1,17 @@
+.courses{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5rem;
+}
+
+
+.coursesHeading{
+    padding: 20px;
+}
+
+.coursesButton{
+
+    margin-right: 1rem;
+}
