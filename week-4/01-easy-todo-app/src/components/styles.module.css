@@ -1,0 +1,19 @@
+.todoCard {
+    border: 1px solid black;
+    display: flex;
+    width: 95%;
+    padding: 1%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2%;
+    background-color: rgb(174, 253, 227);
+    
+}
+.title {
+    font-size: 2em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.todoCard div {
+    padding: 0 2%;
+}
