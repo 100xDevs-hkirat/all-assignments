@@ -30,26 +30,37 @@ app.use((req, res, next) => {
 })
 
 app.get('/files', (req, res) => {
-  const files = fs.readdirSync('./files/');
-  res.status(200).json({status:true, files:files});
-});
+  try {
 
-app.listen(3000, () => {
-  console.log('File server listening on port 3000');
+    fs.readdir('./files/', (err, files) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(files);
+      }
+    });
+    
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 app.get('/file/:filename', (req, res) => {
   const filename = req.params.filename;
   fs.readFile('./files/'+filename, "utf8", (err, data) => {
     if (err) 
-      res.status(404).json({status:false, message:'File not found'});
+      res.status(404).send('File not found');
     else
-      res.json({status:true, data:data});
+      res.send(data);
   });
 });
 
 app.get('*', (req, res) => {
-  res.status(404).json({status:false, message:'Invalid route'});
+  res.status(404).send('Route not found');
 });
+
+// app.listen(3000, () => {
+//   console.log('File server listening on port 3000');
+// });
 
 module.exports = app;

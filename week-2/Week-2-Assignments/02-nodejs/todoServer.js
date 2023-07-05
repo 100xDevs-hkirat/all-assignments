@@ -65,7 +65,7 @@ app.use((req, res, next) => {
 app.get('/todos', (req, res) => {
   fs.readFile(jsonPath, "utf8", (err, data) => {
     if (err) throw err;
-    res.json({status:true, data:JSON.parse(data)});
+    res.json(JSON.parse(data));
   });
   
 });
@@ -87,7 +87,7 @@ app.get('/todos/:id', (req, res) => {
     if (todoIndex === -1) {
       res.status(404).json({ status:false, message: 'Todo not found'});
     } else {
-      res.json( {status:true, data:todos[todoIndex]});
+      res.json(todos[todoIndex]);
     }
   });
 });
@@ -105,7 +105,7 @@ app.post('/todos', (req, res) => {
     todos.push(newTodo);
     fs.writeFile(jsonPath, JSON.stringify(todos), (err) => {
       if (err) throw err;
-      res.status(201).json({status:true, todo:newTodo});
+      res.status(201).json(newTodo);
     });
   });
 });
@@ -166,9 +166,9 @@ app.get('*', (req, res) => {
   res.status(404).json({ status:false, message: 'Page not found'});
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-});
+// // Start the server
+// app.listen(3000, () => {
+//   console.log('Server listening on port 3000');
+// });
 
 module.exports = app;
