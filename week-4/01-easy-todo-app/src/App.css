@@ -68,17 +68,18 @@ body {
 }
 
 .todo-item:first-child {
-    border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
 }
 
 .todo-item:last-child {
-    border-radius: 0 0 5px 5px;
-    border-bottom: none;
+  border-radius: 0 0 5px 5px;
+  border-bottom: none;
 }
 
 .todo-title {
   flex-grow: 1;
   letter-spacing: 0.1rem;
+  font-size: small;
 }
 
 .todo-complete {
