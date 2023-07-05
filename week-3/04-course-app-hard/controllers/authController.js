@@ -18,6 +18,27 @@ const createSendToken = (user, statusCode, message, res) => {
   });
 };
 
+const adminData = {
+  name: 'Admin',
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+  role: 'admin',
+};
+
+exports.insertAdmin = async () => {
+  try {
+    const admin = await User.findOne({ email: process.env.ADMIN_EMAIL });
+    if (!admin) {
+      await User.create(adminData);
+      console.log('Admin added by seeder');
+    } else {
+      console.log('Admin already registered');
+    }
+  } catch (err) {
+    console.log('Error in seeder', err.message);
+  }
+};
+
 exports.signup = async (req, res) => {
   const { email, password, ...rest } = req.body;
   try {
@@ -33,7 +54,11 @@ exports.signup = async (req, res) => {
 
 // will not allow user to add other properties such as 'role'
 exports.userSignup = (req, res, next) => {
-  req.body = { email: req.body.email, password: req.body.password };
+  req.body = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+  };
   next();
 };
 
