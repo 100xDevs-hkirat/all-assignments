@@ -6,7 +6,8 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [completed, setCompleted] = useState(false);
   const [title, setTitle] = useState("");
-  axios.defaults.baseURL = "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_URL;
+  axios.defaults.baseURL = baseUrl;
 
   const createTodo = (e) => {
     e.preventDefault();
