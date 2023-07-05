@@ -9,7 +9,22 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  return [];
+  const categoryWiseExpanse = transactions.reduce((expanse, transaction) => {
+    const category = transaction.category;
+    const price = transaction.price;
+
+    if (!expanse[category]) expanse[category] = 0;
+
+    expanse[category] += price;
+    return expanse;
+  }, {});
+
+  return Object.keys(categoryWiseExpanse).map((category) => {
+    return {
+      category,
+      totalSpent: categoryWiseExpanse[category],
+    };
+  });
 }
 
 module.exports = calculateTotalSpentByCategory;
