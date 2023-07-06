@@ -39,7 +39,7 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault()
-    if(todos.title.length===0 || todos.descreption.length ===0){
+    if (todos.title.length === 0 || todos.descreption.length === 0) {
       alert("title or discreption is empty")
       return;
     }
@@ -59,23 +59,23 @@ function App() {
     <>
       <div className="container">
         <h1>Add Todo</h1>
-          <h3>Todo Title</h3>
-          <input
-            type="text"
-            name="title"
-            onChange={handleChange}
-            value={todos.title} 
-          />
-          <h3>Todo description</h3>
-          <input
-            type="text"
-            name="descreption"
-            onChange={handleChange}
-            value={todos.descreption}
-          />
-        <button onClick={handleSubmit}  className="input">submit</button>
+        <h3>Todo Title</h3>
+        <input
+          type="text"
+          name="title"
+          onChange={handleChange}
+          value={todos.title}
+        />
+        <h3>Todo description</h3>
+        <input
+          type="text"
+          name="descreption"
+          onChange={handleChange}
+          value={todos.descreption}
+        />
+        <button onClick={handleSubmit} className="input">submit</button>
 
-        
+
         <h1>Task To Be Done</h1>
         <div className="todo--container">
           {allTodos.map(ele => <Todo todoItem={ele} remove={remove} />)}

@@ -1,16 +1,73 @@
+import axios from "axios";
 import React from "react";
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
-    const [email, setEmail] = React.useState("");
+    const useLocalStorage = (storageKey, fallbackState) => {
+        const [value, setValue] = React.useState(
+            (localStorage.getItem(storageKey) && JSON.parse(localStorage.getItem(storageKey))) ?? fallbackState
+        );
+        React.useEffect(() => {
+            localStorage.setItem(storageKey, JSON.stringify(value));
+        }, [value, setValue]);
+        return [value, setValue];
+    };
 
-    return <div>
-        <h1>Register to the website</h1>
-        <br/>
-        <input type={"text"} onChange={e => setEmail(e.target.value)} />
-        <br/>
-        Already a user? <a href="/login">Login</a>
-    </div>
+    const [auth, setAuth] = useLocalStorage("auth", "");
+
+    const [userInput, setUserInput] = React.useState({
+        email: "",
+        password: ""
+    });
+
+    function handleChange(e) {
+        const { type, checked, name, value } = e.target
+        setUserInput((prev) => {
+            return {
+                ...prev,
+                [name]: type === checked ? checked : value
+            }
+        })
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+        if (userInput.email.length === 0 || userInput.password.length === 0) {
+            alert("email or password is empty")
+            return;
+        }
+        const body = {
+            "username": userInput.email,
+            "password": userInput.password
+        }
+        axios.post("http://localhost:3000/admin/signup", body).then((res) => {
+            setAuth(res.data.token)
+        })
+    }
+
+    return (
+        <div className="container">
+            <h1>Register to the website</h1>
+            <h3>Email</h3>
+            <input
+                type="text"
+                name="email"
+                onChange={handleChange}
+                value={userInput.email}
+            />
+            <h3>Password</h3>
+            <input
+                type="text"
+                name="password"
+                onChange={handleChange}
+                value={userInput.password}
+            />
+            <br />
+            <button onClick={handleSubmit} className="input">submit</button>
+            <br />
+            Already a user? <a href="/login">Login</a>
+        </div>
+    )
 }
 
 export default Register;
