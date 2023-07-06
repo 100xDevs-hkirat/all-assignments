@@ -1,0 +1,25 @@
+.landing{
+    padding: 20px;
+    padding-top: 40px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.landingHeading{
+
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 40px;
+
+}
+.landingTable{
+
+    
+
+}
+
+.tableHeading{
+    font-size: 1.2rem;
+}
