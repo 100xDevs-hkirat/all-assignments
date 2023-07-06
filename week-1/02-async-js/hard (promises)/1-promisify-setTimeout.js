@@ -3,4 +3,9 @@
 */
 
 function wait(n) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("promise served, request resolved");
+        },n*1000)
+    });
 }
