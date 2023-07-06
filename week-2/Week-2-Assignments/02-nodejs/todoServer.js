@@ -39,11 +39,79 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.use(bodyParser.json());
+
+const todos = [];
+
+app.get("/todos", (res, req) => {
+  res.json(todos);
+});
+
+app.get("/todos/:id", (req, res) => {
+  const Id = req.params.id;
+  const specificTodo = todos.find((todo) => todo.id === Id);
+  if (specificTodo) {
+    const { title, description } = specificTodo;
+    res.status(200).json({ title, description });
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.post("/todos", (res, req) => {
+  const newTodo = {
+    id: Math.floor(Math.random() * 10000),
+    title: req.body.title,
+    description: req.body.description,
+    completed: false,
+  };
+  todos.push(newTodo);
+  res.json(newTodo);
+});
+
+app.put("/todos/:id", (req, res) => {
+  const Id = req.params.id;
+
+  const updatebleTodo = todos.find((item) => item.id === Id);
+  if (!updatebleTodo) {
+    res.status(404);
+  }
+  todos = todos.map((item) => {
+    if (item.id == Id) {
+      return {
+        id: Id,
+        title: req.body.title,
+        completed: true,
+      };
+    }
+    return item;
+  });
+  res.json(updatebleTodo);
+});
+
+app.delete("/todos/:id", (res, req) => {
+  const todoId = req.params.id;
+  dltTodo = todos.findIndex((todo) => todo.id === todoId);
+  if (dltTodo == -1) {
+    res.status(404);
+  } else {
+    todos.splice(dltTodo, 1);
+    res.status(200).send();
+  }
+});
+// for all other routes, return 404
+app.use((req, res, next) => {
+  res.status(404).send();
+});
+
+app.listen(3000, () => {
+    console.log('Server is listening on port 3000');
+  });
+
 
 module.exports = app;
