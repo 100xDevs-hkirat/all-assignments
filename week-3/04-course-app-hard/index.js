@@ -27,7 +27,7 @@ let USERS = mongoose.model("User", userSchema);
 let COURSES = mongoose.model("Courses", courseSchema);
 
 mongoose.connect(
-  "mongodb+srv://asbar03kk:IF9i1WWyT9f4T8zO@cluster0.gzhni69.mongodb.net/",
+  "mongodb+srv://asbar03kk:@cluster0.gzhni69.mongodb.net/",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
