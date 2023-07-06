@@ -79,7 +79,6 @@ function App() {
 }
 
 function Todo({ todo, removeTodo }) {
-  // Add a delete button here so user can delete a TODO.
   return (
     <div className='card my-1'>
       <div className='card-body'>
