@@ -23,7 +23,6 @@ RUN apt-get update -qq && \
 # Install node modules
 COPY --link package-lock.json package.json ./
 RUN npm ci --include=dev
-
 # Copy application code
 COPY --link . .
 
@@ -36,6 +35,7 @@ FROM base
 
 # Copy built application
 COPY --from=build /app /app
+RUN npx prisma generate
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
