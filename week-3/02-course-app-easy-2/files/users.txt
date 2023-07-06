@@ -1,0 +1,1 @@
+[{"username":"user1","password":"pass","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwicGFzc3dvcmQiOiJwYXNzIiwiaWF0IjoxNjg4MzE2MDI5LCJleHAiOjE2ODgzMTk2Mjl9.Z6uJGtINLk6RveWmyeiA-lpqv92cy8lKmd78qBvJnu4"}]

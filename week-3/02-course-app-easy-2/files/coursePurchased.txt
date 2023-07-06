@@ -1,0 +1,1 @@
+[{"title":"course title","description":"course description","price":100,"imageLink":"https://linktoimage.com","published":true,"id":1}]
