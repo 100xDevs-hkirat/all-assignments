@@ -18,6 +18,7 @@ function createDomElements() {
       // If it exists, update it
       existingChild.children[0].innerHTML = item.title;
       existingChild.children[1].innerHTML = item.description;
+      existingChild.children[2].innerHTML = "Delete"+Math.floor(Math.random()*10+1);
       // Remove it from the currentChildren array
       currentChildren = currentChildren.filter(function(child) {
         return child !== existingChild;
@@ -35,7 +36,7 @@ function createDomElements() {
       grandChildElement2.innerHTML = item.description;
 
       var grandChildElement3 = document.createElement("button");
-      grandChildElement3.innerHTML = "Delete";
+      grandChildElement3.innerHTML = "Delete"+Math.floor(Math.random()*10+1);
       grandChildElement3.setAttribute("onclick", "deleteTodo(" + item.id + ")");
 
       childElement.appendChild(grandChildElement1);
@@ -77,10 +78,10 @@ window.setInterval(() => {
     }
   
     updateVirtualDom(todos);
-  }, 5000);
+  }, 1000);
 
 window.setInterval(() => {
     createDomElements();
-}, 1000);
+}, 5000);
 
 
