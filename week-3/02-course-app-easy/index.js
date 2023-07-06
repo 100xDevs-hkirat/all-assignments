@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json());
 
 let ADMINS = [];
@@ -66,10 +68,8 @@ app.post("/admin/courses", (req, res) => {
   };
   const inToken = req.headers.authorization.split(" ")[1];
   const token = jwt.verify(inToken, Secret_key);
-  console.log(token.username);
   if (token) {
     const ind = ADMINS.findIndex((item) => item.username == token.username);
-    console.log(ind);
     if (ind != -1 && ADMINS[ind].isAdmin) {
       COURSES.push(detail);
       res.status(200).send("Course successfully addedd");
@@ -83,10 +83,42 @@ app.post("/admin/courses", (req, res) => {
 
 app.put("/admin/courses/:courseId", (req, res) => {
   // logic to edit a course
+  const index = COURSES.findIndex((item) => item.id == req.params.id);
+  const inToken = req.headers.authorization.split(" ")[1];
+  const token = jwt.verify(inToken, Secret_key);
+  const updateCourse = {
+    id: req.params.id,
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+  };
+  if (token) {
+    const ind = ADMINS.findIndex((item) => item.username == token.username);
+    if (ind != -1 && ADMINS[ind].isAdmin) {
+      COURSES[index] = updateCourse;
+      return res.status(200).send("Course upated successfully");
+    } else {
+      return res.status(404).send("Only admin can update the course");
+    }
+  } else {
+    return res.status(404).send("Invalid token value");
+  }
 });
 
 app.get("/admin/courses", (req, res) => {
-  // logic to get all courses
+  // logic to get all course
+  const inToken = req.headers.authorization.split(" ")[1];
+  const token = jwt.verify(inToken, Secret_key);
+  if (token) {
+    const ind = ADMINS.findIndex((item) => item.username == token.username);
+    if (ind != -1 && ADMINS[ind].isAdmin) {
+      return res.status(200).send(COURSES);
+    } else {
+      return res.status(404).send("Only admin can update the course");
+    }
+  } else {
+    return res.status(404).send("Invalid token value");
+  }
 });
 
 // User routes
