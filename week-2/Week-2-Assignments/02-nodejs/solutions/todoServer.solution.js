@@ -41,9 +41,11 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
-
+;
+app.use(cors());
 app.use(bodyParser.json());
 
 let todos = [];
@@ -62,13 +64,20 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.post('/todos', (req, res) => {
-  const newTodo = {
+	console.log("req");
+  try {const newTodo = {
     id: Math.floor(Math.random() * 1000000), // unique random id
     title: req.body.title,
     description: req.body.description
   };
+	console.log(req.body);
+	console.log(newTodo);
   todos.push(newTodo);
   res.status(201).json(newTodo);
+  } catch (err) {
+	  console.log(err);
+	  res.sendStatus(500);
+ }
 });
 
 app.put('/todos/:id', (req, res) => {
@@ -97,4 +106,7 @@ app.use((req, res, next) => {
   res.status(404).send();
 });
 
-module.exports = app;
+app.listen(3000, () => {
+	console.log("http://localhost:3000");
+});
+//module.exports = app;
