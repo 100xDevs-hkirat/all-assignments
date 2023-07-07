@@ -5,7 +5,9 @@ const {v4: uuidv4} = require('uuid');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const secretKey = 'Test@12345';
+const cors = require('cors');
 app.use(express.json());
+app.use(cors());
 app.use(bodyParser.json());
 
 let ADMINS, USERS, COURSES;
@@ -112,7 +114,7 @@ app.post('/admin/login', async (req, res) => {
   const {username, password} = req.headers;
   const valid__credentials = await ADMINS.findOne({username, password});
   valid__credentials && res.status(200).send({ message: 'Logged in successfully', token: create_token({username, role:'admin'})});
-  ! valid__credentials && res.status(403).json({message: "Invalid username or password"});
+  ! valid__credentials && res.status(401).json({message: "Invalid username or password"});
 });
 
 app.post('/admin/courses', async (req, res) => {
@@ -130,6 +132,17 @@ app.put('/admin/courses/:courseId', async (req, res) => {
     const courseId = req.params['courseId'];
   let course_found = await COURSES.findByIdAndUpdate(courseId, req.body, {new: true});
   course_found ? res.status(200).json({message: "Course updatd successfully"}) :res.status(404).json({message:'Invalid course id. Course not found'});
+  }catch(err){
+    res.status(404).json({message:'Invalid course id. Course not found'});
+  }
+});
+
+app.get('/admin/courses/:courseId', async (req, res) => {
+  // logic to edit a course
+  try{
+    const courseId = req.params['courseId'];
+  let course_found = await COURSES.findById(courseId);
+  course_found ? res.status(200).json(course_found) :res.status(404).json({message:'Invalid course id. Course not found'});
   }catch(err){
     res.status(404).json({message:'Invalid course id. Course not found'});
   }
@@ -177,7 +190,7 @@ app.post('/users/login', async (req, res) => {
   const {username, password} = req.headers;
   const valid__credentials = await USERS.findOne({username, password});
   valid__credentials && res.status(200).send({ message: 'Logged in successfully', token: create_token({username, role:'user'})});
-  ! valid__credentials && res.status(403).json({message: "Invalid username or password"});
+  ! valid__credentials && res.status(401).json({message: "Invalid username or password"});
 });
 
 app.get('/users/courses', async (req, res) => {
@@ -210,6 +223,10 @@ app.get('/users/purchasedCourses', async (req, res) => {
   const loggedInUser = await USERS.findOne({username}).populate('purchasedCourse');
   loggedInUser && res.status(200).json({purchasedCourses: loggedInUser.purchasedCourse || []});
   ! loggedInUser && res.status(403).json({message: 'User not found'});
+});
+
+app.get('/tokenValidator', async (req, res) => {
+  res.status(200).json({message: "Valid"});
 });
 
 app.listen(3000, () => {

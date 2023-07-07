@@ -12,29 +12,59 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from './Copyright';
 import axios from '../config/requestLibrary';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 let resp = null;
 const defaultTheme = createTheme();
 
-export default function CreateCourse() {
+const fetch_course_details = (courseId) => {
+    const [course, setCourseDetails] = React.useState({});
+  
+    React.useEffect(() => {
+      const fetchCourseDetails = async () => {
+        try {
+          const response = await axios.get(`/admin/courses/${courseId}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          });
+          if (response.status === 200) {
+            setCourseDetails(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching course details:', error);
+        }
+      };
+  
+      fetchCourseDetails();
+    }, [courseId]);
+  
+    // Return the course details or perform any other logic
+    return course;
+  }
+
+export default function UpdateCourse() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const courseId = location.pathname.split('/')[2];
+  const course = fetch_course_details(courseId);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    if(! /^\d*\.?\d+$/.test(data.get('price'))) alert('Prrice should contain only numbers');
+    console.log(data);
+    if(data.length) alert("You have not changed any detail.");
+    //else if(! /^\d*\.?\d+$/.test(data.get('price'))) alert('Prrice should contain only numbers');
     else{
     try{
       const response = await axios({
-        method: 'post',
-        url: '/admin/courses',
+        method: 'put',
+        url: `/admin/courses/${courseId}`,
         data:{
-          'title': data.get('title'),
-          'description': data.get('description'),
-          'price': data.get('price'),
-          'imageLink': data.get('imageLink'),
-          'published': data.get('published')
+          'title': data.get('title') || course.title,
+          'description': data.get('description') || course.description,
+          'price': data.get('price') || course.price,
+          'published': data.get('published') || course.published
       },
       headers:{
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -50,7 +80,7 @@ export default function CreateCourse() {
     }
     }
   };
-
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -64,8 +94,11 @@ export default function CreateCourse() {
           }}
         >
           
-          <Typography component="h1" variant="h5">
-            Please fill all the fields
+          <Typography component="h1" variant="h4">
+            Course Details
+          </Typography>
+          <Typography component="h5" variant="h6">
+            *Please update any details if requires.
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -74,9 +107,9 @@ export default function CreateCourse() {
                   required
                   fullWidth
                   id="title"
-                  label="Course Title"
                   name="title"
                   autoComplete="title"
+                  label={course.title}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -84,7 +117,7 @@ export default function CreateCourse() {
                   required
                   fullWidth
                   name="description"
-                  label="Description"
+                  label={course.description}
                   type="text"
                   id="description"
                   autoComplete="description"
@@ -95,21 +128,10 @@ export default function CreateCourse() {
                   required
                   fullWidth
                   name="price"
-                  label="Price"
+                  label={course.price}
                   type="number"
                   id="price"
                   autoComplete="price"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="imageLink"
-                  label="Paste course image url here"
-                  type="url"
-                  id="imageLink"
-                  autoComplete="imageLink"
                 />
               </Grid>
              <SelectComponent/>
@@ -148,9 +170,9 @@ export default function CreateCourse() {
         <InputLabel id="published">Ready to publish?</InputLabel>
         <Select
           labelId="published"
-          name="published"
           id="published"
-          label="Published"
+          name="published"
+          label={course.published}
           value={selectedValue}
           autoWidth={true}
           onChange={handleChange}
