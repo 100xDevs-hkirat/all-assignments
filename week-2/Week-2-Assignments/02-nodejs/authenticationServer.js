@@ -29,9 +29,82 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
+const { v4: uuidv4 } = require("uuid");
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+let userData = [];
+
+app.use(express.json());
+
+app.post("/signup", (req, res) => {
+  let newUser = {
+    username: req.body.username,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    id: uuidv4(),
+  };
+  const foundUser = userData.find(
+    (element) => element.username === newUser.username
+  );
+  if (foundUser) {
+    res.status(401).send({ error: "User already exist." });
+  } else {
+    userData.push(newUser);
+    res.send(200);
+  }
+});
+
+app.post("/login", (req, res) => {
+  let newUser = {
+    username: req.body.username,
+    password: req.body.password,
+  };
+
+  const isUserExist = userData.find(
+    (user) =>
+      user.username === newUser.username && user.password === newUser.password
+  );
+
+  if (isUserExist) {
+    res.json({
+      firstName: isUserExist.firstName,
+      lastName: isUserExist.lastName,
+    });
+  } else {
+    res.status(401).send("Unauthorized  the credentials are invalid.");
+  }
+});
+
+app.get("/data", (req, res) => {
+  let newUser = {
+    username: req.body.username,
+    password: req.body.password,
+  };
+
+  const userFound = userData.find(
+    (user) =>
+      user.username === newUser.username && user.password === newUser.password
+  );
+  if (!userFound) {
+    return res.status(401).json({ error: "Unauthorized access." });
+  }
+  const sentData = userData.map((user) => {
+    return {
+      id:user.id,
+      firstName: user.firstName,
+      lastName: user.lastName
+    }
+  });
+  res.status(200).json({ user: sentData });
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`The app is running at the port ${port}.`);
+});
 
 module.exports = app;
