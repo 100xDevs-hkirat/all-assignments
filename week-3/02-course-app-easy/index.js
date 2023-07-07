@@ -13,6 +13,42 @@ let COURSES = [];
 //    Input: { username: 'admin', password: 'pass' }
 //    Output: { message: 'Admin created successfully' }
 
+const adminAuth = (request, response, next)=>{
+
+  const {username, password} = request.headers;
+
+  const Admin = ADMINS.find((data)=> data.username === username && data.password === password);
+
+  if(Admin){
+    next();
+  }
+  else{
+    response.status(403).json({ message: 'Admin authentication failed' });
+  }
+
+};
+
+const userAuth = (request, response, next)=>{
+
+  const {username, password} = request.headers;
+
+  const User = USERS.find((data)=>{
+   if( data.username === username && data.password === password)
+    {
+      return data;
+    }
+  });
+
+  if(User){
+    request.user = User;
+    next();
+  }
+  else{
+    response.status(403).json({ message: 'User authentication failed' });
+  }
+
+};
+
 // Admin routes
 app.post('/admin/signup', (request, response) => {
   // logic to sign up admin
@@ -22,7 +58,7 @@ app.post('/admin/signup', (request, response) => {
       password : data.password,
   }
   ADMINS.push(obj);
-  response.send({ message: 'Admin created successfully' });
+  response.json({ message: 'Admin created successfully' });
 
 });
 
@@ -31,24 +67,11 @@ app.post('/admin/signup', (request, response) => {
 //    Input: Headers: { 'username': 'admin', 'password': 'pass' }
 //    Output: { message: 'Logged in successfully' }
 
-app.post('/admin/login', (request, response) => {
+app.post('/admin/login', adminAuth, (request, response) => {
   // logic to log in admin
-  var data = request.headers;
-
-  var username = data.username;
-  var password = data.password;
-
-  var isadmin = ADMINS.some(function(admin){
-    return admin.password === password && admin.username === username;
-  })
-
-  if(isadmin){
-    response.send({ message: 'Logged in successfully' });
-  }
-  else{
-    response.status(404).send({ message: 'Unauthorized user ' });
-  }
-
+  
+  response.json({ message: 'Logged in successfully' });
+  
 });
 
 // POST /admin/courses
@@ -57,34 +80,16 @@ app.post('/admin/login', (request, response) => {
 //    Input: Body: { title: 'course title', description: 'course description', price: 100, imageLink: 'https://linktoimage.com', published: true }
 //    Output: { message: 'Course created successfully', courseId: 1 }
 
-app.post('/admin/courses', (request, response) => {
+app.post('/admin/courses', adminAuth, (request, response) => {
   // logic to create a course
 
-  var data = request.headers;
   var courses_data = request.body;
 
-  var username = data.username;
-  var password = data.password;
+  console.log(courses_data);
 
-  var isadmin = ADMINS.some(function(admin){
-    return admin.password === password && admin.username === username;
-  })
-
-  if(isadmin){
-    var obj = {
-      id : COURSES.length + 1,
-      title : courses_data.title,
-      description : courses_data.description,
-      price : courses_data.price,
-      imageLink : courses_data.imageLink,
-      published : courses_data.published
-    }
-    COURSES.push(obj);
-    response.send({ message: 'Course created successfully', "courseId":  obj.id });
-  }
-  else{
-    response.status(404).send({ message: 'Unauthorized user ' });
-  }
+  courses_data.id = COURSES.length+1;
+  COURSES.push(courses_data);
+  response.send({ message: 'Course created successfully', "courseId":  courses_data.id });
 
 });
 
@@ -94,36 +99,21 @@ app.post('/admin/courses', (request, response) => {
 //    Input: Body { title: 'updated course title', description: 'updated course description', price: 100, imageLink: 'https://updatedlinktoimage.com', published: false }
 //    Output: { message: 'Course updated successfully' }
 
-app.put('/admin/courses/:courseId', (request, response) => {
+app.put('/admin/courses/:courseId', adminAuth, (request, response) => {
   // logic to edit a course
-  var data = request.headers;
-  var courseId = request.params;
+  var courseId = parseInt(request.params.courseId);
   var course_data = request.body;
 
-  var username = data.username;
-  var password = data.password;
-
-  var isadmin = ADMINS.some(function(admin){
-    return admin.password === password && admin.username === username;
-  });
-
-  if(isadmin){
-    COURSES.forEach((course)=>{
-      if(course.id == courseId){
-
-        course.title = course_data.title;
-        course.description = course_data.description;
-        course.price = course_data.price;
-        course.imageLink = course_data.imageLink;
-        course.published = course_data.published;
-        
-      }
-    });
-
-    response.send( { message: 'Course updated successfully' });
+  const c = COURSES.find((course)=>
+    course.id == courseId
+  );
+  console.log(c);
+  if(c){
+    Object.assign(c,course_data); // study about it
+    response.json( { message: 'Course updated successfully' });
   }
   else{
-    response.status(404).send({ message: 'Unauthorized user' });
+    response.status(404).json({ message: 'Course not found' });
   }
 
 });
@@ -136,25 +126,11 @@ app.put('/admin/courses/:courseId', (request, response) => {
 //    imageLink: 'https://linktoimage.com', published: true }, ... ] }
 
 
-app.get('/admin/courses', (request, response) => {
+app.get('/admin/courses', adminAuth, (request, response) => {
   // logic to get all courses
 
-  var data = request.headers;
-
-  var username = data.username;
-  var password = data.password;
-
-  var isadmin = ADMINS.some(function(admin){
-    return admin.password === password && admin.username === username;
-  });
-
-  if(isadmin){
-    response.status(200).json(COURSES);
-  }
-  else{
-    response.status(404).send({ message: 'Unauthorized user' });
-  }
-
+  response.status(200).json({ courses: COURSES });
+  
 });
 
 // User routes
@@ -174,7 +150,7 @@ app.post('/users/signup', (request, response) => {
       courses_bought : [],
   }
   USERS.push(obj);
-  response.send({ message: 'User created successfully' } );
+  response.json({ message: 'User created successfully' } );
 });
 
 
@@ -183,25 +159,11 @@ app.post('/users/signup', (request, response) => {
 //    Input: Headers: { 'username': 'user', 'password': 'pass' }
 //    Output: { message: 'Logged in successfully' }
 
-app.post('/users/login', (request, response) => {
+app.post('/users/login', userAuth, (request, response) => {
   // logic to log in user
-
-  var data = request.headers;
-
-  var username = data.username;
-  var password = data.password;
-
-  var isUser = USERS.some(function(user){
-    return user.password === password && user.username === username;
-  })
-
-  if(isUser){
-    response.send({ message: 'Logged in successfully' });
-  }
-  else{
-    response.status(404).send({ message: 'Unauthorized user ' });
-  }
-
+  
+  response.json({ message: 'Logged in successfully' });
+  
 });
 
 
@@ -210,25 +172,10 @@ app.post('/users/login', (request, response) => {
 //    Input: Headers: { 'username': 'admin', 'password': 'pass' }
 //    Output: { courses: [ { id: 1, title: 'course title', description: 'course description', price: 100, imageLink: 'https://linktoimage.com', published: true }, ... ] }
 
-app.get('/users/courses', (request, response) => {
+app.get('/users/courses', userAuth, (request, response) => {
   // logic to list all courses
-
-  var data = request.headers;
-
-  var username = data.username;
-  var password = data.password;
-
-  var isUser = USERS.some(function(user){
-    return user.password === password && user.username === username;
-  })
-
-  if(isUser){
-    response.status(200).json(COURSES);
-  }
-  else{
-    response.status(404).send({ message: 'Unauthorized user ' });
-  }
-
+  var filteredCourses = COURSES.filter(c => c.published); // check if published 
+  response.json({ courses: filteredCourses });
 });
 
 // POST /users/courses/:courseId
@@ -236,32 +183,22 @@ app.get('/users/courses', (request, response) => {
 //    Input: Headers: { 'username': 'admin', 'password': 'pass' }
 //    Output: { message: 'Course purchased successfully' }
 
-app.post('/users/courses/:courseId', (request, response) => {
+app.post('/users/courses/:courseId',userAuth, (request, response) => {
   // logic to purchase a course
-
-  var data = request.headers;
-
-  var courseId = request.params.courseId;
-
-  var username = data.username;
-  var password = data.password;
-
-  var isUser = USERS.some(function(user){
-    return user.password === password && user.username === username;
-  })
-
-  if(isUser){
+  var courseId = parseInt(request.params.courseId);
     
-    USERS.some(function(user){
-      if( user.password === password && user.username === username ){
-        user.courses_bought.push(courseId);
-      }
-    });
-    response.status(200).send({ message: 'Course purchased successfully' });
+  const Course_details = COURSES.find(c => c.id == courseId && c.published);
+  console.log(Course_details);
+  if(Course_details){
+    console.log(request.user);
+    request.user.courses_bought.push(courseId);
+    response.json({ message: 'Course purchased successfully' });
   }
   else{
-    response.status(404).send({ message: 'Unauthorized user ' });
+    response.status(404).json({ message: 'Course not found or not available' })
   }
+    
+  
 
 });
 
@@ -271,35 +208,19 @@ app.post('/users/courses/:courseId', (request, response) => {
 //    Output: { purchasedCourses: [ { id: 1, title: 'course title', description: 'course description', 
 //    price: 100, imageLink: 'https://linktoimage.com', published: true }, ... ] }
 
-app.get('/users/purchasedCourses', (request, response) => {
+app.get('/users/purchasedCourses',userAuth, (request, response) => {
   // logic to view purchased courses
 
-  var data = request.headers;
+ var purchasedCoursesids = request.user.courses_bought;
 
-  var username = data.username;
-  var password = data.password;
+ var purchasedCourses = [];
 
-  var purchasedCourses = [];
-
-  var isUser = USERS.some(function(user){
-    if( user.password === password && user.username === username){
-      purchasedCourses = user.courses_bought || [];
-      return true;
-    }
-    else{
-      return false;
-    }
-  });
-
-
-
-  if(isUser){
-    var sol = COURSES.filter( (course) => {purchasedCourses.includes(course.id)});
-    response.status(200).json(sol);
+ for(var i=0;i<COURSES.length;i++){
+  if(purchasedCoursesids.find(id => id == COURSES[i].id)){
+    purchasedCourses.push(COURSES[i]);
   }
-  else{
-    response.status(404).send({ message: 'Unauthorized user ' });
-  }
+ }
+ response.json({ purchasedCourses });
 });
 
 app.listen(3000, () => {
