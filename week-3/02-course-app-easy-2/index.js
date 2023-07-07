@@ -4,7 +4,9 @@ const bodyParser = require('body-parser')
 const fs = require('fs');
 const jwt = require("jsonwebtoken");
 const auth = require("./auth.js");
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -25,13 +27,13 @@ app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
   fs.readFile('./files/admin.txt', 'utf-8', (err, data) => {
     if (err) {
-      console.log(err);/*  */
+      console.log(err);
       return;
     }
     const ADMINS = JSON.parse(data);
 
     if (doesUsernameExist(ADMINS, req)) {
-      return res.status(404).send("username already  exist in our database, please try again with some other username");
+      return res.status(404).send({ message: "username already  exist in our database, please try again with some other username" });
     }
     const username = req.body.username;
     const password = req.body.password;
@@ -132,6 +134,19 @@ app.put('/admin/courses/:courseId', auth, (req, res) => {
 
 });
 
+app.get('/admin/courses/:courseId', auth, (req, res) => {
+  fs.readFile('./files/course.txt', 'utf-8', (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    const COURSES = JSON.parse(data);
+    const courseId = parseInt(req.params.courseId);
+    const requiredCourse = COURSES.filter(course => course.id === courseId );
+    res.status(200).send(requiredCourse);
+  })
+})
+
 app.get('/admin/courses', auth, (req, res) => {
   // logic to get all courses
   fs.readFile('./files/admin.txt', 'utf-8', (err, data) => {
@@ -210,20 +225,20 @@ app.get('/users/courses', auth, (req, res) => {
     if (err) {
       console.log(err);
       return;
-    }    
+    }
     const COURSES = fs.readFileSync('./files/course.txt', 'utf-8');
     return res.send(COURSES);
   })
 });
 
-app.post('/users/courses/:courseId', auth,(req, res) => {
+app.post('/users/courses/:courseId', auth, (req, res) => {
   // logic to purchase a course
   fs.readFile('./files/users.txt', 'utf-8', (err, data) => {
     if (err) {
       console.log(err);
       return;
     }
-   
+
     const COURSES = JSON.parse(fs.readFileSync('./files/course.txt', 'utf-8'));
     const courseId = parseInt(req.params.courseId);
 
@@ -241,14 +256,14 @@ app.post('/users/courses/:courseId', auth,(req, res) => {
 
 });
 
-app.get('/users/purchasedCourses', auth,(req, res) => {
+app.get('/users/purchasedCourses', auth, (req, res) => {
   // logic to view purchased courses
   fs.readFile('./files/users.txt', 'utf-8', (err, data) => {
     if (err) {
       console.log(err);
       return;
     }
-    
+
     let PURCHASED_COURSES = JSON.parse(fs.readFileSync('./files/coursePurchased.txt', 'utf-8'));
 
     res.send({ purchasedCourses: PURCHASED_COURSES })
