@@ -51,7 +51,8 @@ export default function MyCourses() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses.map((course, index) => (
+              {courses && courses.length > 0 ? 
+                courses.map((course, index) => (
                 <TableRow key={course.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell align="center">{course.title}</TableCell>
@@ -59,7 +60,7 @@ export default function MyCourses() {
                   <TableCell align="center">Rs.{course.price}</TableCell>
                  
                 </TableRow>
-              ))}
+              )): <div> There are no purchased courses</div>}
             </TableBody>
           </Table>
         </TableContainer>
