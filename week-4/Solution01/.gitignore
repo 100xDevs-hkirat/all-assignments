@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 
-package.json
-.eslintrc.cjs
-package-lock.json
+package.json*
+.eslintrc.cjs*
+package-lock.json*
