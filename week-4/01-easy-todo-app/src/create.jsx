@@ -45,17 +45,46 @@
 // using axios
 
 import { useState, useEffect } from "react";
+import axios from "axios";
 
-function createTodo() {
+function CreateTodo() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const addTodo = () => {
+    axios
+      .post("http://localhost:3000/todos", {
+        title: title,
+        description: description,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setTodos((prevTodos) => [...prevTodos, response.data]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div>
       <form onSubmit={addTodo}>
-        <input type="text" value={title} onChange={setTitle.target.value} />
+        <input
+          type="text"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
+        <input
+          type="text"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+        />
+        <button type="submit">Add</button>
       </form>
     </div>
   );
 }
+
+export default CreateTodo;
