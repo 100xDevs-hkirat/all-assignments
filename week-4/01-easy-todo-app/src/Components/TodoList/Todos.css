@@ -1,0 +1,22 @@
+.todos{
+    width: 800px;
+    /* height: 450px; */
+    border: 1px solid rgb(227, 227, 227);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border-radius: 12px;
+    padding:  16px;
+    margin: 14px auto;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    /* overflow-y: scroll; */
+}
+
+.not-found{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

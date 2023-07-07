@@ -1,0 +1,42 @@
+.form-todo {
+    width: 450px;
+    border: 1px solid rgb(227, 227, 227);
+    padding: 30px 44px;
+    border-radius: 14px;
+    margin: 12px auto;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 12px;
+    /* color: rgb(227, 227, 227); */
+    border: 1px solid lightgray;
+    box-sizing: border-box;
+    border-radius: 12px
+}
+
+.btn {
+    background-color: black;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 14px 32px;
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+
+}
+
+.title{
+    text-align: center;
+    margin-bottom: 18px;
+}

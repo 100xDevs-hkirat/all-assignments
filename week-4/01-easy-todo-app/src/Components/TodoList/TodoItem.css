@@ -1,0 +1,18 @@
+.todo-item{
+    border: 1px solid rgb(227, 227, 227);
+    display: flex;
+    justify-content: space-between;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+button {
+    background-color: black;
+    color: white;
+    font-size: 12px;
+    padding: 8px 24px;
+    border-radius: 14px;
+    cursor: pointer;
+    border: none;
+}
