@@ -32,7 +32,7 @@ const Admin = mongoose.model('Admin', adminSchema);
 const Course = mongoose.model('Course', courseSchema);
 
 mongoose.connect(
-  'mongodb+srv://amitalable:L0FmAENkzeZD1i5v@cluster0.cjmkesu.mongodb.net/',
+  'mongodb+srv://admin:password@cluster0.cjmkesu.mongodb.net/',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
