@@ -1,8 +1,7 @@
 //login logic
 function adminCallback(resp) {
-  resp.text().then((data) => {
-    console.log(JSON.stringify(data));
-  });
+  const authToken = resp.headers.get("Authorization");
+  console.log(authToken);
 }
 document.getElementById("loginform").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -15,7 +14,7 @@ document.getElementById("loginform").addEventListener("submit", (e) => {
   if (role == "admin") {
     fetch(adminUrl, {
       method: "POST",
-      body: JSON.stringify(data),
+      headers: data,
     }).then(adminCallback);
   }
 });

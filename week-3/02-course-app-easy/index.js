@@ -26,7 +26,7 @@ app.post("/admin/signup", (req, res) => {
     };
     const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
     res.header("Authorization", `Bearer ${token}`);
-    res.status(200).send("Admin Created successfulyy");
+    res.status(200).send(`Bearer ${token}`);
   } else {
     return res
       .status(401)
@@ -42,6 +42,7 @@ app.post("/admin/login", (req, res) => {
     username: req.headers.username,
     password: req.headers.password,
   };
+  console.log(JSON.stringify(cred));
   const index = ADMINS.findIndex((item) => item.username == cred.username);
   console.log(index);
   if (index != -1 && ADMINS[index].isAdmin) {
@@ -50,7 +51,7 @@ app.post("/admin/login", (req, res) => {
     } else {
       const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
       res.header("Authorization", `Bearer ${token}`);
-      res.status(200).send("Admin logged successfully ");
+      res.status(200).send("Admin login successfull");
     }
   } else {
     return res.status(404).send("Such Admin doesn't exist , please signup");
