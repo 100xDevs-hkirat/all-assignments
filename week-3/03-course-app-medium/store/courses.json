@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "title": "COURSE 2",
+    "description": "COURSE description 2",
+    "price": 100,
+    "imageLink": "https: //linktoimage.com",
+    "published": true,
+    "id": "10ef9a7d-6b4c-48cb-bbac-7f19138d319d",
+    "instructorId": "8e531c68-5730-4c83-af02-06ac370fc61e"
+  }
+]

@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "id": "3b3bcef8-2c27-41fe-a4d8-345c81e023ba",
+    "username": "user@gmail.com",
+    "password": "user",
+    "purchasedCourses": ["10ef9a7d-6b4c-48cb-bbac-7f19138d319d"]
+  }
+]
