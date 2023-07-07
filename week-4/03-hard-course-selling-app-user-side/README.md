@@ -15,4 +15,4 @@ Frontend Routes expected -
 
 By the end of this you should have two frontends - 
 1. One for the admin dashboard (02-medium-course-selling-app-admin-dashboard)
-2. One for the user side of the app (03-hard-course-selling-app-user-side
+2. One for the user side of the app (03-hard-course-selling-app-user-side)
