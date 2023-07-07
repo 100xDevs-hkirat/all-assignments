@@ -152,7 +152,7 @@ app.post("/users/signup", (req, res) => {
 
 app.post("/users/login", (req, res) => {
   // logic to log in user
-  const { username, password } = req.body;
+  const { username, password } = req.headers;
   const validUser = USERS.find(
     (user) => user.username === username && user.password === password
   );
