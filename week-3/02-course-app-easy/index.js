@@ -18,6 +18,22 @@ const findAdminDetails = (req, res, next) => {
   }
 };
 
+const findUserDetails = (req, res, next) => {
+  const { username, password } = req.headers;
+
+  const user = USERS.find(
+    (usr) => usr.username === username && usr.password === password
+  );
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.json({
+      message: "User not found",
+    });
+  }
+};
+
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
@@ -76,22 +92,45 @@ app.get("/admin/courses", findAdminDetails, (req, res) => {
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
+  const user = { ...req.body, purchasedCourses: [] };
+
+  USERS.push(user);
+  res.json({
+    message: "User created successfully",
+  });
 });
 
-app.post("/users/login", (req, res) => {
+app.post("/users/login", findUserDetails, (req, res) => {
   // logic to log in user
+  res.json({ message: "Logged in successfully", username: req.user.username });
 });
 
-app.get("/users/courses", (req, res) => {
+app.get("/users/courses", findUserDetails, (req, res) => {
   // logic to list all courses
+  res.json({ courses: COURSES.filter((course) => course.published === true) });
 });
 
-app.post("/users/courses/:courseId", (req, res) => {
+app.post("/users/courses/:courseId", findUserDetails, (req, res) => {
   // logic to purchase a course
+  const courseId = +req.params.courseId;
+  const course = COURSES.find(
+    (course) => course.id === courseId && course.published === true
+  );
+  if (course) {
+    req.user.purchasedCourses.push(courseId);
+    res.json({ message: "Course purchased successfully" });
+  } else {
+    res.status(404).json({ message: "Course not purchased" });
+  }
 });
 
 app.get("/users/purchasedCourses", (req, res) => {
   // logic to view purchased courses
+  const purchasedCourses = COURSES.filter((course) =>
+    req.user.purchasedCourses.includes(course.id)
+  );
+
+  res.json({ courses: purchasedCourses });
 });
 
 app.listen(3000, () => {
