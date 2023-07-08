@@ -5,8 +5,6 @@ function counter(){
     console.clear();
     console.log(count);
     count++;
+    setTimeout(counter,1000);
 }
-
-for(var i=0;i<100;i++){
-    setTimeout(counter, (i+1)*1000);
-}
+setTimeout(counter,1000);
