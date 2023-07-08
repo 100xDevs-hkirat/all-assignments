@@ -1,6 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
+const cors = require('cors');
+app.use(cors());
 
 app.use(express.json());
 
@@ -8,10 +10,10 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
-const secretKey = "superS3cr3t1"; // replace this with your own secret key
+const secretKey = 'superS3cr3t1'; // replace this with your own secret key
 
 const generateJwt = (user) => {
-  const payload = { username: user.username, };
+  const payload = { username: user.username };
   return jwt.sign(payload, secretKey, { expiresIn: '1h' });
 };
 
@@ -36,7 +38,7 @@ const authenticateJwt = (req, res, next) => {
 
 app.post('/admin/signup', (req, res) => {
   const admin = req.body;
-  const existingAdmin = ADMINS.find(a => a.username === admin.username);
+  const existingAdmin = ADMINS.find((a) => a.username === admin.username);
   if (existingAdmin) {
     res.status(403).json({ message: 'Admin already exists' });
   } else {
@@ -48,7 +50,9 @@ app.post('/admin/signup', (req, res) => {
 
 app.post('/admin/login', (req, res) => {
   const { username, password } = req.headers;
-  const admin = ADMINS.find(a => a.username === username && a.password === password);
+  const admin = ADMINS.find(
+    (a) => a.username === username && a.password === password
+  );
 
   if (admin) {
     const token = generateJwt(admin);
@@ -60,7 +64,7 @@ app.post('/admin/login', (req, res) => {
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {
   const course = req.body;
-  course.id = COURSES.length + 1; 
+  course.id = COURSES.length + 1;
   COURSES.push(course);
   res.json({ message: 'Course created successfully', courseId: course.id });
 });
@@ -68,7 +72,7 @@ app.post('/admin/courses', authenticateJwt, (req, res) => {
 app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
   const courseId = parseInt(req.params.courseId);
 
-  const courseIndex = COURSES.findIndex(c => c.id === courseId);
+  const courseIndex = COURSES.findIndex((c) => c.id === courseId);
 
   if (courseIndex > -1) {
     const updatedCourse = { ...COURSES[courseIndex], ...req.body };
@@ -85,7 +89,7 @@ app.get('/admin/courses', authenticateJwt, (req, res) => {
 
 app.post('/users/signup', (req, res) => {
   const user = req.body;
-  const existingUser = USERS.find(u => u.username === user.username);
+  const existingUser = USERS.find((u) => u.username === user.username);
   if (existingUser) {
     res.status(403).json({ message: 'User already exists' });
   } else {
@@ -97,7 +101,9 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', (req, res) => {
   const { username, password } = req.headers;
-  const user = USERS.find(u => u.username === username && u.password === password);
+  const user = USERS.find(
+    (u) => u.username === username && u.password === password
+  );
   if (user) {
     const token = generateJwt(user);
     res.json({ message: 'Logged in successfully', token });
@@ -112,9 +118,9 @@ app.get('/users/courses', authenticateJwt, (req, res) => {
 
 app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
   const courseId = parseInt(req.params.courseId);
-  const course = COURSES.find(c => c.id === courseId);
+  const course = COURSES.find((c) => c.id === courseId);
   if (course) {
-    const user = USERS.find(u => u.username === req.user.username);
+    const user = USERS.find((u) => u.username === req.user.username);
     if (user) {
       if (!user.purchasedCourses) {
         user.purchasedCourses = [];
@@ -130,7 +136,7 @@ app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
 });
 
 app.get('/users/purchasedCourses', authenticateJwt, (req, res) => {
-  const user = USERS.find(u => u.username === req.user.username);
+  const user = USERS.find((u) => u.username === req.user.username);
   if (user && user.purchasedCourses) {
     res.json({ purchasedCourses: user.purchasedCourses });
   } else {
