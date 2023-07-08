@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require("fs");
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 function findIndex(arr, id) {
@@ -97,6 +99,8 @@ app.delete('/todos/:id', (req, res) => {
     }
   });
 });
+
+app.listen(3000,()=>{console.log("listening on 3000...")})
 
 // for all other routes, return 404
 app.use((req, res, next) => {
