@@ -55,6 +55,7 @@ app.get('/todos', (req, res) => {
 });
 
 app.get('/todos/:id', (req, res) => {
+	console.log("hii", req.params);
   const todo = todos.find(t => t.id === parseInt(req.params.id));
   if (!todo) {
     res.status(404).send();
@@ -92,7 +93,9 @@ app.put('/todos/:id', (req, res) => {
 });
 
 app.delete('/todos/:id', (req, res) => {
+  console.log(req.params, req.params.id);
   const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+	console.log(todoIndex);
   if (todoIndex === -1) {
     res.status(404).send();
   } else {
@@ -103,6 +106,7 @@ app.delete('/todos/:id', (req, res) => {
 
 // for all other routes, return 404
 app.use((req, res, next) => {
+	console.log("hello", req, req.params);
   res.status(404).send();
 });
 

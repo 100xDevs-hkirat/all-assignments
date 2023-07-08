@@ -1,9 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -25,10 +27,13 @@ const SECRET = 'my-secret-key';
 
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  console.log(authHeader);
   if (authHeader) {
     const token = authHeader.split(' ')[1];
+    console.log(token);
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
+        console.log(err);
         return res.sendStatus(403);
       }
       req.user = user;
@@ -48,6 +53,7 @@ app.post('/admin/signup', (req, res) => {
     res.status(403).json({ message: 'Admin already exists' });
   } else {
     const newAdmin = { username, password };
+    console.log(newAdmin);
     ADMINS.push(newAdmin);
     fs.writeFileSync('admins.json', JSON.stringify(ADMINS));
     const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
@@ -67,6 +73,7 @@ app.post('/admin/login', (req, res) => {
 });
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {
+  console.log(req.body);
   const course = req.body;
   course.id = COURSES.length + 1;
   COURSES.push(course);
@@ -75,6 +82,8 @@ app.post('/admin/courses', authenticateJwt, (req, res) => {
 });
 
 app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
+  console.log(req.params.courseId);
+  console.log(req.params);
   const course = COURSES.find(c => c.id === parseInt(req.params.courseId));
   if (course) {
     Object.assign(course, req.body);
