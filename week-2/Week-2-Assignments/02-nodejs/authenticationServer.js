@@ -30,8 +30,59 @@
  */
 
 const express = require("express")
+const bodyParser = require("body-parser")
+const {v4: uuidv4} = require("uuid")
+const jwt = require("jsonwebtoken");
 const PORT = 3000;
 const app = express();
+require('dotenv').config()
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+var userList = [];
+
+app.use(bodyParser.json())
+
+
+app.post('/signup', (req, res) => {
+  userList.forEach(element => {
+    if (element.username === req.body.username){
+      res.status(400).send()
+    }
+  });
+  let user = {
+    id : uuidv4(),
+    username : req.body.username,
+    password : req.body.password,
+    firstName : req.body.firstName,
+    lastName : req.body.lastName,
+    email : req.body.email
+  }
+  userList.push(user)
+ res.status(201).send("Signup successful")
+})
+
+app.post('/login', (req, res) => {
+  userIndex = userList.findIndex(user => (user.username === req.body.username) && (user.password === req.body.password));
+  if (userIndex === -1){
+    res.status(401).send()  
+  }
+  let jwtSecret = process.env.TOKEN_KEY
+  userList[userIndex].token = jwt.sign(userList[userIndex],jwtSecret);
+  res.status(200).send(userList[userIndex])
+})
+
+app.get('/data', (req,res) => {
+  userIndex = userList.findIndex(user => (user.username === req.headers.username) && (user.password === req.headers.password));
+  if (userIndex === -1){
+    res.status(401).send('Unauthorized')  
+  }
+  res.send({
+    users : userList
+  })
+})
+
+app.get('*', (req, res) => {
+  res.status(404).send()
+})
 
 module.exports = app;
+//app.listen(PORT);

@@ -41,9 +41,60 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
+const port = 3000
+
+var listOfTodos = [];
 
 app.use(bodyParser.json());
 
-module.exports = app;
+app.get('/todos', (req, res) => {
+  res.json(listOfTodos)
+})
+
+app.get('/todos/:id', (req, res) => {
+  listOfTodos.forEach(todo => {
+    if (todo.id === req.params.id){
+      res.json(todo);
+    }
+  })
+  res.status(404).send()
+})
+
+app.post('/todos', (req, res) => {
+  let todo = {
+    id: uuidv4(),
+    title: req.body.title,
+    description: req.body.description
+  }
+  listOfTodos.push(todo);
+  res.status(201).json({id:todo.id})
+})
+
+app.put('/todos/:id', (req, res) => {
+  todoIndex = listOfTodos.findIndex(todo => todo.id === req.params.id);
+  if (todoIndex === -1) {
+    res.status(404).send()
+  }
+  listOfTodos[todoIndex].title = req.body.title;
+  listOfTodos[todoIndex].completed = req.body.completed;
+  res.send()
+})
+
+app.delete('/todos/:id', (req, res) => {
+  todoIndex = listOfTodos.findIndex(todo => todo.id === req.params.id);
+  if (todoIndex === -1) {
+    res.status(404).send()
+  }
+  listOfTodos.splice(todoIndex,1);
+  res.send()
+})
+
+app.get('*', function(req, res){
+  res.status(404).send('404 Page Not Found');
+});
+
+module.exports = app
+//app.listen(3000, () => {console.log("listening on port " + port)})
