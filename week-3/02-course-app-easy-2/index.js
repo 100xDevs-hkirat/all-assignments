@@ -95,22 +95,64 @@ app.get('/admin/courses',authenticateJwt, (req, res) => {
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
+  const newUser = req.body;
+  const isExisted = USERS.find(user=>user.username===newUser.username && user.password===newUser.password);
+  if(isExisted){
+    res.status(403).json({error:"User is already existed"});
+  }
+  else{
+    USERS.push(newUser);
+    const token = generateJwt(newUser);
+    res.json({message:"user created successfully",token:token});
+  }
 });
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+  const{username,password} = req.headers;
+  const isExisted = USERS.find(user=>user.username===username && user.password===password);
+  if(isExisted){
+    const token = generateJwt(isExisted);
+    res.json({message:"Successfully login."});
+  }
+  else{
+    res.status(403).json({error:"User authentication failed."});
+  }
 });
 
-app.get('/users/courses', (req, res) => {
+app.get('/users/courses',authenticateJwt, (req, res) => {
   // logic to list all courses
+  res.json({courses:COURSES});
 });
 
 app.post('/users/courses/:courseId', (req, res) => {
   // logic to purchase a course
+  const courseId  = req.params.courseId;
+  const courseToPurchased = COURSES.find(course=> course.id===courseId);
+  if(courseToPurchased){
+    const user = USERS.find(a=>a.username===req.user.username);
+    if(user){
+      if(!user.purchaseCourse){
+        user.purchaseCourse=[];
+      }
+      user.purchaseCourse.push(courseToPurchased);
+      res.json({message:"Course is purchased successfullly."});
+    }
+  }
+  else{
+    res.status(404).send({message:"course not found."});
+  }
 });
 
-app.get('/users/purchasedCourses', (req, res) => {
+app.get('/users/purchasedCourses',authenticateJwt, (req, res) => {
   // logic to view purchased courses
+  const user = USERS.find(a=>a.username===req.user.username);
+  if(user && user.purchaseCourse){
+    res.json({courses:user.purchaseCourse});
+  }
+  else{
+    res.send({error:"Not able to find the purchased course"});
+  }
 });
 
 app.listen(3000, () => {
