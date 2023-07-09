@@ -39,11 +39,81 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs").promises;
 
 const app = express();
 
 app.use(bodyParser.json());
+let todos = [];
+
+async function writeTodosToFile() {
+  // try {
+  //   await fs.writeFile("todos.txt", JSON.stringify(todos));
+  //   console.log("File written successfully.");
+  // } catch (error) {
+  //   console.error("Error writing file:", error);
+  // }
+}
+// app.use("/", (req, res) => {
+//   res.send("Hello World!!!");
+// });
+// app.use("/todos", todoRoutes);
+
+// curl localhost:3000/todos/
+app.get("/todos", (req, res) => {
+  res.send(todos);
+});
+
+// curl localhost:3000/todos/<id-here>
+app.get("/todos/:id", (req, res) => {
+  const todoSearch = todos.filter((todo) => todo.id === req.params.id);
+  if (todoSearch) res.send(todoSearch);
+  else res.status(404).send("");
+});
+
+// curl -X POST localhost:3000/todos/    -d '{"title": "todo", "description": "todo this todo"}'   -H "Content-Type: application/json"
+app.post("/todos", (req, res) => {
+  const todo = req.body;
+  todo.id = uuidv4();
+  todos.push(todo);
+  writeTodosToFile();
+  res.status(201).send("added todo successfully");
+});
+
+// curl -X PUT localhost:3000/todos/0b6427ff-de24-4afb-b4f4-9ae8c16424ed   -d '{"title": "todonew", "description": "todonew this todonew"}'   -H "Content-Type: application/json"
+app.put("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  const { title, description } = req.body;
+  const todoToUpdate = todos.find((todo) => todo.id === id);
+  // todos.map((todo) => {
+  //   if (todo.id === id) {
+  //     (todo.title = title), (todo.description = description);
+  //   }
+  // });
+  if (todoToUpdate) {
+    todoToUpdate.title = title;
+    todoToUpdate.description = description;
+    writeTodosToFile();
+    res.status(204).send(`edited todo successfully ${todos}`);
+  } else {
+    res.status(404).send(`Todo with ID ${id} not found.`);
+  }
+});
+
+// curl -X DELETE localhost:3000/todos/
+app.delete("/todos/:id", (req, res) => {
+  id = req.params.id;
+  todos = todos.filter((todo) => todo.id !== id);
+  writeTodosToFile();
+  console.log(todos);
+  res.send("Deleted successfully");
+});
+
+app.listen(3000, () => {
+  console.log("server started on port 3000");
+});
 
 module.exports = app;
