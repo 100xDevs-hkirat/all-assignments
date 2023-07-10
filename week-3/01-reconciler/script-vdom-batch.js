@@ -7,9 +7,9 @@ function createDomElements() {
 
   let added = 0, deleted = 0, updated = 0;
   // Now, we'll compare our new vDOM to our actual DOM
-  vDOM.forEach(function(item) {
+  vDOM.forEach(function (item) {
     // Check if a child with this ID already exists in the DOM
-    var existingChild = currentChildren.find(function(child) {
+    var existingChild = currentChildren.find(function (child) {
       return child.dataset.id === String(item.id);
     });
 
@@ -19,7 +19,7 @@ function createDomElements() {
       existingChild.children[0].innerHTML = item.title;
       existingChild.children[1].innerHTML = item.description;
       // Remove it from the currentChildren array
-      currentChildren = currentChildren.filter(function(child) {
+      currentChildren = currentChildren.filter(function (child) {
         return child !== existingChild;
       });
     } else {
@@ -46,7 +46,7 @@ function createDomElements() {
   });
 
   // Any children left in the currentChildren array no longer exist in the data, so remove them
-  currentChildren.forEach(function(child) {
+  currentChildren.forEach(function (child) {
     deleted++;
     parentElement.removeChild(child);
   });
@@ -58,29 +58,29 @@ function createDomElements() {
 
 
 function updateVirtualDom(data) {
-    vDOM = data.map(item => {
-        return {
-          id: item.id,
-          title: item.title,
-          description: item.description
-        };
-      });
+  vDOM = data.map(item => {
+    return {
+      id: item.id,
+      title: item.title,
+      description: item.description
+    };
+  });
 }
 window.setInterval(() => {
-    let todos = [];
-    for (let i = 0; i<Math.floor(Math.random() * 100); i++) {
-      todos.push({
-        title: "Go to gym",
-        description: "Go to gym from 5",
-        id: i+1
-      })
-    }
-  
-    updateVirtualDom(todos);
-  }, 5000);
+  let todos = [];
+  for (let i = 0; i < Math.floor(Math.random() * 100); i++) {
+    todos.push({
+      title: "Go to gym",
+      description: "Go to gym from 5",
+      id: i + 1
+    })
+  }
+
+  updateVirtualDom(todos);
+}, 5000);
 
 window.setInterval(() => {
-    createDomElements();
+  createDomElements();
 }, 1000);
 
 
