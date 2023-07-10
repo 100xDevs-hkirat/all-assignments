@@ -11,15 +11,19 @@ import ShowCourses from './components/ShowCourses';
 // You can also try going to /random and see what happens (a route that doesnt exist)
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/about" element={<CreateCourse />} />
-                <Route path="/courses" element={<ShowCourses />} />
-            </Routes>
-        </Router>
+        <div style={{width: "100vw",
+        height: "100vh",
+        backgroundColor: "#eeeeee"}}>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/about" element={<CreateCourse />} />
+                    <Route path="/courses" element={<ShowCourses />} />
+                </Routes>
+            </Router>
+        </div>
     );
 }
 
