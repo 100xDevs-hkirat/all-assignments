@@ -6,6 +6,7 @@ import Courses from './components/Courses'
 import PurchasedCourses from './components/PurchasedCourses'
 import PurchaseCourse from './components/PurchaseCourse'
 
+
 function App() {
 
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/purchased" element={<PurchasedCourses />} />
         <Route path="/courses/:courseId" element={<PurchaseCourse />} />
+        <Route path="*" element={<Landing />} />
       </Routes>
     </Router>
   )

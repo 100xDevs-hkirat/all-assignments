@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
 
+import Button from '@mui/material/Button';
+
 function Login() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -30,7 +32,7 @@ function Login() {
             <br />
             Password - <input type="password" onChange={e => setPassword(e.target.value)} />
             <br />
-            <button type="submit">Login</button>
+            <Button type="submit">Login</Button>
         </form>
     </div>
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import Button from '@mui/material/Button';
+
 function Register() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -34,7 +36,7 @@ function Register() {
                 <br />
                 Password - <input type="password" onChange={e => setPassword(e.target.value)} />
                 <br />
-                <button type="submit">Register</button>
+                <Button type="submit" variant="contained">Register</Button>
             </form>
         </div>
     );

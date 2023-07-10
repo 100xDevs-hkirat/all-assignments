@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Typography, Button, Grid } from "@mui/material";
 
-// Custon auth hooh
+// Custon auth hook
 function useAuthToken() {
   const [authToken, setAuthToken] = React.useState(
     localStorage.getItem("token") || ""
@@ -27,21 +28,54 @@ function Landing() {
   }
 
   return (
-    <div>
-      <h1>Landing Page</h1>
+    <Grid container direction="column" alignItems="center" spacing={2}>
+      <Grid item>
+        <Typography variant="h4">Landing Page</Typography>
+      </Grid>
       {!authToken && (
         <>
-          <Link to="/Login">Login</Link>
-          <br />
-          <Link to="/Register">Register</Link>
+          <Grid item>
+            <Button
+              component={Link}
+              to="/login"
+              variant="contained"
+              color="primary"
+            >
+              Login
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              component={Link}
+              to="/register"
+              variant="outlined"
+              color="primary"
+            >
+              Register
+            </Button>
+          </Grid>
         </>
       )}
-      {authToken && <button onClick={logout}>Logout</button>}
-      <br />
-      <Link to="/courses">Courses</Link>
-      <br />
-      <Link to="/courses/purchased">Purchased Courses</Link>
-    </div>
+      {authToken && (
+        <>
+          <Grid item>
+            <Button onClick={logout} variant="contained" color="primary">
+              Logout
+            </Button>
+          </Grid>
+          <Grid item>
+            <Typography variant="body1">
+              <Link to="/courses">Courses</Link>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="body1">
+              <Link to="/courses/purchased">Purchased Courses</Link>
+            </Typography>
+          </Grid>
+        </>
+      )}
+    </Grid>
   );
 }
 
