@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const app = express();
 const { ObjectId } = require("mongodb");
+require("dotenv").config();
 
 app.use(express.json());
 
@@ -77,7 +78,7 @@ const validateUserJwtToken = (req, res, next) => {
 };
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://abhishekgite446:LMYRcjfl6rVFvsvi@cluster0.klomnx5.mongodb.net/courses", { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_CREDENTIALS}@cluster0.klomnx5.mongodb.net/courses`, { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
 
 // Admin routes
 app.post("/admin/signup", async (req, res) => {
