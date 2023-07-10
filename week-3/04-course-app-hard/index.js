@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
@@ -8,9 +9,17 @@ const user = process.env.DB_USER;
 const pass = process.env.DB_PASS;
 const host = 'cluster0.hhinerl.mongodb.net'
 const SECRET = process.env.SECRET;
-mongoose.connect(`mongodb+srv://${user}:${pass}@${host}/${db}`);
+mongoose.connect(`mongodb+srv://${user}:${pass}@${host}/${db}`).then(()=>{
+  console.log("MongoDb Connected");
+});
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200
+}
 
 app.use(express.json());
+app.use(cors(corsOptions));
 
 let admins = new mongoose.Schema({
     username: String,
@@ -61,7 +70,7 @@ app.post('/admin/signup', async (req, res) => {
     }
     let resp = await Admins.findOne({username:req.body.username}).exec();
     if(resp!==null){
-        res.status(403).send({ message: 'Admin already exists' });
+        res.status(200).send({ message: 'Admin already exists' });
     } else {
         (new Admins(adminObj)).save();
         let token = getToken(adminObj);
@@ -158,4 +167,11 @@ app.get('/users/purchasedCourses', (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server is listening on port 3000');
+});
+
+process.on('SIGINT', () => {
+  mongoose.disconnect().then(() => {
+    console.log("Gracefull Shutdown");
+      process.exit();
+  });
 });
