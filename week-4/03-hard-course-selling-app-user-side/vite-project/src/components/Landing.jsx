@@ -32,9 +32,14 @@ function Landing() {
             <Link to="/Login">Login</Link>
             <br />
             <Link to="/Register">Register</Link>
+            <br />
             </>
         )}
         { authToken && <button onClick={logout}>Logout</button>}
+        <br />
+        <Link to="/courses">Courses</Link>
+        <br />
+        <Link to="/courses/purchased">Purchased Courses</Link>
     </div>
     );
 }

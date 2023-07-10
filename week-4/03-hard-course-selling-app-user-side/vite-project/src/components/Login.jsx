@@ -1,9 +1,11 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 
 function Login() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const navigate = useNavigate();
 
     function login(event) {
         event.preventDefault();
@@ -13,8 +15,12 @@ function Login() {
                 "username": email,
                 password
             }
-        }).then(res => console.log(res.data))
-        .catch(err => console.error(err));
+        }).then(res => {
+            if(res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+            navigate("/");
+        }).catch(err => console.error(err));
     }
 
     return <div>

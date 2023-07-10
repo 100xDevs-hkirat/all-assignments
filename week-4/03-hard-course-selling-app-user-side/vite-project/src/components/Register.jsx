@@ -1,9 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const navigate = useNavigate();
 
     function register(event) {
         event.preventDefault();
@@ -13,7 +15,13 @@ function Register() {
             },
             username: email,
             password,
-        }).then(res => console.log(res.data))
+        }).then(res => {
+            if(res.data.token) {
+                localStorage.setItem('token', res.data.token);
+                alert(res.data.message);
+                navigate('/');
+            }
+        })
         .catch(err => console.error(err));
     }
 
