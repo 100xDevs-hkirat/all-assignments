@@ -8,6 +8,7 @@ function EditCourse() {
     const [description, setDescription] = useState('');
     const [imageLink, setImageLink] = useState('');
     const [courseId, setCourseId] = useState('');
+    const [courseLoaded, setCourseLoaded] = useState(false);
 
     function update(event) {
         event.preventDefault();
@@ -16,7 +17,7 @@ function EditCourse() {
             price,
             published,
             description,
-            imageLink
+            imageLink,
         },
         {
             headers: {
@@ -27,43 +28,49 @@ function EditCourse() {
         .catch(err => console.error(err));
     }
 
-    function getCourse() {
-        console.log(courseId);
-        axios.get(`http://localhost:3000/courses/${courseId}`, {
+    function getCourse(event) {
+        event.preventDefault();
+        // console.log(courseId);
+        if(!courseId) {
+            return alert("Please enter a course id");
+        }
+        axios.get(`http://localhost:3000/admin/courses/${courseId}`, {
             headers: {
                 "Content-Type": "application/json",
                 "authorization": `Bearer ${localStorage.getItem("token")}`
             }
-        }).then(res => res.data)
+        }).then(res => res.data.course)
         .then(data => {
+            console.log(data);
             setTitle(data.title);
             setPrice(data.price);
             setPublished(data.published);
             setDescription(data.description);
             setImageLink(data.imageLink);
+            setCourseLoaded(true);
         }).catch(err => console.error(err));
     }
 
     return <div>
         <div>
-        Course - <input type="text" onChange={e => setCourseId(e.target.value)} />
-        <button onClick={getCourse}>Get course</button>
-        <br />
+        <form onSubmit={getCourse}>
+        Course Id- <input type="text" onChange={e => setCourseId(e.target.value)} />
+        <button type='submit'>Get course</button>
+        </form>
         </div>
-        <form>
-        Title - <input type="text" value={title} onChange={e => setTitle(e.target.value)} required={true}/>
         <br />
-        Course Id - {courseId}
+        <form onSubmit={update} >
+        Title - <input type="text" value={title} onChange={e => setTitle(e.target.value)} required={true} disabled={!courseLoaded} />
         <br />
-        Price - <input type="text" value={price} onChange={e => setPrice(e.target.value)} required={true}/>
+        Price - <input type="text" value={price} onChange={e => setPrice(e.target.value)} disabled={!courseLoaded} />
         <br />
-        Published - <input type="checkbox" checked={published} onChange={e => setPublished(e.target.checked)} />
+        Published - <input type="checkbox" checked={published} onChange={e => setPublished(e.target.checked)} disabled={!courseLoaded} />
         <br />
-        Description - <input type="text" value={description} onChange={e => setDescription(e.target.value)} required={true}/>
+        Description - <input type="text" value={description} onChange={e => setDescription(e.target.value)} disabled={!courseLoaded} />
         <br />
-        ImageLink - <input type="text" value={imageLink} onChange={e => setImageLink(e.target.value)} required={true}/>
+        ImageLink - <input type="text" value={imageLink} onChange={e => setImageLink(e.target.value)} disabled={!courseLoaded} />
         <br />
-        <button onClick={update}>Update</button>
+        <button type='submit'>Update</button>
         </form>
     </div>
 }
