@@ -29,9 +29,88 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require('express');
+const Joi = require('joi');
+const { v4: uuidv4 } = require('uuid');
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(express.json());
+const jwt = require('jsonwebtoken');
+
+const secret = 'Ohh some $#(&e!';
+
+const users = [];
+
+const userSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  firstname: Joi.string().required(),
+  lastname: Joi.string().required(),
+});
+
+const loginSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
+// schema validators
+const validateBody = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    next();
+  };
+};
+
+app.post('/signup', validateBody(userSchema), (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const newUser = req.body;
+  const userFound = users.find((user) => newUser.username === user.username);
+  if (!userFound) {
+    users.push({ id: uuidv4(), ...newUser });
+    res.status(201).send('Signup successful');
+  } else {
+    res.status(401).send('username already exists');
+  }
+});
+
+app.post('/login', validateBody(loginSchema), (req, res) => {
+  const credentials = req.body;
+  const userFound =
+    users.find(
+      (user) =>
+        credentials.username === user.username &&
+        credentials.password === user.password
+    ) ?? null;
+  if (userFound) {
+    const token = jwt.sign({ username: credentials.username }, secret, {
+      expiresIn: '1h',
+    });
+    const { password, ...user } = userFound;
+    res.send({ ...user, token });
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+app.get('/data', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const { username, password } = req.headers;
+  const userFound = users.find(
+    (user) => username === user.username && password === user.password
+  );
+  if (userFound) {
+    const allUsers = users.map(({ firstname, lastname, id }) => ({
+      firstname,
+      lastname,
+      id,
+    }));
+    res.send(allUsers);
+  } else {
+    res.sendStatus(403);
+  }
+});
 
 module.exports = app;
