@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "nanoid": "3.3.6",
     "uuid": "^9.0.0"
   }
 }
