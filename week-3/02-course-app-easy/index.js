@@ -125,6 +125,23 @@ app.get("/admin/courses", (req, res) => {
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
+  const data = {
+    username: req.headers.username,
+    password: req.headers.password,
+  };
+  if (USERS.push(data) && data.username) {
+    const payload = {
+      username: req.headers.username,
+      password: req.headers.password,
+    };
+    const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
+    res.header("Authorization", `Bearer ${token}`);
+    res.status(200).send(`Bearer ${token}`);
+  } else {
+    return res
+      .status(401)
+      .send("Some error while adding user , please try again after sometime");
+  }
 });
 
 app.post("/users/login", (req, res) => {
