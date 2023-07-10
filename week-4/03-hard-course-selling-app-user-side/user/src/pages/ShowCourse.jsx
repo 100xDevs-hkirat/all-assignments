@@ -1,19 +1,8 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useContext } from "react";
+import { CourseDetails } from "../../courseContext";
 
 const ShowCourse = () => {
-  const [courses, setCourses] = useState();
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${token}`);
-    fetch("http://localhost:3000/users/courses", {
-      method: "GET",
-      headers: headers,
-    })
-      .then((res) => res.json())
-      .then((data) => setCourses(data.courses));
-  }, []);
+  const [courses] = useContext(CourseDetails);
   return (
     <div>
       <div>All Courses</div>

@@ -6,18 +6,21 @@ import SignUp from "./pages/SignUp";
 import ShowCourse from "./pages/ShowCourse";
 import PurchasedCourses from "./pages/PurchasedCourses";
 import FindCourse from "./pages/FindCourse";
+import { CourseData } from "../courseContext";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/courses" element={<ShowCourse />} />
-        <Route path="/courses/:id" element={<FindCourse />} />
-        <Route path="/courses/purchased" element={<PurchasedCourses />} />
-      </Routes>
+      <CourseData>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/courses" element={<ShowCourse />} />
+          <Route path="/courses/:id" element={<FindCourse />} />
+          <Route path="/courses/purchased" element={<PurchasedCourses />} />
+        </Routes>
+      </CourseData>
     </Router>
   );
 }
