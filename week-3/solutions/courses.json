@@ -1,1 +1,16 @@
-[{"title":"course-title","description":"course description","price":100,"imageLink":"https://linktoimage.com","published":true},{"title":"course-title","description":"course description","price":100,"imageLink":"https://linktoimage.com","published":true},{"title":"dfds","price":"454","description":"dff","imageLink":"dfd","id":3},{"title":"afdd","price":"afd","description":"dfd","imageLink":"dfd","id":4,"published":false}]
+[{
+  "title": "Node.js: The Complete Guide",
+  "price": 99.99,
+  "published": true,
+  "description": "Learn Node.js from scratch and build scalable web applications.",
+  "imageLink": "https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.0.0/node.js/node.js.png",
+  "id": 1
+},{
+  "title": "Node.js: The Complete Guide",
+  "price": 99.99,
+  "published": true,
+  "description": "Learn Node.js from scratch and build scalable web applications.",
+  "imageLink": "https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.0.0/node.js/node.js.png",
+  "id": 2
+}
+]
