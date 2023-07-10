@@ -21,7 +21,6 @@ function PurchasedCourses() {
             <h1>Purchased Courses</h1>
             <br />
             <div>
-                {console.log(courses)}
                 {courses.map(course => Courses(course))}
             </div>
         </div>

@@ -27,7 +27,10 @@ function PurchaseCourse() {
         }).then(res => {
             alert(res.data.message);
             navigate("/courses/purchased");
-        }).catch(err => console.error(err));
+        }).catch(err => {
+            alert(err.response.data.message);
+            console.error(err);
+        });
     }
 
     return (
