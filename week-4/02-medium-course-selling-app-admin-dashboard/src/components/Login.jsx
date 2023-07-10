@@ -1,8 +1,15 @@
 import { useState } from "react";
+import styles from './Login.module.css'
+import { Link, useNavigate } from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { Card, Typography } from "@mui/material";
+import AppBar from "./AppBar";
 
 
 /// File is incomplete. You need to add input boxes to take input for users to login.
 function Login() {
+    const navigate = useNavigate()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("")
@@ -13,7 +20,7 @@ function Login() {
             setError('The Input Field should not be empty')
         }
         try {
-            const response = await fetch(`http://localhost:3000/users/login`, {
+            const response = await fetch(`http://localhost:3000/admin/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'Application/json',
@@ -33,25 +40,38 @@ function Login() {
             console.log(data)
             alert(data.message)
             localStorage.setItem('token', data.token)
+            navigate('/courses')
+
         } catch (error) {
             console.log(error)
         }
     }
 
-    return <div>
-        <h1>Login to admin dashboard</h1>
+    return <>
+        <AppBar />
+        <div style={{ paddingTop: 150, marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
+            <Typography variant="h6">Welcome to Coursera Sign Up here</Typography>
 
-        <form onSubmit={onLogin}>
-            <label htmlFor="email">Email</label>
-            <input type={"text"} id="email" value={email} onChange={e => setEmail(e.target.value)} />
-            <br />
-            <label htmlFor="password">Password</label>
-            <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} id="password" />
-            <button>Login</button>
-        </form>
-        <div className="error">{error}</div>
-        New here? <a href="/register">Register</a>
-    </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
+            <form onSubmit={onLogin}>
+                <Card variant="outlined" style={{ width: '400px', padding: '10px' }}>
+
+                    <br />
+                    <TextField id="outlined-basic" label="Email" variant="outlined" fullWidth={true} />
+                    <br />
+                    <br />
+                    <TextField id="outlined-basic" label="Password" type="password" variant="outlined" fullWidth={true} />
+                    <br /><br />
+                    <Button size="large" variant="contained">Sign In</Button>
+                    <div className={styles.error}>{error}</div>
+                    <br />
+                    New user <Link to="/register" className={styles.anchor}>Sign In</Link>
+                </Card>
+            </form>
+        </div>
+    </>
 }
 
 export default Login;

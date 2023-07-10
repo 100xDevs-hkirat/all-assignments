@@ -1,6 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import styles from './Register.module.css'
+import { Button, Card, TextField, Typography } from "@mui/material";
+import AppBar from "./AppBar";
+
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
@@ -13,7 +17,7 @@ function Register() {
             setError('The Input Field should not be empty')
         }
         try {
-            const response = await fetch(`http://localhost:3000/users/signup`, {
+            const response = await fetch(`http://localhost:3000/admin/signup`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'Application/json'
@@ -31,23 +35,31 @@ function Register() {
             console.log(error)
         }
     }
-    return <form onSubmit={onRegister}>
-        <div>
-            <h1>Register to the website</h1>
-            <br />
-            <label htmlFor="email">Please Enter the Email</label>
-            <input type={"text"} id="email" onChange={e => (setError(), setEmail(e.target.value))} />
-            <br />
-            <br />
-            <label htmlFor="password">Please Enter the password </label>
-            <input type="password" onChange={(e) => (setError(''), setpassword(e.target.value))} name="password" id="password" />
-            <br />
-            <button type="submit">Submit</button>
-            <div style={{ color: 'red' }}>{error}</div>
-            <br />
-            Already a user? <Link to="/login">Login</Link>
+    return <>
+        <AppBar />
+        <div style={{ paddingTop: 150, marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
+            <Typography variant="h6">Welcome to Coursera Sign Up here</Typography>
+
         </div>
-    </form>
+
+        <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center' }} >
+            <form onSubmit={onRegister}>
+                <Card variant="outlined" style={{ width: '400px', padding: '10px' }}>
+
+                    <br />
+                    <TextField id="outlined-basic" label="Email" variant="outlined" fullWidth={true} />
+                    <br />
+                    <br />
+                    <TextField id="outlined-basic" label="Password" type="password" variant="outlined" fullWidth={true} />
+                    <br /><br />
+                    <Button size="large" variant="contained">Sign Up</Button>
+                    <div className={styles.error}>{error}</div>
+                    <br />
+                    Already a Customer <Link to="/login" className={styles.anchor}>Login</Link>
+                </Card>
+            </form>
+        </div>
+    </>
 }
 
 export default Register;

@@ -2,6 +2,9 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
@@ -23,7 +26,7 @@ console.log(ADMINS);
 
 const SECRET = 'my-secret-key';
 
-const authenticateJwt = (req, res, next) => {
+const   authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
