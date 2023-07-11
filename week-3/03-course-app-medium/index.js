@@ -2,8 +2,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 const JWT_TOKEN_SECRET = 'secret';
@@ -162,7 +164,7 @@ app.post('/users/login', (req, res) => {
 
 app.get('/users/courses', authJWT(USERS), (req, res) => {
   // logic to list all courses
-  res.json({ course: COURSES.filter((course) => course.published) });
+  res.json({ courses: COURSES.filter((course) => course.published) });
 });
 
 app.post('/users/courses/:courseId', authJWT(USERS), (req, res) => {

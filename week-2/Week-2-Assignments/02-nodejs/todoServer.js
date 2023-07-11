@@ -43,23 +43,32 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
+let todos = [];
+
 function readFromFile(res, callback) {
-  fs.readFile('./todos.txt', 'utf-8', (err, data) => {
+  fs.readFile(path.join(__dirname, './todos.txt'), 'utf-8', (err, data) => {
     if (err) return res.status(500).send('Internal server error');
-    res.locals.todos = JSON.parse(data || []);
+    todos = JSON.parse(data || []);
     callback();
   });
 }
 
 function writeToFile(todos, res, callback) {
-  fs.writeFile('./todos.txt', JSON.stringify(todos), (err) => {
-    if (err) return res.status(500).send('Internal server error');
-    callback();
-  });
+  fs.writeFile(
+    path.join(__dirname, './todos.txt'),
+    JSON.stringify(todos),
+    (err) => {
+      // if (err) return res.status(500).send('Internal server error');
+      callback();
+    }
+  );
 }
 
 app.use((_, res, next) => {
@@ -69,10 +78,9 @@ app.use((_, res, next) => {
 app
   .route('/todos')
   .get((_, res) => {
-    res.send(JSON.stringify(res.locals.todos));
+    res.send(JSON.stringify(todos));
   })
   .post((req, res) => {
-    const todos = res.locals.todos;
     const id = uuidv4();
     todos.push({
       id,
@@ -82,8 +90,8 @@ app
   });
 
 app.use('/todos/:id', (req, res, next) => {
-  const index = res.locals.todos.findIndex((todo) => todo.id === req.params.id);
-  if (index < 0) res.status(404).send('Not Found');
+  const index = todos.findIndex((todo) => todo.id === req.params.id);
+  if (index < 0) return res.status(404).send('Not Found');
   res.locals.index = index;
   next();
 });
@@ -91,10 +99,9 @@ app.use('/todos/:id', (req, res, next) => {
 app
   .route('/todos/:id')
   .get((_, res) => {
-    res.send(res.locals.todos[res.locals.index]);
+    res.send(todos[res.locals.index]);
   })
   .put((req, res) => {
-    const todos = res.locals.todos;
     const index = res.locals.index;
     todos[index] = {
       ...todos[index],
@@ -103,11 +110,13 @@ app
     writeToFile(todos, res, () => res.send(todos[index]));
   })
   .delete((_, res) => {
-    const todos = res.locals.todos;
     todos.splice(res.locals.index, 1);
     writeToFile(todos, res, () => res.send());
   });
 
 app.use((_, res) => res.status(404).send('Route not found'));
 
-module.exports = app;
+const port = '3000';
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
