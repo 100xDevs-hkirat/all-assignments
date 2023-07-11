@@ -22,6 +22,7 @@ try {
   COURSES = [];
 }
 console.log(ADMINS);
+console.log(USERS);
 
 const SECRET = "my-secret-key";
 
@@ -33,7 +34,7 @@ const authenticateJwt = (req, res, next) => {
     // console.log(token);
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
-        console.log(err);
+        // console.log(err);
         return res.sendStatus(403);
       }
       req.user = user;
@@ -48,12 +49,12 @@ const authenticateJwt = (req, res, next) => {
 app.post("/admin/signup", (req, res) => {
   const { username, password } = req.body;
   const admin = ADMINS.find((a) => a.username === username);
-  console.log("admin signup");
+  // console.log("admin signup");
   if (admin) {
     res.status(403).json({ message: "Admin already exists" });
   } else {
     const newAdmin = { username, password };
-    console.log(newAdmin);
+    // console.log(newAdmin);
     ADMINS.push(newAdmin);
     fs.writeFileSync("admins.json", JSON.stringify(ADMINS));
     const token = jwt.sign({ username, role: "admin" }, SECRET, {
@@ -116,13 +117,13 @@ app.get("/admin/courses", authenticateJwt, (req, res) => {
 
 // User routes
 app.post("/users/signup", (req, res) => {
-  console.log(req.body, req.username);
-  const { username, password } = req.body;
+  // console.log(req.body, req.username);
+  const { username, password, firstName, lastName } = req.body;
   const user = USERS.find((u) => u.username === username);
   if (user) {
     res.status(403).json({ message: "User already exists" });
   } else {
-    const newUser = { username, password };
+    const newUser = { username, password, firstName, lastName };
     USERS.push(newUser);
     fs.writeFileSync("users.json", JSON.stringify(USERS));
     const token = jwt.sign({ username, role: "user" }, SECRET, {

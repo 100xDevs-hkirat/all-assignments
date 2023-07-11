@@ -32,7 +32,7 @@ function Login() {
       )
       .then((res) => {
         localStorage.setItem("token", res.data.token);
-        showSnackbar(res.data.message, "success")
+        showSnackbar(res.data.message, "success");
         navigate("/");
       })
       .catch((err) => {
@@ -53,11 +53,9 @@ function Login() {
       }}
     >
       <Box sx={{ mt: "10vh", mb: 4 }}>
-
         <Typography variant="h2" component="h1" align="center">
           Login
         </Typography>
-
       </Box>
       <form onSubmit={login} style={{ width: "100%" }}>
         <TextField
@@ -87,9 +85,7 @@ function Login() {
         >
           Login
         </Button>
-        
       </form>
-
       <SnackbarAlert />
     </Container>
   );
