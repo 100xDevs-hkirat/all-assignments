@@ -11,26 +11,8 @@ const UserSchema = mongoose.Schema({
   },
   courses: [
     {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'course'
-      },
-      title: {
-        type: String,
-        required: true,
-      },
-      description: {
-        type: String,
-        required: true,
-      },
-      price: {
-        type: Number,
-        required: true,
-      },
-      imgLink: {
-        type: String,
-        required: true,
-      }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "course",
     },
   ],
   date: {
