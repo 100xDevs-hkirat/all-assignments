@@ -18,7 +18,12 @@ app.post("/admin/signup", (req, res) => {
     isAdmin: true,
     username: req.headers.username,
     password: req.headers.password,
+    email: eq.headers.email,
   };
+  const index = ADMINS.findIndex((item) => item.email == data.email);
+  if (index != -1) {
+    return res.status(401).send("Admin is already registred , please login");
+  }
   if (ADMINS.push(data) && data.username) {
     const payload = {
       username: req.headers.username,
@@ -42,9 +47,7 @@ app.post("/admin/login", (req, res) => {
     username: req.headers.username,
     password: req.headers.password,
   };
-  console.log(JSON.stringify(cred));
   const index = ADMINS.findIndex((item) => item.username == cred.username);
-  console.log(index);
   if (index != -1 && ADMINS[index].isAdmin) {
     if (ADMINS[index].password != cred.password) {
       return res.status(404).send("Invalid Password");
@@ -128,7 +131,12 @@ app.post("/users/signup", (req, res) => {
   const data = {
     username: req.headers.username,
     password: req.headers.password,
+    email: req.headers.email,
   };
+  const index = USERS.findIndex((item) => item.email == data.email);
+  if (index != -1) {
+    return res.status(401).send("User is already registered please login");
+  }
   if (USERS.push(data) && data.username) {
     const payload = {
       username: req.headers.username,
@@ -146,6 +154,22 @@ app.post("/users/signup", (req, res) => {
 
 app.post("/users/login", (req, res) => {
   // logic to log in user
+  const cred = {
+    username: req.headers.username,
+    password: req.headers.password,
+  };
+  const index = USERS.findIndex((item) => item.username == cred.username);
+  if (index != -1) {
+    if (USERS[index].password != cred.password) {
+      return res.status(404).send("Invalid Password");
+    } else {
+      const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
+      res.header("Authorization", `Bearer ${token}`);
+      res.status(200).send("User login successfull");
+    }
+  } else {
+    return res.status(404).send("User doesn't exist , please signup");
+  }
 });
 
 app.get("/users/courses", (req, res) => {
