@@ -2,15 +2,14 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "./SnackbarContext.jsx";
+import SnackbarAlert from "./SnackbarAlert.jsx";
 
 import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 
 function Register() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { snackbarState, showSnackbar, closeSnackbar } =
+  const { showSnackbar } =
     React.useContext(SnackbarContext);
   const navigate = useNavigate();
 
@@ -27,7 +26,6 @@ function Register() {
       .then((res) => {
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);
-          alert(res.data.message);
           showSnackbar(res.data.message, "success");
           navigate("/");
         }
@@ -53,9 +51,8 @@ function Register() {
           Register
         </Button>
       </form>
-      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
-        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
-      </Snackbar>
+
+      <SnackbarAlert />
     </div>
   );
 }

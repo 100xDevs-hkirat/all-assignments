@@ -1,11 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Typography, Button, Grid } from "@mui/material";
-import { SnackbarContext } from './SnackbarContext.jsx';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
-
-
+// import { SnackbarContext } from "./SnackbarContext.jsx";
+import SnackbarAlert from "./SnackbarAlert.jsx";
 
 // Custon auth hook
 function useAuthToken() {
@@ -26,14 +23,13 @@ function useAuthToken() {
 // Landing page component
 function Landing() {
   const [authToken, setAuthToken] = useAuthToken();
-  const { snackbarState, closeSnackbar } = React.useContext(SnackbarContext);
+  // const { snackbarState, closeSnackbar } = React.useContext(SnackbarContext);
 
   function logout() {
     setAuthToken("");
   }
 
   return (
-    
     <Grid container direction="column" alignItems="center" spacing={2}>
       <Grid item>
         <Typography variant="h4">Landing Page</Typography>
@@ -81,9 +77,7 @@ function Landing() {
           </Grid>
         </>
       )}
-    <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
-        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
-      </Snackbar>
+      <SnackbarAlert />
     </Grid>
   );
 }

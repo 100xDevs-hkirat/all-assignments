@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { SnackbarContext } from './SnackbarContext';
+import SnackbarAlert from "./SnackbarAlert.jsx";
 // mui
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -9,14 +10,12 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 
 function PurchaseCourse() {
   const { courseId } = useParams();
   const [course, setCourse] = React.useState({});
   const navigate = useNavigate();
-  const { snackbarState, showSnackbar, closeSnackbar } = React.useContext(SnackbarContext);
+  const { showSnackbar } = React.useContext(SnackbarContext);
 
   React.useEffect(() => {
     axios
@@ -30,7 +29,7 @@ function PurchaseCourse() {
         setCourse(res.data.course);
       })
       .catch((err) => {
-        showSnackbar(err.response.data.message, "error");
+        showSnackbar(err.response.data.message || err.toString(), "error");
         console.error(err)
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,7 +51,7 @@ function PurchaseCourse() {
         showSnackbar(res.data.message, "success");
       })
       .catch((err) => {
-        showSnackbar(err.response.data.message, "error");
+        showSnackbar(err.response.data.message || err.toString(), "error");
         console.error(err);
       }).finally(() => navigate("/courses/purchased"));
   }
@@ -89,9 +88,7 @@ function PurchaseCourse() {
       <Button variant="contained" onClick={purchaseCourse}>
         Purchase
       </Button>
-      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
-        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
-      </Snackbar>
+      <SnackbarAlert />
     </div>
   );
 }

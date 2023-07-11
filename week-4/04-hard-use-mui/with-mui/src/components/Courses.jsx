@@ -1,18 +1,22 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { SnackbarContext } from "./SnackbarContext.jsx";
-
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
-
+import SnackbarAlert from "./SnackbarAlert.jsx";
 // mui
-import { Card, CardContent, Typography, Grid, CardMedia } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  CardMedia,
+  Button,
+} from "@mui/material";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
-  const { snackbarState, showSnackbar, closeSnackbar } =
-    useContext(SnackbarContext);
+  const { showSnackbar } = useContext(SnackbarContext);
 
   useEffect(() => {
     axios
@@ -26,10 +30,10 @@ function Courses() {
         setCourses(res.data.courses);
       })
       .catch((err) => {
-        showSnackbar(err.response.data.message, "error");
-        console.error(err)
+        showSnackbar(err.response.data.message || err.toString(), "error");
+        console.error(err);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -46,15 +50,19 @@ function Courses() {
           );
         })}
       </Grid>
-      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
-        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
-      </Snackbar>
+      <SnackbarAlert />
     </div>
   );
 }
 
 function Course(props) {
-  const { title, price, description, imageLink } = props;
+  const { title, price, description, imageLink, id } = props;
+  const navigate = useNavigate();
+
+  function handlePurchase() {
+    navigate(`/courses/${id}`);
+  }
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -77,6 +85,7 @@ function Course(props) {
               {description}
             </Typography>
           </Grid>
+          <Button onClick={handlePurchase}>Purchase</Button>
         </Grid>
       </CardContent>
     </Card>

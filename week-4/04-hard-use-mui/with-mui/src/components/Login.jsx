@@ -2,19 +2,18 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "./SnackbarContext.jsx";
+import SnackbarAlert from "./SnackbarAlert.jsx";
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 
 function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { snackbarState, showSnackbar, closeSnackbar } = React.useContext(SnackbarContext);
+  const { showSnackbar } = React.useContext(SnackbarContext);
   const navigate = useNavigate();
 
   function login(event) {
@@ -91,9 +90,7 @@ function Login() {
         
       </form>
 
-      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
-        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
-      </Snackbar>
+      <SnackbarAlert />
     </Container>
   );
 }
