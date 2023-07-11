@@ -4,11 +4,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
 app.use(bodyParser.json());
-app.use(cors);
-// app.listen(3000, () => {
-//   console.log(`Running on 3000`);
-//   console.log(`http://127.0.0.1:3000`);
-// });
+app.use(cors());
+
 data = [];
 // For getting all the ToDos
 app.get("/todos", (req, res) => {
@@ -93,4 +90,8 @@ app.delete("/todos/:id", (req, res) => {
     found ? res.status(200).send() : res.status(404).send();
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+    console.log(`Running on 3000`);
+    console.log(`http://127.0.0.1:3000`);
+});
+module.exports = app;
