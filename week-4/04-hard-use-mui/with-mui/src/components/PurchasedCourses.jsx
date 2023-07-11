@@ -1,12 +1,15 @@
 import React from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-
+import { SnackbarContext } from "./SnackbarContext";
 // mui
 import { Grid, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 function PurchasedCourses() {
   const [courses, setCourses] = React.useState([]);
+  const { snackbarState, showSnackbar, closeSnackbar } = React.useContext(SnackbarContext);
 
   React.useEffect(() => {
     axios
@@ -19,7 +22,11 @@ function PurchasedCourses() {
       .then((res) => {
         setCourses(res.data.purchasedCourses || []);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        showSnackbar(err.response.data.message, "error");
+        console.error(err)
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -36,12 +43,16 @@ function PurchasedCourses() {
           );
         })}
       </Grid>
+      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
+        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
+      </Snackbar>
     </div>
   );
 }
 
 function Course(props) {
   const { title, price, description, imageLink } = props;
+
   return (
     <>
       <Card variant="outlined">
@@ -68,6 +79,7 @@ function Course(props) {
           </Grid>
         </CardContent>
       </Card>
+      
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { SnackbarContext } from './SnackbarContext';
 // mui
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -9,11 +9,14 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 function PurchaseCourse() {
   const { courseId } = useParams();
   const [course, setCourse] = React.useState({});
   const navigate = useNavigate();
+  const { snackbarState, showSnackbar, closeSnackbar } = React.useContext(SnackbarContext);
 
   React.useEffect(() => {
     axios
@@ -26,7 +29,11 @@ function PurchaseCourse() {
       .then((res) => {
         setCourse(res.data.course);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        showSnackbar(err.response.data.message, "error");
+        console.error(err)
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
   function purchaseCourse() {
@@ -42,13 +49,12 @@ function PurchaseCourse() {
         }
       )
       .then((res) => {
-        alert(res.data.message);
-        navigate("/courses/purchased");
+        showSnackbar(res.data.message, "success");
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        showSnackbar(err.response.data.message, "error");
         console.error(err);
-      });
+      }).finally(() => navigate("/courses/purchased"));
   }
 
   return (
@@ -83,6 +89,9 @@ function PurchaseCourse() {
       <Button variant="contained" onClick={purchaseCourse}>
         Purchase
       </Button>
+      <Snackbar open={snackbarState.open} onClose={closeSnackbar}>
+        <Alert severity={snackbarState.severity}>{snackbarState.message}</Alert>
+      </Snackbar>
     </div>
   );
 }

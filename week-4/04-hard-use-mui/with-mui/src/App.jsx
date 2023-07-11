@@ -5,12 +5,13 @@ import Register from './components/Register'
 import Courses from './components/Courses'
 import PurchasedCourses from './components/PurchasedCourses'
 import PurchaseCourse from './components/PurchaseCourse'
-
+import { SnackbarProvider } from './components/SnackbarContext'
 
 function App() {
 
   return (
     <Router>
+        <SnackbarProvider >
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<Register />} />
@@ -20,6 +21,7 @@ function App() {
         <Route path="/courses/:courseId" element={<PurchaseCourse />} />
         <Route path="*" element={<Landing />} />
       </Routes>
+        </SnackbarProvider>
     </Router>
   )
 }
