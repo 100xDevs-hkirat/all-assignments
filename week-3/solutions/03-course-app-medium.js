@@ -26,7 +26,7 @@ console.log(ADMINS);
 
 const SECRET = 'my-secret-key';
 
-const   authenticateJwt = (req, res, next) => {
+const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
@@ -62,6 +62,7 @@ app.post('/admin/signup', (req, res) => {
 
 app.post('/admin/login', (req, res) => {
   const { username, password } = req.headers;
+  console.log(username, password);
   const admin = ADMINS.find(
     (a) => a.username === username && a.password === password
   );
@@ -73,6 +74,15 @@ app.post('/admin/login', (req, res) => {
   } else {
     res.status(403).json({ message: 'Invalid username or password' });
   }
+});
+
+app.get('/admin/me', authenticateJwt, (req, res) => {
+  res.json({
+    user:{
+      username:req.user.username,
+      role:req.user.role
+    },
+  });
 });
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {

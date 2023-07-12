@@ -1,20 +1,16 @@
-import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import styles from './Register.module.css'
-import { Button, Card, TextField, Typography } from "@mui/material";
-import AppBar from "./AppBar";
-
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
-    const [email, setEmail] = React.useState("");
-    const [password, setpassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState('')
     const onRegister = async (e) => {
         e.preventDefault()
         if (email.length === 0 && password.length === 0) {
             setError('The Input Field should not be empty')
+            return
         }
         try {
             const response = await fetch(`http://localhost:3000/admin/signup`, {
@@ -35,31 +31,35 @@ function Register() {
             console.log(error)
         }
     }
-    return <>
-        <AppBar />
-        <div style={{ paddingTop: 150, marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
-            <Typography variant="h6">Welcome to Coursera Sign Up here</Typography>
 
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'center',alignItems:'center' }} >
-            <form onSubmit={onRegister}>
-                <Card variant="outlined" style={{ width: '400px', padding: '10px' }}>
-
-                    <br />
-                    <TextField id="outlined-basic" label="Email" variant="outlined" fullWidth={true} />
-                    <br />
-                    <br />
-                    <TextField id="outlined-basic" label="Password" type="password" variant="outlined" fullWidth={true} />
-                    <br /><br />
-                    <Button size="large" variant="contained">Sign Up</Button>
-                    <div className={styles.error}>{error}</div>
-                    <br />
-                    Already a Customer <Link to="/login" className={styles.anchor}>Login</Link>
-                </Card>
-            </form>
-        </div>
-    </>
+    return <div style={{
+        backgroundColor: '#475569',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        maxWidth: 500,
+        width: '100%',
+        margin: "200px auto"
+    }}>
+        <h1>Register to admin dashboard</h1>
+        <br />
+        <form onSubmit={onRegister}>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%'
+            }}>
+                Email - <input type={"text"} onChange={e => setEmail(e.target.value)} />
+                Password - <input type={"password"} onChange={e => setPassword(e.target.value)} />
+                <br />
+                <button type="submit">Register</button>
+            </div>
+        </form>
+        <div style={{ color: 'red' }}>{error}</div>
+        <br />
+        Already a user? <Link to="/login">Login</Link>
+    </div>
 }
 
 export default Register;

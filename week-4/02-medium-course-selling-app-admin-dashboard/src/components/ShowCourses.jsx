@@ -1,8 +1,13 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ShowCourses() {
-    const [courses, setCourses] = useState([]);
+    const navigate = useNavigate()
+
+    const [courses, setCourses] = React.useState([]);
     const [fetchAll, setFetchAll] = useState(false)
+
     // Add code to fetch courses from the server
     // and set it in the courses state variable.
     const token = localStorage.getItem('token')
@@ -17,25 +22,32 @@ function ShowCourses() {
                     }
                 })
                 if (!responseCourse.ok) {
-                    throw new Error('somethingw went wtong')
+
+                    console.log(responseCourse);
+                    alert(responseCourse.statusText);
+                    // throw new Error('something went wtong'),
+                    return
                 }
                 const data = await responseCourse.json()
-                console.log(data)
+                console.log(data.courses)
+                setCourses([...data.courses])
             } catch (error) {
                 console.log(error)
             }
         }
         fetchAllCourse()
-    }, [fetchAll])
+    }, [fetchAll, token])
     return <div>
         <h1>Create Course Page</h1>
-        {courses.length === 0 ? <div>No Course Avalable</div> : courses.map(c => <Course title={c.title} />)}
+        <button onClick={() => navigate('/createCourse')}>Add Course</button>
+        {courses.map(c => <Course key={c.id} id={c.id} title={c.title} description={c.description} />)}
     </div>
 }
 
 function Course(props) {
+    const navigate = useNavigate()
     return <div>
-        <h1>{props.title}</h1>
+        <span style={{ marginRight: 10 }}>{props.title}</span><span>{props.description}</span><button onClick={() => navigate(`/courses/${props.id}`)}>Edit</button>
     </div>
 }
 
