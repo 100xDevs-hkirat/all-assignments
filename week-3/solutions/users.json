@@ -1,1 +1,1 @@
-[]
+[{"username":"one@email.com","password":"12345","purchasedCourses":[{"title":"Guardian of the galaxy","description":"Adventure movie1","id":1,"imageLink":""},{"title":"Harry potter","description":"It is a movie","price":"2300","imageLink":"","published":true,"id":3}]},{"username":"two@email.com","password":"12345","purchasedCourses":[{"title":"Guardian of the galaxy","description":"Adventure movie1","id":1,"imageLink":""}]}]
