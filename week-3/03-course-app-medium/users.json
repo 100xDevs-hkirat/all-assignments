@@ -1,0 +1,18 @@
+[
+  {
+    "username": "nitin",
+    "password": "123456",
+    "purchasedCourses": [
+      "bf50e91b-c2c6-4505-bc9e-b5a14b19e16f",
+      "26a70f68-8212-4f41-aba4-e91700f98d9e"
+    ]
+  },
+  {
+    "username": "amit",
+    "password": "123456",
+    "purchasedCourses": [
+      "bf50e91b-c2c6-4505-bc9e-b5a14b19e16f",
+      "0d8eb742-3f61-436a-810b-5f3ce1efdaa0"
+    ]
+  }
+]
