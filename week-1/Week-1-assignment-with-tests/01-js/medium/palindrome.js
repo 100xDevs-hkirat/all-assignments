@@ -5,9 +5,23 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
+const reverseString = (str) => str.split("").reverse().join("");
+
+const joinSpaces = (str) => str.split(" ").join("");
+
+const removePuncuations = (str) =>
+  str
+    .replaceAll("?", "")
+    .replaceAll("!", "")
+    .replaceAll(",", "")
+    .replaceAll(".", "");
 
 function isPalindrome(str) {
-  return true;
+  const plainStr = removePuncuations(str.toUpperCase());
+  const oneStr = joinSpaces(plainStr);
+  const revStr = reverseString(oneStr);
+
+  return oneStr === revStr;
 }
 
 module.exports = isPalindrome;
