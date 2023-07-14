@@ -29,9 +29,97 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
+const bodyParser = require("body-parser");
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+
+const list = [];
+
+const generateNewId = (list) => {
+  let maxId = 0;
+
+  list.forEach((item) => {
+    if (item.id > maxId) {
+      maxId = item.id;
+    }
+  });
+
+  return maxId + 1;
+};
+
+const generateAuthToken = (length = 16) => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let token = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    token += chars.charAt(randomIndex);
+  }
+
+  return token;
+};
+
+app.post("/signup", (req, res) => {
+  const newItem = req.body;
+  const { username, password, firstName } = newItem;
+
+  if (!username || !password || !firstName) {
+    return res
+      .status(404)
+      .send({ error: "username & password & first name mandatory" });
+  }
+
+  const foundIndex = list.findIndex((x) => x.username === username);
+
+  if (foundIndex !== -1) {
+    return res.status(400).send({ error: "username already exists" });
+  }
+
+  list.push({ ...newItem, id: generateNewId(list) });
+  res.status(201).send(list);
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(404).send({ error: "username & password mandatory" });
+  }
+
+  const foundIndex = list.findIndex(
+    (x) => x.username === username && x.password === password
+  );
+
+  if (foundIndex === -1) {
+    return res.status(401).send({ error: "credentials are invalid" });
+  }
+
+  res.send({ authToken: generateAuthToken() });
+});
+
+app.get("/data", (req, res) => {
+  const { username, password } = req.headers;
+
+  const foundIndex = list.findIndex(
+    (x) => x.username === username && x.password === password
+  );
+
+  if (foundIndex === -1) {
+    return res.status(401).send({ error: "credentials are invalid" });
+  }
+
+  restList = list.map(({ username, password, ...restList }) => restList);
+
+  res.send({ users: restList });
+});
+
+app.all("*", (req, res) => {
+  res.status(404).send("Route not found");
+});
+
+app.listen(PORT, console.log("listening on 3000"));
 
 module.exports = app;

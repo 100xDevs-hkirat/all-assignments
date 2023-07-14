@@ -41,14 +41,29 @@
  */
 const express = require("express");
 const bodyParser = require("body-parser");
+const fs = require("fs");
+const path = require("path");
+const cors = require("cors");
 const PORT = 3000;
 const app = express();
 app.use(bodyParser.json());
 
-const list = [
-  { id: 1, title: "title 1", description: "description 1" },
-  { id: 2, title: "title 2", description: "description 2" },
-];
+const allowCrossOrigin = (req, res, next) => {
+  const { origin } = req.headers;
+  if (origin) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    //res.sendStatus(200);
+  }
+  next();
+};
+app.use(cors());
+
+const FILENAME = "list.json";
+const FILEPATH = path.join(__dirname, "./files/", FILENAME);
 
 const generateNewId = (list) => {
   let maxId = 0;
@@ -62,19 +77,42 @@ const generateNewId = (list) => {
   return maxId + 1;
 };
 
+const getListFromFile = (getFromFileCb) => {
+  fs.readFile(FILEPATH, "utf8", (err, data) => {
+    if (err) throw err;
+    const list =
+      typeof data === "string"
+        ? JSON.parse(data)
+        : typeof data === "object"
+        ? data
+        : [];
+    getFromFileCb(list);
+  });
+};
+
+const storeListToFile = (list, writeToFileCb) => {
+  fs.writeFile(FILEPATH, JSON.stringify(list), (err) => {
+    if (err) throw err;
+    writeToFileCb(true);
+  });
+};
+
 app.get("/todos", (req, res) => {
-  res.send(list);
+  getListFromFile((list) => {
+    res.send(list);
+  });
 });
 
 app.get("/todos/:id", (req, res) => {
   const id = +req.params?.id;
-  const foundItem = list.find((x) => x.id === id);
 
-  if (!foundItem) {
-    return res.status(404).send({ error: "item not Found" });
-  }
-
-  res.send(foundItem);
+  getListFromFile((list) => {
+    const foundItem = list.find((x) => x.id === id);
+    if (!foundItem) {
+      return res.status(404).send({ error: "item not Found" });
+    }
+    res.send(foundItem);
+  });
 });
 
 app.post("/todos", (req, res) => {
@@ -84,36 +122,59 @@ app.post("/todos", (req, res) => {
     return res.status(404).send({ error: "title mandatory" });
   }
 
-  list.push({ ...newItem, id: generateNewId(list) });
-  res.status(201).send(list);
+  getListFromFile((list) => {
+    list.push({ ...newItem, id: generateNewId(list) });
+
+    storeListToFile(list, (isStored) => {
+      if (isStored) {
+        res.status(201).send(list);
+      }
+    });
+  });
 });
 
 app.put("/todos/:id", (req, res) => {
   const id = +req.params?.id;
   const newItem = req.body;
-  const foundIndex = list.findIndex((x) => x.id === id);
 
-  if (foundIndex === -1) {
-    return res.status(404).send({ error: "item not Found" });
-  }
+  getListFromFile((list) => {
+    const foundIndex = list.findIndex((x) => x.id === id);
 
-  const currentItem = list[foundIndex];
-  const updatedItem = { ...currentItem, ...newItem, id };
+    if (foundIndex === -1) {
+      return res.status(404).send({ error: "item not Found" });
+    }
 
-  list[foundIndex] = updatedItem;
-  res.send(list);
+    const currentItem = list[foundIndex];
+    const updatedItem = { ...currentItem, ...newItem, id };
+
+    list[foundIndex] = updatedItem;
+
+    storeListToFile(list, (isStored) => {
+      if (isStored) {
+        res.send(list);
+      }
+    });
+  });
 });
 
 app.delete("/todos/:id", (req, res) => {
   const id = +req.params?.id;
-  const foundIndex = list.findIndex((x) => x.id === id);
 
-  if (foundIndex === -1) {
-    return res.status(404).send({ error: "item not Found" });
-  }
+  getListFromFile((list) => {
+    const foundIndex = list.findIndex((x) => x.id === id);
 
-  list.splice(foundIndex, 1);
-  res.send(list);
+    if (foundIndex === -1) {
+      return res.status(404).send({ error: "item not Found" });
+    }
+
+    list.splice(foundIndex, 1);
+
+    storeListToFile(list, (isStored) => {
+      if (isStored) {
+        res.send(list);
+      }
+    });
+  });
 });
 
 app.all("*", (req, res) => {
