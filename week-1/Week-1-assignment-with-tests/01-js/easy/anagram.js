@@ -7,8 +7,10 @@
   - `npm run test-anagram`
 */
 
-function isAnagram(str1, str2) {
+const sortString = (str) => str.toUpperCase().split("").sort().join("");
 
+function isAnagram(str1, str2) {
+  return sortString(str1) === sortString(str2);
 }
 
 module.exports = isAnagram;
