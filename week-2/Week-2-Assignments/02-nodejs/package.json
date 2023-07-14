@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-fileServer": "./node_modules/jest/bin/jest.js ./tests/fileServer.test.js",
-    "test-todoServer": "./node_modules/jest/bin/jest.js ./tests/todoServer.test.js",
-    "test-authenticationServer": "./node_modules/jest/bin/jest.js ./tests/authenticationServer.test.js",
-    "test-all": "./node_modules/jest/bin/jest.js ./tests/"
+    "test-fileServer": "node ./node_modules/jest/bin/jest.js ./tests/fileServer.test.js",
+    "test-todoServer": "node ./node_modules/jest/bin/jest.js ./tests/todoServer.test.js",
+    "test-authenticationServer": "node ./node_modules/jest/bin/jest.js ./tests/authenticationServer.test.js",
+    "test-all": "node ./node_modules/jest/bin/jest.js ./tests/"
   },
   "keywords": [],
   "author": "",
