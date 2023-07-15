@@ -1,9 +1,11 @@
 const express = require("express");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -56,6 +58,9 @@ app.post("/admin/signup", (req, res) => {
 
 app.post("/admin/login", (req, res) => {
   const { username, password } = req.headers;
+  if (!username || !password) {
+    res.status(400).json({ message: "Enter valid username or password" });
+  }
   const admin = ADMINS.find(
     (a) => a.username === username && a.password === password
   );
@@ -88,6 +93,14 @@ app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
 
 app.get("/admin/courses", authenticateJwt, (req, res) => {
   res.json({ courses: COURSES });
+});
+
+app.get("/admin/courses/:courseId", authenticateJwt, (req, res) => {
+  const courseIndex = COURSES.findIndex(
+    (c) => c.id === parseInt(req.params.courseId)
+  );
+  if (courseIndex != -1) res.json({ courses: COURSES[courseIndex] });
+  else res.status(404).json({ message: "Course not found!" });
 });
 
 // User routes
