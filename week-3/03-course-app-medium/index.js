@@ -3,8 +3,10 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const SECRET_KEY = "S3CR3T_K3Y"
+const cors = require('cors')
 
 app.use(express.json());
+app.use(cors())
 
 let ADMINS = [];
 let USERS = [];
@@ -34,7 +36,7 @@ const verifyJwt = (req, res, next) => {
     const token = authToken.split(" ")[1];
     jwt.verify(token, SECRET_KEY, (error, user) => {
       if (error) {
-        res.status(403).send("Authentication failed");
+        res.status(403).json({ message: "Authentication failed" });
       } else {
         req.user = user;
         next();
@@ -57,7 +59,7 @@ app.post('/admin/signup', (req, res) => {
     ADMINS.push({ username, password })
     const token = generateJwt(username, 'admin')
     fs.writeFileSync("admin.json", JSON.stringify(ADMINS))
-    res.json({ message: 'Admin created successfully', token })
+    res.status(200).json({ message: 'Admin created successfully', token })
   }
 });
 
@@ -69,8 +71,11 @@ app.post('/admin/login', (req, res) => {
     res.status(403).json({ message: "Admin does not exists" })
   } else {
     const token = generateJwt(username, 'admin')
-    res.json({ message: 'Logged in successfully', token })
+    res.status(200).json({ message: 'Logged in successfully', token })
   }
+}); 
+app.post('/admin/loggedin', verifyJwt, (req, res) => {
+  res.status(200).json({ message: "Logged in" })
 });
 
 app.post('/admin/courses', verifyJwt, (req, res) => {
@@ -78,7 +83,7 @@ app.post('/admin/courses', verifyJwt, (req, res) => {
   course.id = COURSES.length + 1;
   COURSES.push(course);
   fs.writeFileSync("course.json", JSON.stringify(COURSES))
-  res.json({ message: 'Course created successfully', courseId: course.id })
+  res.status(200).json({ message: 'Course created successfully', courseId: course.id })
 });
 
 app.put('/admin/courses/:courseId', verifyJwt, (req, res) => {
@@ -86,14 +91,14 @@ app.put('/admin/courses/:courseId', verifyJwt, (req, res) => {
   if (course) {
     Object.assign(course, req.body);
     fs.writeFileSync("course.json", JSON.stringify(COURSES))
-    res.json({ message: 'Course updated successfully' })
+    res.status(200).json({ message: 'Course updated successfully' })
   } else {
     res.status(404).json({ message: 'Course not found' })
   }
 });
 
 app.get('/admin/courses', verifyJwt, (req, res) => {
-  res.json({ courses: COURSES })
+  res.status(200).json({ courses: COURSES })
 });
 
 // User routes
@@ -107,7 +112,7 @@ app.post('/users/signup', (req, res) => {
     USERS.push({ username, password, purchasedCourses: [] })
     const token = generateJwt(username, 'user')
     fs.writeFileSync("user.json", JSON.stringify(USERS))
-    res.json({ message: 'user created successfully', token })
+    res.status(200).json({ message: 'user created successfully', token })
   }
 });
 
@@ -119,14 +124,14 @@ app.post('/users/login', (req, res) => {
     res.status(403).json({ message: "User does not exists" })
   } else {
     const token = generateJwt(username, 'user')
-    res.json({ message: 'Logged in successfully', token })
+    res.status(200).json({ message: 'Logged in successfully', token })
   }
 });
 
 app.get('/users/courses', verifyJwt, (req, res) => {
   console.log(COURSES);
   const availableCourses = COURSES.filter(a => a.published)
-  res.json({ courses: availableCourses })
+  res.status(200).json({ courses: availableCourses })
 });
 
 app.post('/users/courses/:courseId', verifyJwt, (req, res) => {
@@ -136,7 +141,7 @@ app.post('/users/courses/:courseId', verifyJwt, (req, res) => {
     if (user) {
       user.purchasedCourses.push(course);
       fs.writeFileSync("user.json", JSON.stringify(USERS))
-      res.json({ message: 'Course purchased successfully' });
+      res.status(200).json({ message: 'Course purchased successfully' });
     } else {
       res.status(403).json({ message: "User not found" })
     }
@@ -148,7 +153,7 @@ app.post('/users/courses/:courseId', verifyJwt, (req, res) => {
 app.get('/users/purchasedCourses', verifyJwt, (req, res) => {
   const user = USERS.find(u => u.username === req.user.username)
   if (user) {
-    res.json({ courses: user.purchasedCourses })
+    res.status(200).json({ courses: user.purchasedCourses })
   } else {
     res.status(403).json({ message: "User not found" })
 
