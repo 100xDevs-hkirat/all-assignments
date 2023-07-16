@@ -78,9 +78,9 @@ app.post('/admin/login', (req, res) => {
 
 app.get('/admin/me', authenticateJwt, (req, res) => {
   res.json({
-    user:{
-      username:req.user.username,
-      role:req.user.role
+    user: {
+      username: req.user.username,
+      role: req.user.role,
     },
   });
 });
@@ -143,7 +143,14 @@ app.post('/users/login', (req, res) => {
 app.get('/users/courses', authenticateJwt, (req, res) => {
   res.json({ courses: COURSES });
 });
-
+app.get('/users/me', authenticateJwt, (req, res) => {
+  res.json({
+    user: {
+      username: req.user.username,
+      role: req.user.role,
+    },
+  });
+});
 app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
   const course = COURSES.find((c) => c.id === parseInt(req.params.courseId));
   if (course) {
