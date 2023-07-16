@@ -93,7 +93,7 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
     res.status(404).json({ message: 'Course not found' });
   }
 });
-
+ 
 app.get('/admin/courses', authenticateJwt, (req, res) => {
   // logic to get all courses
   res.json({ courses: COURSES });
