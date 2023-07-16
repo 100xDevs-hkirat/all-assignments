@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require("jsonwebtoken");
-const fs = require('fs')
+const fs = require('fs');
+const { error } = require('console');
 const app = express();
 
 app.use(express.json());
@@ -98,7 +99,8 @@ app.post('/admin/signup', (req, res) => {
   fs.readFile('admin.json', 'utf-8', (err, data) =>{
     if(err) throw err
 
-    let ADMINS = data.admins
+    if(data.admins){
+      let ADMINS = data.admins
 
     for(let i=0; i<ADMINS.length ; i++){
       if(ADMINS[i].username === newAdmin.username){
@@ -111,48 +113,12 @@ app.post('/admin/signup', (req, res) => {
 
     ADMINS.push(newAdmin)
 
-    fs.writeFile('admin.json', 'utf-8', (err, data)=> {
-      
-    })
+    fs.writeFile('admin.json', JSON.stringify(ADMINS), (err)=> {
+      if(err) throw err
 
-    try {
-      const token = jwt.sign(
-        { user_id: newAdmin.id },
-        'my token key',
-        {
-          expiresIn: 200,
-        }
-      );
-  
-      let response = {
-        message : "Admin created successfully",
-        token: token
-      }
-      res.json(response)
-      
-    } catch (error) {
-      console.log(error)
-      res.status(500)
-    }
-
-
-  })
-
-  
-  
-  
-  
-
-});
-
-app.post('/admin/login', (req, res) => {
-  // logic to log in admin
-  let currUser = req.body;
-  for(let i=0; i<ADMINS.length; i++){
-    if(ADMINS[i].username === currUser.username  && ADMINS[i].password === currUser.password){
       try {
         const token = jwt.sign(
-          { user_id: ADMINS[i].id },
+          { user_id: newAdmin.id },
           'my token key',
           {
             expiresIn: 200,
@@ -160,7 +126,7 @@ app.post('/admin/login', (req, res) => {
         );
     
         let response = {
-          message : "Logged in successfully",
+          message : "Admin created successfully",
           token: token
         }
         res.json(response)
@@ -169,8 +135,80 @@ app.post('/admin/login', (req, res) => {
         console.log(error)
         res.status(500)
       }
+      
+    })
     }
-  }
+
+    else{
+      data.admins = []
+      data.admins.push(newAdmin)
+
+    fs.writeFile('admin.json', JSON.stringify(data.admins), (err)=> {
+      if(err) throw err
+
+      try {
+        const token = jwt.sign(
+          { user_id: newAdmin.id },
+          'my token key',
+          {
+            expiresIn: 200,
+          }
+        );
+    
+        let response = {
+          message : "Admin created successfully",
+          token: token
+        }
+        res.json(response)
+        
+      } catch (error) {
+        console.log(error)
+        res.status(500)
+      }
+      
+    })
+    }
+    
+  })
+});
+
+app.post('/admin/login', (req, res) => {
+  // logic to log in admin
+  let currUser = req.body;
+
+  fs.readFile('admin.json', 'utf-8', (err, data) => {
+
+    if(err) throw err
+
+    if(data.admins){
+      let ADMINS = data.admins
+    for(let i=0; i<ADMINS.length; i++){
+      if(ADMINS[i].username === currUser.username  && ADMINS[i].password === currUser.password){
+        try {
+          const token = jwt.sign(
+            { user_id: ADMINS[i].id },
+            'my token key',
+            {
+              expiresIn: 200,
+            }
+          );
+      
+          let response = {
+            message : "Logged in successfully",
+            token: token
+          }
+          res.json(response)
+          
+        } catch (error) {
+          console.log(error)
+          res.status(500)
+        }
+      }
+    }
+    }
+    
+  })
+  
   
   let response = {
     message : "Invalid Credentials"
@@ -185,14 +223,47 @@ app.post('/admin/courses', isAdminAuthenticate ,(req, res) => {
   // logic to create a course
   let newCourse = req.body
   newCourse.id = Date.now()
-  COURSES.push(newCourse)
+
+  try {
+
+    fs.readFile('course.json', 'utf-8', (err, data) => {
+      if(err) throw err
   
-  let response = {
-      message : "Course created successfully",
-      courseId : newCourse.id
-    }
+      if(data.courses){
+        data.courses.push(newCourse)
+        fs.writeFile('course.json', JSON.stringify(data.courses), (err)=>{
+          if(err) throw err
+          
+          let response = {
+            message : "Course created successfully",
+            courseId : newCourse.id
+          }
+        
+          res.json(response)
+
+        })
+      }
   
-  res.json(response)
+      else{
+        data.courses = []
+        data.courses.push(newCourse)
+        fs.writeFile('course.json', JSON.stringify(data.courses), (err)=>{
+          if(err) throw err
+          
+          let response = {
+            message : "Course created successfully",
+            courseId : newCourse.id
+          }
+        
+          res.json(response)
+
+        })
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500)
+  }
 });
 
 
@@ -202,25 +273,47 @@ app.put('/admin/courses/:courseId', isAdminAuthenticate, (req, res) => {
   let editCourseId = req.params.courseId
   let isCourseFound = false;
 
-  for(let i=0; i<COURSES.length ; i++){
-    if(COURSES[i].id === editCourseId){
-      isCourseFound = true;
-      if(editCourse.title){
-        COURSES[i].title = editCourse.title
+  try {
+
+    fs.readFile('course.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.courses){
+
+        let COURSES = data.courses;
+
+        for(let i=0; i<COURSES.length ; i++){
+          if(COURSES[i].id === editCourseId){
+            isCourseFound = true;
+            if(editCourse.title){
+              COURSES[i].title = editCourse.title
+            }
+            if(editCourse.description){
+              COURSES[i].description = editCourse.description
+            }
+            if(editCourse.price){
+              COURSES[i].price = editCourse.price
+            }
+            if(editCourse.imageLink){
+              COURSES[i].imageLink = editCourse.imageLink
+            }
+            if(editCourse.published){
+              COURSES[i].published = editCourse.published
+            }
+          }
+        }
+
+        fs.writeFile('course.json', JSON.stringify(COURSES), (err)=>{
+          if(err) throw err
+        })
+
       }
-      if(editCourse.description){
-        COURSES[i].description = editCourse.description
-      }
-      if(editCourse.price){
-        COURSES[i].price = editCourse.price
-      }
-      if(editCourse.imageLink){
-        COURSES[i].imageLink = editCourse.imageLink
-      }
-      if(editCourse.published){
-        COURSES[i].published = editCourse.published
-      }
-    }
+    })
+
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500)
   }
 
   if(isCourseFound){
@@ -244,12 +337,32 @@ app.put('/admin/courses/:courseId', isAdminAuthenticate, (req, res) => {
 
 app.get('/admin/courses', isAdminAuthenticate,(req, res) => {
   // logic to get all courses
-  let response = {
-    courses : COURSES
-  }
+  try {
 
-  res.json(response)
-  
+    fs.readFile('course.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.courses){
+        let response = {
+          courses : data.courses
+        }
+      
+        res.json(response)
+      }
+
+      else{
+        let response = {
+          courses : []
+        }
+      
+        res.json(response)
+      }
+    })
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500)
+  }
 });
 
 // User routes
@@ -258,15 +371,45 @@ app.post('/users/signup', (req, res) => {
   let newUser = req.body;
   newUser.id = Date.now();
   newUser.purchasedCourses = []
-  for(let i=0; i<USERS.length ; i++){
-    if(USERS[i].username === newAdmin.username){
-      let response = {
-        message : "User Already Exist. Please Login"
+
+  try {
+
+    fs.readFile('user.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.users){
+        let USERS = data.users;
+        for(let i=0; i<USERS.length ; i++){
+          if(USERS[i].username === newAdmin.username){
+            let response = {
+              message : "User Already Exist. Please Login"
+            }
+            res.status(409).json(response)
+          }
+        }
+        USERS.push(newUser)
+
+        fs.writeFile('user.json', JSON.stringify(USERS), (err)=>{
+          if(err) throw err
+        })
+
       }
-      res.status(409).json(response)
-    }
+
+      else{
+        data.users = []
+        data.users.push(newUser);
+        
+        fs.writeFile('user.json', JSON.stringify(data.users), (err)=>{
+          if(err) throw err
+        })
+      }
+
+    })
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500)
   }
-  USERS.push(newUser)
   
   try {
     const token = jwt.sign(
@@ -292,30 +435,39 @@ app.post('/users/signup', (req, res) => {
 app.post('/users/login', (req, res) => {
   // logic to log in user
   let currUser = req.body;
-  for(let i=0; i<USERS.length; i++){
-    if(USERS[i].username === currUser.username  && USERS[i].password === currUser.password){
-      try {
-        const token = jwt.sign(
-          { user_id: USERS[i].id },
-          'my token key',
-          {
-            expiresIn: 200,
+
+  try {
+
+    fs.readFile('user.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.users){
+        let USERS = data.users;
+        for(let i=0; i<USERS.length; i++){
+          if(USERS[i].username === currUser.username  && USERS[i].password === currUser.password){
+              const token = jwt.sign(
+                { user_id: USERS[i].id },
+                'my token key',
+                {
+                  expiresIn: 200,
+                }
+              );
+          
+              let response = {
+                message : "Logged in successfully",
+                token: token
+              }
+              res.json(response)
           }
-        );
-    
-        let response = {
-          message : "Logged in successfully",
-          token: token
         }
-        res.json(response)
-        
-      } catch (error) {
-        console.log(error)
-        res.status(500)
       }
-    }
+    })
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500)
   }
-  
+
   let response = {
     message : "Invalid Credentials"
   }
@@ -325,11 +477,32 @@ app.post('/users/login', (req, res) => {
 
 app.get('/users/courses', isUserAuthenticate,(req, res) => {
   // logic to list all courses
-  let response = {
-    courses : COURSES
-  }
+  try {
 
-  res.json(response)
+    fs.readFile('course.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.courses){
+        let response = {
+          courses : data.courses
+        }
+      
+        res.json(response)
+      }
+
+      else{
+        let response = {
+          courses : []
+        }
+      
+        res.json(response)
+      }
+    })
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500)
+  }
 });
 
 
@@ -339,11 +512,40 @@ app.post('/users/courses/:courseId', isUserAuthenticate,(req, res) => {
   let isCourseFound = false;
   let User = req.user
 
-  for(let j=0; j< COURSES.length; j++){
-    if(COURSES[j].id === courseId){
-        isCourseFound = true;
-        User.purchasedCourses.push(COURSES[j]);
-    }
+  try {
+    fs.readFile('course.json', 'utf-8', (err, data) =>{
+      if(err) throw err
+
+      if(data.courses){
+        let COURSES = data.courses;
+        for(let j=0; j< COURSES.length; j++){
+          if(COURSES[j].id === courseId){
+              isCourseFound = true;
+              User.purchasedCourses.push(COURSES[j]);
+          }
+        }
+
+        fs.readFile('user.json', 'utf-8', (err, data1) =>{
+          if(err) throw err
+
+          if(data1.users){
+            let USERS = data1.users
+            for(let j=0; j< USERS.length; j++){
+              if(USERS[j].id === User.id){
+                  USERS[j] = User;
+              }
+            }
+
+            fs.writeFile('user.json', JSON.stringify(USERS), (err)=>{
+              if(err) throw err
+            })
+          } 
+        })
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500)
   }
 
   if(!isCourseFound){
@@ -361,18 +563,15 @@ app.post('/users/courses/:courseId', isUserAuthenticate,(req, res) => {
   
     res.json(response)
   }
-  
-  
-  
 });
 
 
-app.get('/users/purchasedCourses', isUserAuthenticate,(req, res) => {
+app.get('/users/purchasedCourses', isUserAuthenticate, (req, res) => {
   // logic to view purchased courses
   let response = {
     purchasedCourses : req.user.purchasedCourses
   }
-
+  
   res.json(response)
 });
 
