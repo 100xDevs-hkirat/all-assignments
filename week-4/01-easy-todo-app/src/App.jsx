@@ -35,10 +35,11 @@ function App() {
 
 function ShowTodo({ todo, deleteTodo}) {
     // Add a delete button here so user can delete a TODO.
-    const {id, title } = todo;
+    const {id, title, description } = todo;
     return (
       <li>
         <b>Title:</b> {title} <br />
+        <b>Description:</b> {description} <br />
         <button onClick={() => deleteTodo(id)}>Delete</button>
         <hr />
       </li>
