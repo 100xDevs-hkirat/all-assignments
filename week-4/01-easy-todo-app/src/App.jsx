@@ -5,7 +5,9 @@ import axios from 'axios';
 
 function App() {
     // fetch all todos from server
-    const [todos, setTodos] = useState([])
+    const [todos, setTodos] = useState([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
 
   useEffect(() => {
     axios.get("http://localhost:3000/todos").then((res) => {
@@ -17,13 +19,34 @@ function App() {
     axios.delete(`http://localhost:3000/todos/${id}`).then(res => setTodos(res.data));
   }
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = {title, description};
+
+    axios.post('http://localhost:3000/todos', formData, {headers: {'Content-Type': 'application/json'}})
+    .then(res => console.log('Response Server: ', res.data));
+
+    setTitle('');
+    setDescription('');
+  }
+
   return (
     <>
-      <div>
-        <h1>Todo App</h1>
-        <label>Enter a todo: </label>
-        <input type="text" />
-      </div>
+      <form onSubmit={handleSubmit}>
+        <label>Title: <input type="text" value={title} onChange={handleTitleChange} /> </label>
+        <br />
+        <label>Description: <input type="text" value={description} onChange={handleDescriptionChange} /> </label>
+        <br />
+        <button type='submit'>Enter</button>
+      </form>
       <ol>
         {todos.map(todo => (
           <ShowTodo key={todo.id} todo={todo} deleteTodo={deleteTodo}/>
