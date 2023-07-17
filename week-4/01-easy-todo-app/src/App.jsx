@@ -9,10 +9,12 @@ function App() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/todos").then((res) => {
-      setTodos(res.data);
-    })
+    useEffect(() => {
+      setInterval(() => {
+        axios.get("http://localhost:3000/todos").then((res) => {
+        setTodos(res.data);
+      })
+    }, 10000); 
   }, []);
 
   const deleteTodo = (id) => {
