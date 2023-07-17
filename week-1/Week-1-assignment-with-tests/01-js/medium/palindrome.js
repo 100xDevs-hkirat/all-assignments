@@ -23,7 +23,7 @@ function isPalindrome(str) {
   if (str == str2) return true;
   else return false;
 }
-str = "Eva, can I see bees in a cave?";
-// var str = str.toLowerCase();
-console.log( isPalindrome(str) );
+// str = "Eva, can I see bees in a cave?";
+// // var str = str.toLowerCase();
+// console.log( isPalindrome(str) );
 module.exports = isPalindrome;
