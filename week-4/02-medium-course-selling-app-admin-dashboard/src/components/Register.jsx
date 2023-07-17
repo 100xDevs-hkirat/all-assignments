@@ -50,9 +50,21 @@ function Register() {
   return (
     <div className="page">
       <div className="title">
-        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-          Register to the website
+        <Typography
+          variant="h4"
+          component="div"
+          style={{
+            flexGrow: 1,
+            padding: "10px",
+            borderRadius: "4px",
+            fontWeight: "bold",
+            color: "#101460",
+            textAlign: "center",
+          }}
+        >
+          Register To The Website
         </Typography>
+        <br />
         <p style={{ textAlign: "center", color: "red" }}>{message}</p>
       </div>
       <Card className="form">
@@ -72,7 +84,12 @@ function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button className="button" variant="contained" onClick={handleRegister}>
+        <Button
+          style={{ backgroundColor: "#101460" }}
+          className="button"
+          variant="contained"
+          onClick={handleRegister}
+        >
           Register
         </Button>
         <br></br>
@@ -80,7 +97,9 @@ function Register() {
           <h3 style={{ fontWeight: "500" }}>
             Already a user? Click here to login.
           </h3>
+          <br />
           <Button
+            style={{ backgroundColor: "#101460" }}
             className="button"
             variant="contained"
             onClick={() => navigate("/login")}

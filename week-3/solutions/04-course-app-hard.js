@@ -101,6 +101,11 @@ app.post("/admin/courses", authenticateJwt, async (req, res) => {
   res.json({ message: "Course created successfully", courseId: course.id });
 });
 
+app.get("/admin/courses/:courseId", authenticateJwt, async (req, res) => {
+  const course = await Course.findById(req.params.courseId);
+  res.json({ course });
+});
+
 app.put("/admin/courses/:courseId", authenticateJwt, async (req, res) => {
   const course = await Course.findByIdAndUpdate(req.params.courseId, req.body, {
     new: true,

@@ -29,8 +29,8 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  padding: 35px 70px;
-  border: 1px solid black;
+  padding: 45px 60px;
+  border: 1px solid #101460;
 }
 
 #email,
@@ -47,12 +47,18 @@ body {
 }
 
 .all-courses {
-  margin-top: 100px;
-  margin-left: 100px;
-  margin-right: 100px;
   display: flex;
   gap: 35px;
-  justify-content: start;
+  margin-top: 20px;
+  margin-left: 400px;
+  margin-right: 300px;
   flex-wrap: wrap;
-  position: absolute;
+  align-items: center;
+}
+
+.message {
+  font-weight: 500;
+  font-size: 22px;
+  text-align: center;
+  color: rgb(218, 18, 18);
 }

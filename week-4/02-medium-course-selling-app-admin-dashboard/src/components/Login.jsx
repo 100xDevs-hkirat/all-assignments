@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
-
 import "./style.css";
 
 /// File is incomplete. You need to add input boxes to take input for users to login.
@@ -39,8 +38,8 @@ function Login() {
           }
           setEmail("");
           setPassword("");
+          navigate("/courses");
           window.location.reload();
-          // navigate("/login");
         });
     }
   };
@@ -48,11 +47,28 @@ function Login() {
   return (
     <div className="page">
       <div className="title">
-        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-          Login to admin dashboard
+        <Typography
+          variant="h4"
+          component="div"
+          style={{
+            flexGrow: 1,
+            padding: "10px",
+            borderRadius: "4px",
+            fontWeight: "bold",
+            color: "#101460",
+            textAlign: "center",
+          }}
+        >
+          Login To Admin Dashboard
         </Typography>
+        <br />
 
-        <p style={{ textAlign: "center", color: "red" }}>{message}</p>
+        {message && (
+          <div>
+            <p className="message">{message}</p>
+            <br />
+          </div>
+        )}
       </div>
       <Card className="form">
         <TextField
@@ -71,7 +87,12 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button className="button" variant="contained" onClick={handleLogin}>
+        <Button
+          style={{ backgroundColor: "#101460" }}
+          className="button"
+          variant="contained"
+          onClick={handleLogin}
+        >
           Login
         </Button>
         <br></br>
@@ -79,7 +100,9 @@ function Login() {
           <h3 style={{ fontWeight: "500" }}>
             New here? Click here to register new account.
           </h3>
+          <br />
           <Button
+            style={{ backgroundColor: "#101460" }}
             className="button"
             variant="contained"
             onClick={() => navigate("/register")}

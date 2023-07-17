@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Appbar from "./components/Appbar";
 import CreateCourse from "./components/CreateCourse";
+import UpdateCourse from "./components/UpdateCourse";
 import Register from "./components/Register";
 import ShowCourses from "./components/ShowCourses";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/createCourse" element={<CreateCourse />} />
+        <Route path="/updateCourse/:courseId" element={<UpdateCourse />} />
         <Route path="/courses" element={<ShowCourses />} />
       </Routes>
     </Router>

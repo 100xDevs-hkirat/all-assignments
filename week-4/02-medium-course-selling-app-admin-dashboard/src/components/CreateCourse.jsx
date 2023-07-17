@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
@@ -12,14 +12,36 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 /// You need to add input boxes to take input for users to create a course.
 /// I've added one input so you understand the api to do it.
-function CreateCourse() {
+function CreateCourse(props) {
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [price, setPrice] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [published, setPublished] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (props.isUpdate) {
+      setTitle(props.course.title);
+      setDescription(props.course.description);
+      setPrice(props.course.price);
+      setImageLink(props.course.imageLink);
+      setPublished(props.course.published);
+    }
+  }, [props.course]);
 
   function createCourse() {
+    // if (
+    //   title.trim() === "" ||
+    //   description.trim() === "" ||
+    //   price.trim() === "" ||
+    //   imageLink.trim() === "" ||
+    //   published.trim() === ""
+    // ) {
+    //   setMessage("Text fields cannot be empty");
+    //   return;
+    // }
     fetch("http://localhost:3000/admin/courses", {
       method: "POST",
       headers: {
@@ -42,6 +64,30 @@ function CreateCourse() {
         setTitle("");
         setPrice("");
         setPublished("");
+        navigate("/courses");
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function updateCourse() {
+    fetch(`http://localhost:3000/admin/courses/${props.course._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        price,
+        imageLink,
+        published,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert(data.message);
+        navigate("/courses");
       })
       .catch((err) => console.log(err));
   }
@@ -49,9 +95,27 @@ function CreateCourse() {
   return (
     <div className="page">
       <div className="title">
-        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-          Create new course
+        <Typography
+          variant="h4"
+          component="div"
+          style={{
+            flexGrow: 1,
+            padding: "10px",
+            borderRadius: "4px",
+            fontWeight: "bold",
+            color: "#101460",
+            textAlign: "center",
+          }}
+        >
+          {props.isUpdate ? "Update Course" : "Create New Course"}
         </Typography>
+        <br />
+        {message && (
+          <div>
+            <p className="message">{message}</p>
+            <br />
+          </div>
+        )}
       </div>
       <Card className="form">
         <TextField
@@ -108,8 +172,14 @@ function CreateCourse() {
         </Select>
         {/* <input type="file" accept="image/*" /> */}
 
-        <Button className="button" variant="contained" onClick={createCourse}>
-          Create
+        <br />
+        <Button
+          style={{ backgroundColor: "#101460" }}
+          className="button"
+          variant="contained"
+          onClick={() => (props.isUpdate ? updateCourse() : createCourse())}
+        >
+          {props.isUpdate ? "UPDATE" : "CREATE"}
         </Button>
       </Card>
     </div>
