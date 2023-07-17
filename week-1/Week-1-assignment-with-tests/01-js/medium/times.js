@@ -8,5 +8,11 @@ Hint - use Date class exposed in JS
 */
 
 function calculateTime(n) {
-    return 0.01;
+    const intime=performance.now();
+    let sum=0
+    for(let i=1;i<=n;i++){
+        sum+=i;
+    }
+    const outtime=performance.now();
+    return outtime-intime;
 }

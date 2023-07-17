@@ -7,7 +7,19 @@
 */
 
 function isPalindrome(str) {
-  return true;
+  let str1="";
+  for(let i=0;i<str.length;i++){
+    let ascii=str[i].charCodeAt(0);
+    if((ascii>=65 && ascii<=91) || (ascii>=97 && ascii<=122)) str1+=str[i];
+  }
+  //Reversing the string obtained from above process
+  let str2="";
+  for(let i=str1.length-1;i>=0;i--){
+    str2+=str1[i]
+  }
+  str1=str1.toLowerCase()
+  str2=str2.toLowerCase();
+  return str1===str2
 }
 
 module.exports = isPalindrome;
