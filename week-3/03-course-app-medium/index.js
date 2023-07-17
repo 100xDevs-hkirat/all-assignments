@@ -43,7 +43,7 @@ const verifyJwt = (req, res, next) => {
       }
     })
   } else {
-    res.sendstatus(401)
+    res.status(401).json({message:"No token"})
   }
 }
 
