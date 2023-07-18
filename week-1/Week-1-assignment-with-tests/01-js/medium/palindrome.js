@@ -5,9 +5,21 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
-
+function reverse(str) {
+  let answer = "";
+  for (let i = str.length - 1; i >= 0; i--) {
+    answer += str[i];
+  }
+  return answer;
+}
 function isPalindrome(str) {
-  return true;
+  str = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
+  let reverseString = reverse(str);
+  if (reverseString === str) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 module.exports = isPalindrome;
