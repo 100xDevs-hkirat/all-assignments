@@ -4,6 +4,27 @@ import { useState } from "react";
 function Create(){
     const[title ,setitle]=useState("");
     const[description,setdescription]=useState("");
+    function addtodo(){
+        const url="http://localhost:3000/addtodo";
+        const data={
+            id:100,title,description
+        }
+           fetch(url,{
+            method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: data
+        }).then((response)=>{
+            if(!response.ok){
+                throw new Error("Some problem from backend");
+            }
+            return response.text();            
+        }).then((data)=>{
+            console.log(data);
+        }).catch((err)=>{
+            console.log(err);
+        })}
     return (
         <>
         <form id ="add to do">
@@ -18,7 +39,7 @@ function Create(){
             <textarea id="description" name="description" value={description} onChange={(e)=>setdescription(e.target.value)}></textarea>
             <br/>
             <br/>
-            <input type="submit"></input>
+            <input type="submit" onClick={addtodo}></input>
         </form>
         </>
     )
