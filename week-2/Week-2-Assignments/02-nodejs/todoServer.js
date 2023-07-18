@@ -44,10 +44,12 @@ const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
 const Joi = require('joi');
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const find = () => {
   return new Promise((resolve, reject) => {
@@ -122,7 +124,7 @@ const deleteById = async (todoId) => {
 
 const todoSchema = Joi.object({
   title: Joi.string().required(),
-  completed: Joi.boolean().required(),
+  completed: Joi.boolean().default(false),
   description: Joi.string().required(),
 });
 
@@ -163,7 +165,7 @@ const createTodo = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   const todo = req.body;
   const newTodo = await save({ id: uuidv4(), ...todo });
-  res.status(201).json({ id: newTodo.id });
+  res.status(201).json({ ...newTodo });
 };
 
 const updateTodo = async (req, res) => {
