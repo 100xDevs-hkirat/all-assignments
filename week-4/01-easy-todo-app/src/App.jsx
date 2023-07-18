@@ -2,7 +2,10 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import create from './components/create'
+import Create from './components/create'
+import Todolist from './components/alltodo'
+// import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+
 
 function App() {
   const [todos, setTodos] = useState([])
@@ -10,13 +13,10 @@ function App() {
 
   return (
     <>
-      <div>
-        <h1>Easy Todo App</h1>
-        <br></br>
-        <h3> <a href={create}>Add To Do</a></h3>       
-        <br></br>
-        <h3><a href="#">All To Do's</a> </h3>          
-      </div>
+      <Create/>
+      <br/>
+      <br/>
+      <Todolist/>
     </>
   )
 }
