@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
 
@@ -43,11 +46,11 @@ function App() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <label>Title: <input type="text" value={title} onChange={handleTitleChange} /> </label>
+        <TextField label='Title' size='small' variant='standard' type="text" value={title} onChange={handleTitleChange} />
         <br />
-        <label>Description: <input type="text" value={description} onChange={handleDescriptionChange} /> </label>
-        <br />
-        <button type='submit'>Enter</button>
+        <TextField label='Description' variant='standard' type="text" value={description} onChange={handleDescriptionChange} />
+        <br /> <br />
+        <Button variant='contained' type='submit'>Enter</Button>
       </form>
       <ol>
         {todos.map(todo => (
@@ -63,9 +66,9 @@ function ShowTodo({ todo, deleteTodo}) {
     const {id, title, description } = todo;
     return (
       <li>
-        <b>Title:</b> {title} <br />
-        <b>Description:</b> {description} <br />
-        <button onClick={() => deleteTodo(id)}>Delete</button>
+        <Typography>{title}</Typography>
+        <Typography>{description}</Typography>
+        <Button variant='contained' color='error' onClick={() => deleteTodo(id)}>Delete</Button>
         <hr />
       </li>
     );
