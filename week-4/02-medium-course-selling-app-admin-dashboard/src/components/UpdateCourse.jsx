@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CourseCard from "./CourseCard";
 import CreateCourse from "./CreateCourse";
 import { useParams } from "react-router-dom";
 
