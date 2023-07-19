@@ -7,14 +7,15 @@ function Create(){
     function addtodo(){
         const url="http://localhost:3000/addtodo";
         const data={
-            id:100,title,description
+            id:100,title:title,description:description
         }
+        console.log(JSON.stringify(data));
            fetch(url,{
             method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: data
+        body: data,
         }).then((response)=>{
             if(!response.ok){
                 throw new Error("Some problem from backend");
