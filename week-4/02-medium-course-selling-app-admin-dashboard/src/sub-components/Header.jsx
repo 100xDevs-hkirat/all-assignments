@@ -6,7 +6,7 @@ export default function Header() {
         <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          CourseWise
+            <a href="/" style={{color: 'white', textDecoration:'none'}}> CourseWise </a>
           </Typography>
           <Button href="/register" color="inherit">Register</Button>
           <Button href="/login" color="inherit">Login</Button>
