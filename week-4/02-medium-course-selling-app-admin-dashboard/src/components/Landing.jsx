@@ -6,7 +6,7 @@ import React from "react";
 /// Logging a user out is as simple as deleting the token from the local storage.
 function Landing() {
     return <div>
-        <h1>Welcome to course selling website!</h1>
+        <h1>Welcome to CourseWise!!</h1>
         <a href="/register">Register</a>
         <br/>
         <a href="/login">Login</a>
