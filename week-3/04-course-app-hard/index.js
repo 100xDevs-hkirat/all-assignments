@@ -104,11 +104,30 @@ app.post("/admin/signup", async (req, res) => {
   res.json({ message: "Admin created successfully", token });
 });
 
-app.post("/admin/login", authenticateAdmin, (req, res) => {
+// app.post("/admin/login", authenticateAdmin, (req, res) => {
+//   // logic to log in admin
+//   const { currentAdmin } = req;
+//   const token = generateJwtAdmin(currentAdmin);
+//   res.send({ message: "Logged in successfully", token });
+// });
+
+app.post("/admin/login", async (req, res) => {
   // logic to log in admin
-  const { currentAdmin } = req;
-  const token = generateJwtAdmin(currentAdmin);
-  res.send({ message: "Logged in successfully", token });
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(404)
+      .send({ error: "username & password mandatory to signup" });
+  }
+
+  const foundAdmin = await AdminModel.findOne({ username });
+  if (!foundAdmin) {
+    return res.status(403).send({ error: "Admin not found" });
+  }
+
+  const token = generateJwtAdmin(foundAdmin);
+  res.json({ message: "Admin logged-in successfully", token });
 });
 
 app.post("/admin/courses", authenticateAdmin, async (req, res) => {
