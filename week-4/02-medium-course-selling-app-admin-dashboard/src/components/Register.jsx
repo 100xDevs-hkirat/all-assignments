@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "../sub-components/Header";
 import { Typography, TextField, Button, Card } from "@mui/material";
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
@@ -8,7 +7,7 @@ function Register() {
     const [password, setPassword] = React.useState("");
 
     return <div>
-        <Header/>
+        
         <center style={{marginTop: 150}}>
             <Typography variant="h5">Welcome to CourseWise, Signup Below</Typography>
             <br />

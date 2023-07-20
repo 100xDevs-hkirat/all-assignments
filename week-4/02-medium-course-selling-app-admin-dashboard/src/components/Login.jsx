@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "../sub-components/Header";
 import { Typography, TextField, Button, Card } from "@mui/material";
 
 /// File is incomplete. You need to add input boxes to take input for users to login.
@@ -8,7 +7,6 @@ function Login() {
     const [password, setPassword] = React.useState("");
 
     return <div>
-    <Header/>
     <center style={{marginTop: 150}}>
         <Typography variant="h5">Login to Admin Dashboard!</Typography>
         <br />
