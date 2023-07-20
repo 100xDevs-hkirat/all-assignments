@@ -2,7 +2,7 @@ import React from "react";
 
 function ShowCourses() {
   const [courses, setCourses] = React.useState([]);
-  const [count, setCount] = React.useState(0)
+  const [count, setCount] = React.useState(0);
 
   // Add code to fetch courses from the server
   // and set it in the courses state variable.
@@ -37,7 +37,7 @@ function ShowCourses() {
 function Course(props) {
   return (
     <div>
-      <span><h3>{props.id} {props.title}</h3></span>
+      <h3>{props.id} {props.title}</h3>
     </div>
   );
 }
