@@ -1,0 +1,77 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: rgb(52, 47, 47);
+}
+
+.container {
+    margin: 20px 40px;
+    border: 1px dashed white;
+    padding: 3px;
+}
+
+.container input {
+    background-color: rgb(40, 16, 16);
+    border: 1px solid white;
+    padding: 4px;
+    caret-color: white;
+    color: antiquewhite;
+    width: 40%;
+    margin-top: 3%;
+}
+
+.container button {
+    margin-top: 3%;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.container button:hover {
+    background-color: rgb(95, 92, 92);
+    color: white;
+    cursor: pointer;
+}
+
+.container button:active {
+    background-color: rgb(56, 54, 54);
+}
+
+.list{
+    margin: 20px 40px;
+    color: white;
+}
+
+.each-task{
+    border: 1px solid white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.each-task h2{
+    margin: 5px 0;
+    text-decoration: underline;
+}
+
+.each-task p{
+    color: aquamarine;
+}
+
+.heading{
+    margin: 30px 40px;
+    color: white;
+    font-size: 35pt;
+}
+
+.fa{
+    float: right;
+    color: white;
+    cursor: pointer;
+}
+
+.fa:hover{
+    color: red;
+}
