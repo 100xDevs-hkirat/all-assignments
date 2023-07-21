@@ -13,8 +13,21 @@ const validate = (schema, property = 'body') => {
 
 //Schemas
 const signUpSchema = Joi.object({
-  username: Joi.string().required().max(20),
-  password: Joi.string().required().min(6).max(120),
+  username: Joi.string()
+    .required()
+    .max(20)
+    .pattern(/^[a-zA-Z0-9_]+$/)
+    .message('Username must contains only alphnumeric characters and _'),
+  password: Joi.string()
+    .required()
+    .min(6)
+    .max(120)
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]+$/
+    )
+    .message(
+      'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character'
+    ),
 });
 
 const courseSchema = Joi.object({

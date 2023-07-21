@@ -1,26 +1,34 @@
 [
   {
     "courseId": "bf50e91b-c2c6-4505-bc9e-b5a14b19e16f",
-    "title": "React",
-    "description": "Learn advance react hooks.",
-    "price": 100.35,
-    "imageLink": "https://linktoimage.com",
+    "title": "React - The Complete Guide 2023 (incl. React Router & Redux)",
+    "description": "Dive in and learn React.js from scratch! Learn React, Hooks, Redux, React Router, Next.js, Best Practices and way more!",
+    "price": 22,
+    "imageLink": "https://img-b.udemycdn.com/course/240x135/1362070_b9a1_2.jpg",
     "published": true
   },
   {
-    "courseId": "0d8eb742-3f61-436a-810b-5f3ce1efdaa0",
-    "title": "JS",
-    "description": "JS",
-    "price": 100.35,
-    "imageLink": "https://linktoimage.com",
+    "courseId": "7a0b184b-848c-4c5c-89db-04c32eb98f0f",
+    "title": "The Complete JavaScript Course 2024: From Zero to Expert!",
+    "description": "The modern JavaScript course for everyone! Master JavaScript with projects, challenges and theory. Many courses in one!",
+    "price": 14,
+    "imageLink": "https://img-c.udemycdn.com/course/480x270/851712_fc61_6.jpg",
     "published": true
   },
   {
-    "courseId": "26a70f68-8212-4f41-aba4-e91700f98d9e",
-    "title": "NextJS",
-    "description": "learn learn nextJS",
-    "price": 100.35,
-    "imageLink": "https://linktoimage.com",
+    "courseId": "64cb2d9c-4336-4acc-a3c1-acbef99a5a76",
+    "title": "The Complete 2023 Web Development Bootcamp",
+    "description": "Become a Full-Stack Web Developer with just ONE course. HTML, CSS, Javascript, Node, React, MongoDB, Web3 and DApps",
+    "imageLink": "https://img-c.udemycdn.com/course/480x270/1565838_e54e_16.jpg",
+    "price": 20,
     "published": true
+  },
+  {
+    "courseId": "f51c2904-adfb-4f87-8485-42bc6099e5e9",
+    "title": "Test",
+    "description": "s",
+    "imageLink": "https://img-b.udemycdn.com/course/240x135/1362070_b9a1_2.jpg",
+    "price": 55,
+    "published": false
   }
 ]

@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
+const delay = require('express-delay');
 
 const {
   validate,
@@ -15,7 +17,10 @@ const {
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 dotenv.config();
+
+app.use(delay(200, 500));
 
 let ADMINS = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'admins.json'), 'utf-8')
@@ -42,6 +47,7 @@ const generateJWT = (payload) => {
 
 const isAuthenticated = (req, res, next) => {
   const authHeader = req.headers['authorization'];
+
   const token = (authHeader && authHeader.split(' ')[1]) ?? null;
   if (token === null) return res.sendStatus(401);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -54,13 +60,13 @@ const isAuthenticated = (req, res, next) => {
 };
 
 const isAdminAuthenticated = (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password } = req.headers;
   const admin = ADMINS.find(
     (admin) => admin.username === username && admin.password === password
   );
-
-  if (admin) next();
-  else {
+  if (admin) {
+    next();
+  } else {
     res.status(403).json({ message: 'Admin authentication failed' });
   }
 };
@@ -96,9 +102,8 @@ app.post('/admin/signup', validate(signUpSchema), (req, res) => {
 
 app.post('/admin/login', isAdminAuthenticated, (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  const token = generateJWT({ username: req.body.username });
-  res.setHeader('Authorization', `Bearer ${token}`);
-  res.send({ message: 'Logged in successfully.' });
+  const token = generateJWT({ username: req.headers.username });
+  res.send({ message: 'Logged in successfully.', token });
 });
 
 app.post(
@@ -145,6 +150,18 @@ app.put(
 app.get('/admin/courses', isAuthenticated, (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send({ courses: [...COURSES] });
+});
+
+app.get('/admin/courses/:courseId', isAuthenticated, (req, res) => {
+  const { courseId } = req.params;
+  res.setHeader('Content-Type', 'application/json');
+
+  const course = COURSES.find((course) => course.courseId === courseId);
+  if (course) {
+    res.send({ course });
+  } else {
+    res.status(404).json({ message: 'course not found.' });
+  }
 });
 
 // // User routes
@@ -205,6 +222,11 @@ app.get('/users/purchasedCourses', isAuthenticated, (req, res) => {
   } else {
     res.status(404).json({ message: 'No course found' });
   }
+});
+
+app.post('/admin/verify', isAuthenticated, (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send({ message: 'Token verified' });
 });
 
 app.listen(3000, () => {
