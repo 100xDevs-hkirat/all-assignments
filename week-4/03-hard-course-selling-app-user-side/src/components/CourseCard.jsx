@@ -24,7 +24,9 @@ function CourseCard(props) {
         }}
         onMouseOver={() => setIsMoueOver(true)}
         onMouseLeave={() => setIsMoueOver(false)}
-        onClick={() => navigate(`/courses/${props.course._id}`)}
+        onClick={() => {
+          navigate(`/courses/${props.course._id}`);
+        }}
       >
         <div>
           <CardMedia

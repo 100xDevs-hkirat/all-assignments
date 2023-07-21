@@ -16,37 +16,6 @@ body {
   gap: 20px;
 }
 
-.landing-img {
-  width: 1000px;
-}
-
-/* Media query for screen sizes less than or equal to 768px (e.g., smartphones) */
-@media (max-width: 768px) {
-  img.responsive-image {
-    /* You can set custom width and height for the image for smaller screens */
-    width: 300px;
-    height: auto; /* This maintains the original aspect ratio of the image */
-  }
-}
-
-/* Media query for screen sizes between 768px and 1200px (e.g., tablets) */
-@media (min-width: 769px) and (max-width: 1200px) {
-  img.responsive-image {
-    /* You can set custom width and height for the image for medium-sized screens */
-    width: 600px;
-    height: auto;
-  }
-}
-
-/* Media query for screen sizes greater than 1200px (e.g., desktops and larger screens) */
-@media (min-width: 1201px) {
-  img.responsive-image {
-    /* You can set custom width and height for the image for large screens */
-    width: 900px;
-    height: auto;
-  }
-}
-
 .page {
   display: flex;
   flex-direction: column;
@@ -60,8 +29,8 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  padding: 45px 60px;
-  border: 1px solid #101460;
+  padding: 20px;
+  border: 2px solid #101460;
 }
 
 #email,

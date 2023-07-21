@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import { CardActionArea, sliderClasses } from "@mui/material";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -21,9 +21,13 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
 import Button from "@mui/material/Button";
 
+import "./coursesStyles.css";
+
 function CoursePage() {
   const { id } = useParams();
   const [course, setCourse] = useState({});
+  const [purCourses, setPurchasedCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -36,20 +40,24 @@ function CoursePage() {
         setCourse(res.data.course);
       })
       .catch((err) => console.log(err));
+
+    axios
+      .get("http://localhost:3000/users/purchasedCourses", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setPurchasedCourses(res.data.purchasedCourses);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
+  const isPurchased = purCourses.filter((item) => item._id == id).length === 1;
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "50px",
-        flexWrap: "wrap",
-        flex: "1",
-        marginTop: "150px",
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+    <div className="single-course">
+      <div className="text-container">
         <div>
           <img
             src={course.imageLink}
@@ -60,51 +68,74 @@ function CoursePage() {
         </div>
 
         <div>
-          <Typography
-            variant="h3"
-            component="div"
-            style={{
-              flexGrow: 1,
-              padding: "10px",
-              borderRadius: "4px",
-              fontWeight: "bold",
-              color: "#101460",
-            }}
-          >
-            {course.title}
-          </Typography>
+          <h1 className="course-title">{course.title}</h1>
         </div>
 
         <div>
-          <Typography
-            variant="h6"
-            component="div"
-            style={{
-              flex: "1",
-              padding: "10px",
-              borderRadius: "4px",
-              fontWeight: "bold",
-              color: "#101460",
-              width: "600px",
-            }}
-          >
-            {course.description}
-          </Typography>
+          <h3 className="des">{course.description}</h3>
         </div>
 
         <div>
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: "#bc1c44",
-              padding: "10px 20px",
-              fontWeight: "700",
-              fontSize: "1rem",
-              borderRadius: "50px",
-            }}
-          >
-            BUY @ ${course.price}
-          </Button>
+          {!isPurchased ? (
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: isPurchased ? "green" : "#bc1c44",
+                padding: "10px 20px",
+                fontWeight: "700",
+                fontSize: "1rem",
+                borderRadius: "50px",
+              }}
+              onClick={() => {
+                axios
+                  .post(
+                    `http://localhost:3000/users/courses/${id}`,
+                    {},
+                    {
+                      headers: {
+                        Authorization:
+                          "Bearer " + localStorage.getItem("token"),
+                      },
+                    }
+                  )
+                  .then((res) => {
+                    alert(res.data.message);
+                    window.location.reload();
+                  })
+                  .catch((err) => console.log(err));
+              }}
+            >
+              BUY @ ${course.price}
+            </Button>
+          ) : (
+            <div>
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: isPurchased ? "green" : "#bc1c44",
+                  padding: "10px 20px",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                }}
+              >
+                Purchased
+              </Button>
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "#101460",
+                  padding: "10px 20px",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                  marginLeft: "20px",
+                }}
+              >
+                View Content
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

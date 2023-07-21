@@ -94,6 +94,7 @@ function LoginPage() {
           </div>
         )}
       </div>
+
       <Card className="form">
         <TextField
           id="email"

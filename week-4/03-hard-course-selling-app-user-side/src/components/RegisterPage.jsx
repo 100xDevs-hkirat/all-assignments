@@ -46,6 +46,9 @@ function RegisterPage() {
           }
         );
 
+        setEmail("");
+        setPassword("");
+        setMessage("");
         alert(response.data.message);
         navigate("/login");
       } catch (err) {

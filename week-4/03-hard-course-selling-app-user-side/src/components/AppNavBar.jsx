@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import { isLoggedInState } from "./LoginPage";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
 const drawerWidth = 240;
 
@@ -114,6 +116,7 @@ export default function AppNavBar() {
         style={{
           backgroundColor: "#101460",
           height: "60px",
+          width: "100%",
         }}
       >
         <Toolbar>
@@ -182,29 +185,34 @@ export default function AppNavBar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/courses");
+              }}
+            >
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+              <ListItemText primary={"All Courses"} />
+            </ListItemButton>
+          </ListItem>
         </List>
-        <Divider />
         <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/courses/purchased");
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Purchased Courses"} />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
     </Box>

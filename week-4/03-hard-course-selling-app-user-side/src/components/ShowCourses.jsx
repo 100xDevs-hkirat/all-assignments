@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { atom, useRecoilState } from "recoil";
 import axios from "axios";
 import { Main, openState } from "./AppNavBar";
+import "./coursesStyles.css";
 
 const coursesState = atom({
   key: "coursesState",
@@ -37,18 +38,23 @@ function ShowCourses() {
 
   return (
     <Main open={open}>
-      <br />
-      <div
-        className="all-courses"
+      <Typography
+        variant="h4"
+        component="div"
         style={{
-          display: "flex",
-          maxWidth: "1200px",
-          flexWrap: "wrap",
-          margin: "auto",
-          marginTop: "100px",
-          marginLeft: "700px",
+          flexGrow: 1,
+          padding: "10px",
+          borderRadius: "4px",
+          fontWeight: "bold",
+          color: "#101460",
+          textAlign: "center",
+          marginTop: "70px",
+          marginLeft: "210px",
         }}
       >
+        All Courses
+      </Typography>
+      <div className="all-courses">
         {courses.map((course) => (
           <CourseCard key={course._id} course={course} />
         ))}
