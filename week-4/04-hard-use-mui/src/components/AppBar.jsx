@@ -32,6 +32,8 @@ function AppBar(){
 
 function UsernameLogout(){
     const [username,setUsername] = useRecoilState(usernameState);
+    const navigate = useNavigate();
+
     return <>
         <div style = {{
             display:'flex',
@@ -42,7 +44,7 @@ function UsernameLogout(){
             </div>
             <div>
                 {username}
-                <Button onClick={() => {logout(setUsername)}} variant={"contained"}>Logout</Button>
+                <Button onClick={() => {logout(navigate,setUsername)}} variant={"contained"}>Logout</Button>
             </div>
         </div>
     </>
