@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Typography, TextField, Button, Card } from "@mui/material";
 /// You need to add input boxes to take input for users to create a course.
 /// I've added one input so you understand the api to do it.
@@ -7,6 +8,7 @@ function CreateCourse() {
     const [description, setDescription] = React.useState("");
     const [price, setPrice] = React.useState("");
 
+    const navigate = useNavigate();
 
     return <div>
             <div style={{display:'flex', justifyContent:'center',marginTop: 50}}>
@@ -48,7 +50,9 @@ function CreateCourse() {
                         }}>
                             Upload
                         </Button>
-                        <Button variant="outlined" onClick={() => {}}>
+                        <Button variant="outlined" onClick={() => {
+                            navigate("/courses");
+                        }}>
                             All Courses
                         </Button>
                     </div>

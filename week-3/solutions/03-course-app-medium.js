@@ -21,7 +21,7 @@ try {
     USERS = [];
     COURSES = [];
 }
-console.log(ADMINS);
+// console.log(ADMINS);
 
 const SECRET1 = 'my-secret-key-1';
 const SECRET2 = 'my-secret-key-2';
@@ -58,6 +58,11 @@ const authenticateUserJwt = (req, res, next) => {
   }
 };
 
+app.get('/admin/profile', authenticateAdminJwt, (req, res) => {
+  res.json({
+    username: req.user.username
+  })
+})
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
@@ -84,6 +89,7 @@ app.post('/admin/login', (req, res) => {
     res.status(403).json({ message: 'Invalid username or password' });
   }
 });
+
 
 app.post('/admin/courses', authenticateAdminJwt, (req, res) => {
   const course = req.body;
