@@ -2,7 +2,8 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "./SnackbarContext.jsx";
-import SnackbarAlert from "./SnackbarAlert.jsx";
+// import SnackbarAlert from "./SnackbarAlert.jsx";
+import LoginContext from "./LoginContext.jsx";
 
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -15,8 +16,8 @@ function Register() {
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const { showSnackbar } =
-    React.useContext(SnackbarContext);
+  const { showSnackbar } = React.useContext(SnackbarContext);
+  const { setIsLoggedIn } = React.useContext(LoginContext);
   const navigate = useNavigate();
 
   function register(event) {
@@ -29,18 +30,19 @@ function Register() {
         username: email,
         password,
         firstName,
-        lastName
+        lastName,
       })
       .then((res) => {
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);
           showSnackbar(res.data.message, "success");
+          setIsLoggedIn(true);
           navigate("/");
         }
       })
       .catch((err) => {
         showSnackbar(err.response.data.message, "error");
-        console.error(err)
+        console.error(err);
       });
   }
 
@@ -53,6 +55,7 @@ function Register() {
         alignItems: "center",
         justifyContent: "flex-start",
         minHeight: "100vh",
+        margin: "0, auto",
       }}
     >
       <Box sx={{ mt: "5vh", mb: 4 }}>
@@ -60,7 +63,7 @@ function Register() {
           Register
         </Typography>
       </Box>
-      <form onSubmit={register} style={{ width: "100%" }}>
+      <form onSubmit={register} style={{ width: "100%" }} autoComplete="off">
         <TextField
           label="Email"
           type="email"
@@ -69,6 +72,7 @@ function Register() {
           fullWidth
           margin="normal"
           required
+          autoComplete="new-email"
         />
         <TextField
           label="Password"
@@ -78,6 +82,7 @@ function Register() {
           fullWidth
           margin="normal"
           required
+          autoComplete="off"
         />
         <TextField
           label="First Name"
@@ -87,6 +92,7 @@ function Register() {
           fullWidth
           margin="normal"
           required
+          autoComplete="off"
         />
         <TextField
           label="Last Name"
@@ -96,6 +102,7 @@ function Register() {
           fullWidth
           margin="normal"
           required
+          autoComplete="off"
         />
         <Button
           type="submit"
@@ -107,7 +114,7 @@ function Register() {
           Register
         </Button>
       </form>
-      <SnackbarAlert />
+      {/* <SnackbarAlert /> */}
     </Container>
   );
 }

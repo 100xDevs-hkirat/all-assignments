@@ -22,7 +22,7 @@ function PurchasedCourses() {
         setCourses(res.data.purchasedCourses || []);
       })
       .catch((err) => {
-        showSnackbar(err.response.data.message, "error");
+        showSnackbar(err.response.data.message || err.toString(), "error");
         console.error(err)
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,7 +30,7 @@ function PurchasedCourses() {
 
   return (
     <div>
-      <h1>Purchased Courses</h1>
+      {/* <h1>Purchased Courses</h1> */}
       <br />
       {/* <Grid>{courses.map((course) => Course(course))}</Grid> */}
       <Grid container spacing={2}>

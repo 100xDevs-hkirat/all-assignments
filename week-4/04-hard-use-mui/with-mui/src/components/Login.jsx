@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "./SnackbarContext.jsx";
 import SnackbarAlert from "./SnackbarAlert.jsx";
+import LoginContext from "./LoginContext.jsx";
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -14,6 +15,7 @@ function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const { showSnackbar } = React.useContext(SnackbarContext);
+  const { setIsLoggedIn } = React.useContext(LoginContext);
   const navigate = useNavigate();
 
   function login(event) {
@@ -33,10 +35,11 @@ function Login() {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         showSnackbar(res.data.message, "success");
+        setIsLoggedIn(true);
         navigate("/");
       })
       .catch((err) => {
-        showSnackbar(err.response.data.message || err.toString(), "error");
+        showSnackbar((err.response && err.response.data.message) || err.toString(), "error");
         console.error(err);
       });
   }
@@ -49,7 +52,7 @@ function Login() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        minHeight: "100vh",
+        
       }}
     >
       <Box sx={{ mt: "10vh", mb: 4 }}>

@@ -38,7 +38,7 @@ function Courses() {
 
   return (
     <div>
-      <h1>Courses Page</h1>
+      {/* <h1>Courses Page</h1> */}
       <br />
       <Grid container spacing={2}>
         {courses.map((course) => {
