@@ -41,10 +41,13 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const cors = require("cors")
 const app = express();
 
+port = 3003
+
 app.use(bodyParser.json());
+app.use(cors())
 
 let todos = [];
 
@@ -97,4 +100,7 @@ app.use((req, res, next) => {
   res.status(404).send();
 });
 
-module.exports = app;
+
+app.listen(port, () => console.log(`Todo server Listening on ${port}`))
+
+// module.exports = app;
