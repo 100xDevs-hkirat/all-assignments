@@ -9,7 +9,26 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  return [];
+  var dict1 = {};
+  for (var i = 0; i < transactions.length; i++) {
+    var cat = transactions[i].category;
+    if (cat in dict1) {
+      dict1[cat] = dict1[cat] + transactions[i].price;
+    } else {
+      dict1[cat] = transactions[i].price;
+    }
+  }
+  var answer = [];
+  for (var i in dict1) {
+    answer.push({
+      category: i,
+      totalSpent: dict1[i],
+    });
+  }
+  // for (var i = 0; i < answer.length; i++) {
+  //   console.log(answer[i]);
+  // }
+  return answer;
 }
 
 module.exports = calculateTotalSpentByCategory;
