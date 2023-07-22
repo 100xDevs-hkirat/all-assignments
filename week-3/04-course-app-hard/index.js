@@ -28,7 +28,7 @@ const Admin = mongoose.model("Admin", adminSchema);
 const Course = mongoose.model("Course", courseSchema);
 
 mongoose.connect(
-  "mongodb+srv://shivammotani:Temp%40123@cluster0.lrnlzko.mongodb.net/",
+  "mongodb+srv://shivammotani:<yourpassword>@cluster0.lrnlzko.mongodb.net/",
   { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" }
 );
 
