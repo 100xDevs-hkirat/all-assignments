@@ -6,6 +6,7 @@ function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [imageLink, setImageLink] = useState("");
   const [message, setMessage] = useState("");
 
   return (
@@ -40,6 +41,15 @@ function AddCourse() {
           />
           <br />
           <br />
+          <TextField
+            onChange={(e) => setImageLink(e.target.value)}
+            fullWidth
+            id="outlined-basic"
+            label="Image Link"
+            variant="outlined"
+          />
+          <br />
+          <br />
           <Button
             size="large"
             variant="contained"
@@ -54,7 +64,7 @@ function AddCourse() {
                   title,
                   description,
                   price,
-                  imageLink: "",
+                  imageLink,
                   published: true,
                 }),
               };

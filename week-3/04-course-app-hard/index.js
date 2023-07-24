@@ -104,12 +104,14 @@ app.post("/admin/signup", async (req, res) => {
   res.json({ message: "Admin created successfully", token });
 });
 
-// app.post("/admin/login", authenticateAdmin, (req, res) => {
-//   // logic to log in admin
-//   const { currentAdmin } = req;
-//   const token = generateJwtAdmin(currentAdmin);
-//   res.send({ message: "Logged in successfully", token });
-// });
+app.post("/admin/me", authenticateAdmin, (req, res) => {
+  // check for logged in
+  const {
+    currentAdmin: { username },
+  } = req;
+
+  res.json({ username });
+});
 
 app.post("/admin/login", async (req, res) => {
   // logic to log in admin
