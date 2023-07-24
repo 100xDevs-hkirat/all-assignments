@@ -5,7 +5,6 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
-const delay = require('express-delay');
 
 const {
   validate,
@@ -19,8 +18,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 dotenv.config();
-
-app.use(delay(200, 500));
 
 let ADMINS = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'admins.json'), 'utf-8')
@@ -47,7 +44,6 @@ const generateJWT = (payload) => {
 
 const isAuthenticated = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-
   const token = (authHeader && authHeader.split(' ')[1]) ?? null;
   if (token === null) return res.sendStatus(401);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -72,7 +68,7 @@ const isAdminAuthenticated = (req, res, next) => {
 };
 
 const isUserAuthenticated = (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password } = req.headers;
   const user = USERS.find(
     (user) => user.username === username && user.password === password
   );
@@ -181,15 +177,27 @@ app.post('/users/signup', validate(signUpSchema), (req, res) => {
 
 app.post('/users/login', isUserAuthenticated, (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  const { username } = req.body;
-  const token = generateJWT({ username });
+
+  const token = generateJWT({ username: req.headers.username });
   res.setHeader('Authorization', `Bearer ${token}`);
-  res.send({ message: 'Logged in successfully.' });
+  res.send({ message: 'Logged in successfully.', token });
 });
 
 app.get('/users/courses', isAuthenticated, (req, res) => {
   const publishedCourses = COURSES.filter((course) => course.published);
-  res.send(publishedCourses);
+  res.send({ courses: [...publishedCourses] });
+});
+
+app.get('/users/courses/:courseId', isAuthenticated, (req, res) => {
+  const { courseId } = req.params;
+  res.setHeader('Content-Type', 'application/json');
+
+  const course = COURSES.find((course) => course.courseId === courseId);
+  if (course) {
+    res.send({ course });
+  } else {
+    res.status(404).json({ message: 'course not found.' });
+  }
 });
 
 app.post('/users/courses/:courseId', isAuthenticated, (req, res) => {
@@ -204,9 +212,16 @@ app.post('/users/courses/:courseId', isAuthenticated, (req, res) => {
       if (!user.purchasedCourses) {
         user.purchasedCourses = [];
       }
-      user.purchasedCourses.push(courseId);
-      saveToFile('users.json', USERS);
-      res.send({ message: 'Course purchased successfully' });
+      const isPurchased = user.purchasedCourses.find(
+        (courseId) => courseId === courseId
+      );
+      if (isPurchased) {
+        res.send({ message: 'Course already purchased' });
+      } else {
+        user.purchasedCourses.push(courseId);
+        saveToFile('users.json', USERS);
+        res.send({ message: 'Course purchased successfully' });
+      }
     } else {
       res.status(403).json({ message: 'User not found' });
     }
@@ -218,7 +233,10 @@ app.post('/users/courses/:courseId', isAuthenticated, (req, res) => {
 app.get('/users/purchasedCourses', isAuthenticated, (req, res) => {
   const user = USERS.find((user) => user.username === req.user.username);
   if (user && user.purchasedCourses) {
-    res.send({ purchasedCourses: user.purchasedCourses });
+    const purchasedCourses = COURSES.filter((course) =>
+      user.purchasedCourses.includes(course.courseId)
+    );
+    res.send({ purchasedCourses });
   } else {
     res.status(404).json({ message: 'No course found' });
   }
@@ -227,6 +245,12 @@ app.get('/users/purchasedCourses', isAuthenticated, (req, res) => {
 app.post('/admin/verify', isAuthenticated, (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send({ message: 'Token verified' });
+});
+
+app.get('/users/me', isAuthenticated, (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+
+  res.send({ user: req.user.username });
 });
 
 app.listen(3000, () => {
