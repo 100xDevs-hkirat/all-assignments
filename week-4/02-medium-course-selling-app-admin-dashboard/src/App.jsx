@@ -6,6 +6,7 @@ import Register from './components/Register';
 import ShowCourses from './components/ShowCourses';
 import { createTheme, ThemeProvider} from '@mui/material/styles';
 import Header from './sub-components/Header';
+import Course from './components/Course';
 
 // This file shows how you can do routing in React.
 // Try going to /login, /register, /about, /courses on the website and see how the html changes
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/createcourse" element={<CreateCourse />} />
                     <Route path="/courses" element={<ShowCourses />} />
+                    <Route path="/course/:courseId" element={<Course />} />
                 </Routes>
             </Router>
         </ThemeProvider>

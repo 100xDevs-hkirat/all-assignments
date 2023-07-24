@@ -31,7 +31,7 @@ function Register() {
                         }).then((res) => {
                             res.json().then((data) => {
                                 localStorage.setItem("token", data.token);
-                                window.location = "/";
+                                window.location = "/courses";
                             })
                         })
                     }}>
