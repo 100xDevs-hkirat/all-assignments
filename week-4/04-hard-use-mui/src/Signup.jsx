@@ -55,6 +55,7 @@ function Signup() {
                 .then((data) => {
                   setMessage(data);
                   localStorage.setItem("token", data?.token);
+                  window.location = "/";
                 });
             }}
           >
