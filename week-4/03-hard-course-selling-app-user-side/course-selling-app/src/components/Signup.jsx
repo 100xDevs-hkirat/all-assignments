@@ -23,6 +23,7 @@ const SignUp = () => {
       e.preventDefault();     
     // Here, you can handle the form submission logic, e.g., send data to the server.
       console.log(formData);
+      const email = formData.email;
       const url = "http://localhost:3000/users/signup";
         fetch(url, {
             method: "POST",           
@@ -32,8 +33,7 @@ const SignUp = () => {
       body: JSON.stringify(formData), 
         }).then((response) => {
             if (response.ok) { 
-                console.log(response.data);
-                window.location="/allcourse"
+                window.location=`/allcourse/:${email}`
             }
             else {
                 throw new Error("Some error from backend");

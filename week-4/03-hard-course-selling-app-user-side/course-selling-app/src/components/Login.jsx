@@ -33,7 +33,7 @@ headers: {
             console.log(response.ok);
             if (response.ok) { 
                 console.log(response.data);
-                window.location="/allcourse"
+                window.location="/allcourse/:email"
             }
             else {
                 throw new Error("Some error from backend");
