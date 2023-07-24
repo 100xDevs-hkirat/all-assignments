@@ -76,7 +76,9 @@ app.post("/admin/courses", (req, res) => {
   //const inTokn = localStorage.getItem("accessToken");
   const token = jwt.verify(inToken, Secret_key);
   if (token) {
+    console.log(token.username);
     const ind = ADMINS.findIndex((item) => item.username == token.username);
+    console.log(ind);
     if (ind != -1 && ADMINS[ind].isAdmin) {
       COURSES.push(detail);
       res.status(200).send("Course successfully addedd");
@@ -131,19 +133,22 @@ app.put("/admin/courses/:courseId", (req, res) => {
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
+   const formData = req.body;
+ 
   const data = {
-    username: req.headers.username,
-    password: req.headers.password,
-    email: req.headers.email,
+    username: formData.username,
+    password: formData.password,
+    email: formData.email,
   };
+  console.log(JSON.stringify(data));
   const index = USERS.findIndex((item) => item.email == data.email);
   if (index != -1) {
     return res.status(401).send("User is already registered please login");
   }
-  if (USERS.push(data) && data.username) {
+  if (USERS.push(data) && data.email) {
     const payload = {
-      username: req.headers.username,
-      password: req.headers.password,
+      password: formData.password,
+    email: formData.email,
     };
     const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
     res.header("Authorization", `Bearer ${token}`);
@@ -157,16 +162,18 @@ app.post("/users/signup", (req, res) => {
 
 app.post("/users/login", (req, res) => {
   // logic to log in user
-  const cred = {
-    username: req.headers.username,
-    password: req.headers.password,
+  const formData = req.body; 
+  const data = {
+    password: formData.password,
+    email: formData.email,
   };
-  const index = USERS.findIndex((item) => item.username == cred.username);
+  console.log(data);
+  const index = USERS.findIndex((item) => item.email == data.email);
   if (index != -1) {
-    if (USERS[index].password != cred.password) {
+    if (USERS[index].password != data.password) {
       return res.status(404).send("Invalid Password");
     } else {
-      const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
+      const token = jwt.sign(data, Secret_key, { expiresIn: "1h" });
       res.header("Authorization", `Bearer ${token}`);
       res.status(200).send("User login successfull");
     }
