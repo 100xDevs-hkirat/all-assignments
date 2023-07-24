@@ -15,8 +15,8 @@ const AllCourse = () => {
   return (
     <Grid container spacing={2}>
       {courses.map((course) => (
-        <Grid item key={course.id} xs={12} sm={6} md={4} lg={3}>
-              <Course title={course.title} description={course.description} price={ course.price} />
+          <Grid item key={course.id} xs={12} sm={6} md={4} lg={3}>
+              <Course title={course.title} description={course.description} price={course.price} id={ course.id}  />
         </Grid>
       ))}
     </Grid>

@@ -10,7 +10,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-
+   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -22,7 +22,24 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here, you can handle the form submission logic, e.g., send data to the server.
-    console.log(formData);
+      console.log(formData);
+      const url = "http://localhost:3000/users/login";
+        fetch(url, {
+            method: "POST",
+headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+      body: JSON.stringify(formData),         }).then((response) => {
+            console.log(response.ok);
+            if (response.ok) { 
+                console.log(response.data);
+                window.location="/allcourse"
+            }
+            else {
+                throw new Error("Some error from backend");
+            }
+         })
+    
   };
 
   return (

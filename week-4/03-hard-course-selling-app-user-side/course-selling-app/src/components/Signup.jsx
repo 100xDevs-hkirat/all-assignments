@@ -10,7 +10,7 @@ const SignUp = () => {
     email: '',
     password: '',
   });
-
+    
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -20,9 +20,25 @@ const SignUp = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+      e.preventDefault();     
     // Here, you can handle the form submission logic, e.g., send data to the server.
-    console.log(formData);
+      console.log(formData);
+      const url = "http://localhost:3000/users/signup";
+        fetch(url, {
+            method: "POST",           
+            headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+      body: JSON.stringify(formData), 
+        }).then((response) => {
+            if (response.ok) { 
+                console.log(response.data);
+                window.location="/allcourse"
+            }
+            else {
+                throw new Error("Some error from backend");
+            }
+         })
   };
 
   return (
@@ -63,7 +79,7 @@ const SignUp = () => {
               <span>Already a user  ? <Link to="/login">Login</Link></span>
               <br />
               <br/>
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" color="primary" >
           Sign Up
         </Button>
       </form>
