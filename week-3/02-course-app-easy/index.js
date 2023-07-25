@@ -42,6 +42,26 @@ app.post("/admin/signup", (req, res) => {
   }
 });
 
+const authenticatejwt = (req, resp, next) => { 
+  const intoken = req.headers.authorization.split(' ')[1];
+  if (intoken) {
+    const ver = jwt.verify(intoken, Secret_key, (err, user) => {
+      if (err) {
+        return resp.sendStatus(403);
+      }     
+         req.user = user;
+      next();            
+    });    
+  }
+  else { 
+    resp.sendStatus(401);
+  }
+}
+app.get("/test", authenticatejwt, (req, resp) => { 
+  resp.json({
+    user: req.user
+  })
+})
 app.post("/admin/login", (req, res) => {
   // logic to log in admin
   const cred = {
@@ -52,13 +72,14 @@ app.post("/admin/login", (req, res) => {
   const index = ADMINS.findIndex((item) => item.email == cred.email);
   if (index != -1 && ADMINS[index].isAdmin) {
     if (ADMINS[index].password != cred.password) {
-      return res.status(404).send("Invalid Password");
+      return res.status(403).send("Invalid Password");
     } else {
       const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
-      res.status(200).send(`Bearer ${token}`);
+      console.log(token);
+    res.json({ message: "Login successfull" ,token});
     }
   } else {
-    return res.status(404).send("Such Admin doesn't exist , please signup");
+    return res.sendStatus(401);
   }
 });
 
@@ -151,12 +172,10 @@ app.post("/users/signup", (req, res) => {
     email: formData.email,
     };
     const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
-    res.header("Authorization", `Bearer ${token}`);
-    res.status(200).send(`Bearer ${token}`);
+    res.json({ message: "Signup successfull" ,token});
   } else {
     return res
-      .status(401)
-      .send("Some error while adding user , please try again after sometime");
+      .sendStatus(401)     
   }
 });
 
@@ -171,14 +190,13 @@ app.post("/users/login", (req, res) => {
   const index = USERS.findIndex((item) => item.email == data.email);
   if (index != -1) {
     if (USERS[index].password != data.password) {
-      return res.status(404).send("Invalid Password");
+      return res.status(403);
     } else {
       const token = jwt.sign(data, Secret_key, { expiresIn: "1h" });
-      res.header("Authorization", `Bearer ${token}`);
-      res.status(200).send("User login successfull");
+       res.json({ message: "login successfull" ,token});
     }
   } else {
-    return res.status(404).send("User doesn't exist , please signup");
+    return res.sendStatus(401);
   }
 });
 
