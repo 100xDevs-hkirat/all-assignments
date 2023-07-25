@@ -26,6 +26,17 @@ const adminAuthentication = (req, res, next) => {
   )
 };
 
+
+const userAuthentication = (req, res, next) => {
+  const { email, password } = req.body
+  const user = USERS.find(e => e.email === email & e.password === password)
+  if (user) {
+    next()
+  } else {
+    res.status(403).json({ message: "User does not exist"})
+  }
+}
+
 // Admin routes
 app.post("/admin/signup", (req, res) => {
   const admin = req.body;
@@ -89,8 +100,9 @@ app.post("/users/signup", (req, res) => {
   }
 });
 
-app.post("/users/login", (req, res) => {
+app.post("/users/login", userAuthentication, (req, res) => {
   // logic to log in user
+  res.json({ message: "User logged in succesfully"}) 
 });
 
 app.get("/users/courses", (req, res) => {
