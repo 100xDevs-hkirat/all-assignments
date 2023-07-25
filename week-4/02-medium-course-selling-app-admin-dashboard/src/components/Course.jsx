@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReactLoading from 'react-loading';
 import { Card, CardMedia, CardContent, Typography, TextField, Button } from "@mui/material";
 
 function Course () {
@@ -28,8 +29,8 @@ function Course () {
 
     if(!course) {
         return (
-            <div>
-                Loading...
+            <div style={{ display: 'flex', justifyContent: "center", marginTop:150}}>
+                <ReactLoading type="spin" color="#1c8fed"/>
             </div>
         )
     }
@@ -100,7 +101,7 @@ function UpdateCard({course, courses, setCourses}) {
                                     "Authorization": "Bearer " + localStorage.getItem("token")
                                 }
                             }).then((res) => {
-                                res.json().then((data) => {
+                                res.json().then(() => {
                                     let updateCourses = [];
                                     for (let i=0; i<courses.length; i++){
                                         if( courses[i].id == course.id) {

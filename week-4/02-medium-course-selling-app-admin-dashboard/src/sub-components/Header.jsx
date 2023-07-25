@@ -39,11 +39,15 @@ export default function Header() {
       <Box>
         <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={() => {
-            navigate("/")
-          }}>
-            CourseWise
-          </Typography>
+          {loggedIn ? (
+            <Typography variant='h6' component="div" sx={{ flexGrow: 1 }} onClick={() => {
+              navigate("/")
+            }}>
+              CourseWise
+            </Typography>
+          ):(
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>CourseWise</Typography>
+          )}
           {loggedIn ? (
             <>
               <Typography variant="subtitle1" component="span" sx={{ marginRight: '1rem' }}> {username} </Typography>
