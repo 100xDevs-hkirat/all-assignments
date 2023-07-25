@@ -72,11 +72,21 @@ app.put("/admin/courses/:courseId", (req, res) => {
 
 app.get("/admin/courses", (req, res) => {
   // logic to get all courses
+  res.json({ courses:  COURSES})
 });
+
 
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
+  const user = req.body
+  const existingUser = USERS.find( a=> a.email === user.email)
+  if ( existingUser){
+    res.json({ message : "User already exists"})
+  } else {
+    USERS.push(user)
+    res.json({ message : "User sign up successfull"})
+  }
 });
 
 app.post("/users/login", (req, res) => {
