@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const PORT = 3000
 
 app.use(express.json());
 
@@ -7,9 +8,25 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
+app.get("/", (req, res) => {
+  res.json({ message : "Home route"})
+})
+
+const adminAuthentication = () => {
+
+}
+
 // Admin routes
 app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
+  const admin = req.body
+  const existingAdmin = ADMINS.find(a => a.username === admin.username)
+
+  if ( existingAdmin){
+    res.status(403).json({message : "Admin already exists"})
+  } else {
+    ADMINS.push(admin)
+    res.json({message : "Admin signup successful"})
+  }
 });
 
 app.post('/admin/login', (req, res) => {
@@ -49,6 +66,6 @@ app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
 });
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
+app.listen(PORT, () => {
+  console.log(`Server is listening on port - ${PORT}`);
 });
