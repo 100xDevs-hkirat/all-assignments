@@ -33,6 +33,7 @@ const userAuthentication = (req, res, next) => {
   if (user) {
     next()
   } else {
+    req.user = user
     res.status(403).json({ message: "User does not exist"})
   }
 }
@@ -105,16 +106,28 @@ app.post("/users/login", userAuthentication, (req, res) => {
   res.json({ message: "User logged in succesfully"}) 
 });
 
-app.get("/users/courses", (req, res) => {
+app.get("/users/courses", userAuthentication, (req, res) => {
   // logic to list all courses
+  res.json({ courses: COURSES.find(c => c.published)})
 });
 
-app.post("/users/courses/:courseId", (req, res) => {
+app.post("/users/courses/:courseId",userAuthentication, (req, res) => {
   // logic to purchase a course
+  const courseId = Number(req.params.courseId)
+  const course = COURSES.find(c => c.id == courseId && c.published)
+
+  if (course){
+    req.user.purchasedCourses.push(courseId)
+    res.json({ message : "Course purchased successfully"})
+  } else {
+    req.status(404).json({ message:  "Course not found or available"})
+  }
 });
 
-app.get("/users/purchasedCourses", (req, res) => {
+app.get("/users/purchasedCourses", userAuthentication, (req, res) => {
   // logic to view purchased courses
+  const purchasedCourses = COURSES.filter(c=> req.user.purchasedCourses.include(c.id) )
+  res.json({ purchasedCourses})
 });
 
 app.listen(PORT, () => {
