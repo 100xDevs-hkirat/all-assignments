@@ -46,10 +46,28 @@ app.post("/admin/login", adminAuthentication, (req, res) => {
 
 app.post("/admin/courses", (req, res) => {
   // logic to create a course
+  const course = req.body
+
+  course.id = Date.now()
+
+  COURSES.push(course)
+  res.json({ message : "Course added succesfully haha", courseId : course.id})
+
 });
 
 app.put("/admin/courses/:courseId", (req, res) => {
   // logic to edit a course
+  const courseId = parseInt(req.params.courseId)
+  const course = COURSES.find(c => c.id === courseId)
+
+  if (course){
+    Object.assign(course, req.body)
+    res.json({ message: " Course updated succesfully"})
+  } else {
+    res.status(400).json({ message : "Course not found"})
+  }
+
+
 });
 
 app.get("/admin/courses", (req, res) => {
