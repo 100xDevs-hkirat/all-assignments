@@ -6,23 +6,23 @@ import Login from './components/Login';
 import SignUp from './components/Signup';
 import AllCourse from './components/Allcourses';
 import Course from './components/Course';
-import Home from './components/Home';
+// import Home from './components/Home';
 import Coursedetail from './components/CourseDetail';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [count, setCount] = useState(0);
   return (
     <>
       <div>
         <Router>
+          <Layout/>
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/allcourse" element={<AllCourse />} />     
+            <Route path="/" element={<AllCourse />} />     
             <Route path="/course/:id" element={ <Coursedetail/>} />
-          </Routes>
+            </Routes>
         </Router>
        </div>
     </>

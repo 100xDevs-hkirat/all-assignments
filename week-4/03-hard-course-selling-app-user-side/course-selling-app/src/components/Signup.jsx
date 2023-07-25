@@ -32,13 +32,11 @@ const SignUp = () => {
       },
       body: JSON.stringify(formData), 
         }).then((response) => {
-            if (response.ok) { 
-                window.location=`/allcourse/:${email}`
-            }
-            else {
-                throw new Error("Some error from backend");
-            }
-         })
+            response.json().then((data) => { 
+                console.log(data.token);
+                localStorage.setItem("token", data.token);
+            })
+        })
   };
 
   return (
