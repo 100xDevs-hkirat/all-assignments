@@ -11,43 +11,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // const express = require('express');
 // const { authenticateJwt, SECRET } = require("../middleware/");
 // const { User } = require("../db");
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import { authenticateJwt, SECRET } from '../middleware/index';
-import { User } from '../db/index';
+import express from "express";
+import jwt from "jsonwebtoken";
+import { authenticateJwt, SECRET } from "../middleware/index";
+import { User } from "../db/index";
 const router = express.Router();
-router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     const user = yield User.findOne({ username });
     if (user) {
-        res.status(403).json({ message: 'User already exists' });
+        res.status(403).json({ message: "User already exists" });
     }
     else {
         const newUser = new User({ username, password });
         yield newUser.save();
-        const token = jwt.sign({ id: newUser._id }, SECRET, { expiresIn: '1h' });
-        res.json({ message: 'User created successfully', token });
+        const token = jwt.sign({ id: newUser._id }, SECRET, { expiresIn: "1h" });
+        res.json({ message: "User created successfully", token });
     }
 }));
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     const user = yield User.findOne({ username, password });
     if (user) {
-        const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '1h' });
-        res.json({ message: 'Logged in successfully', token });
+        const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+        res.json({ message: "Logged in successfully", token });
     }
     else {
-        res.status(403).json({ message: 'Invalid username or password' });
+        res.status(403).json({ message: "Invalid username or password" });
     }
 }));
-router.get('/me', authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/me", authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User.findOne({ _id: req.userId });
     if (user) {
         res.json({ username: user.username });
     }
     else {
-        res.status(403).json({ message: 'User not logged in' });
+        res.status(403).json({ message: "User not logged in" });
     }
 }));
 // module.exports = router
-export default router;
+export { router as authRouter };
