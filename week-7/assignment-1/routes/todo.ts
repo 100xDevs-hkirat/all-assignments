@@ -3,6 +3,7 @@ import { authenticateJwt, SECRET } from "../middleware/index";
 import { Todo } from "../db";
 import { Request, Response } from "express";
 import { z } from "zod";
+import { todoschema1 } from '../db/index';
 const router = express.Router();
 interface TodoInputtypo {
   title: string;
@@ -13,12 +14,16 @@ router.post("/todos", authenticateJwt, (req: Request, res: Response) => {
   const done = false;
   const userId = req.headers["userId"];
 
-  const newTodo = new Todo({
+  
+  const itams = {
     title: data.title,
     description: data.description,
     done,
     userId,
-  });
+  };
+  const validatedData = todoschema1.parse(itams);
+
+  const newTodo = new Todo(validatedData);
 
   newTodo
     .save()
