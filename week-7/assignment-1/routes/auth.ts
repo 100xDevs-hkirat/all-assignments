@@ -3,10 +3,21 @@ import express from "express";
 import { authenticateJwt, SECRET } from "../middleware/";
 import { User } from "../db";
 import { Request, Response, NextFunction } from "express";
+import { z } from "zod";
 const router = express.Router();
-
+const uservalidation = z
+  .object({
+    username: z.string(),
+    password: z.string(),
+  })
+  .strict();
 router.post("/signup", async (req: Request, res: Response) => {
   const { username, password } = req.body;
+  const itams = {
+    username,
+    password,
+  };
+  uservalidation.parse(itams);
   const user = await User.findOne({ username });
   if (user) {
     res.status(403).json({ message: "User already exists" });
@@ -20,6 +31,11 @@ router.post("/signup", async (req: Request, res: Response) => {
 
 router.post("/login", async (req: Request, res: Response) => {
   const { username, password } = req.body;
+  const itams = {
+    username,
+    password,
+  };
+  uservalidation.parse(itams);
   const user = await User.findOne({ username, password });
   if (user) {
     const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
@@ -37,5 +53,3 @@ router.get("/me", authenticateJwt, async (req: Request, res: Response) => {
     res.status(403).json({ message: "User not logged in" });
   }
 });
-
-module.exports = router;
