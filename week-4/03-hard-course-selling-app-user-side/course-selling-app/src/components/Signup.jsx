@@ -32,10 +32,15 @@ const SignUp = () => {
       },
       body: JSON.stringify(formData), 
         }).then((response) => {
-            response.json().then((data) => { 
-                console.log(data.token);
-                localStorage.setItem("token", data.token);
-            })
+            if (response.ok) {
+                response.json().then((data) => {
+                    localStorage.setItem("token", data.token);
+                    window.location = "/"
+                })
+            }
+            else { 
+                throw new Error(response.data);
+            }           
         })
   };
 

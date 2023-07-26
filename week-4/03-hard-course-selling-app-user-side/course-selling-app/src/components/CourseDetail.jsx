@@ -19,16 +19,16 @@ const Coursedetail = () => {
                 marginLeft: "10rem",
                 marginTop:"5rem",
             }}>
-                     <h3>Title - {courses[id].title}</h3>
+                     <h3>Title - {courses[id-1].title}</h3>
                 <br />              
                 <span>
                     <h4>Description - </h4>
                 <p>
-                    { courses[id].description}
+                    { courses[id-1].description}
                 </p>
                 </span>                
                 <br />                
-                <h3>Price - {courses[id].price}</h3>
+                <h3>Price - {courses[id-1].price}</h3>
                 <br />
                 <Button>Purchase</Button>
            </div>
