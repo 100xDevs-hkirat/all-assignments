@@ -52,8 +52,6 @@
 
     "@types/jsonwebtoken": "^9.0.2",
 
-    "@types/mongoose": "^5.11.97",
-
     "@types/node": "^20.4.5",
 
     "@typescript-eslint/parser": "^6.2.0",

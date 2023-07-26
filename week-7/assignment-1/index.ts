@@ -1,6 +1,8 @@
 // import app from './app.js';
-const app = require('./app')
-const mongoose = require('mongoose');
+// const app = require('./app')
+// const mongoose = require('mongoose');
+import app from './app';
+import mongoose from 'mongoose';
 
 const DATABASE_URI = "mongodb://localhost:27017";
 
@@ -10,10 +12,7 @@ const mongooseConnect = () => {
     const reconnectTimeout = 5000;
 
     const connect = () => {
-        mongoose.connect(DATABASE_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        mongoose.connect(DATABASE_URI);
     }
         
         mongoose.Promise = global.Promise; // ????

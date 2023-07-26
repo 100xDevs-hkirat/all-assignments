@@ -55,4 +55,5 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req: IRequest, res: Respon
 });
 
 // module.exports = router;
-export default router;
+// export default router;
+export { router as todoRouter };
