@@ -1,18 +1,70 @@
 {
+
   "name": "assignment-1",
+
   "version": "1.0.0",
+
   "description": "Convert this from JS to typescript.",
+
   "main": "index.js",
+
+  "type": "module",
+
   "scripts": {
+
+    "build": "rm -rf ./dist/* && tsc",
+
+    "prestart": "npm run build",
+
+    "start": "node dist/index.js",
+
+    "preserve": "npm run build",
+
+    "serve": "tsc -w & nodemon dist/index.js",
+
     "test": "echo \"Error: no test specified\" && exit 1"
+
   },
+
   "keywords": [],
+
   "author": "",
+
   "license": "ISC",
+
   "dependencies": {
+
     "cors": "^2.8.5",
+
     "express": "^4.18.2",
+
     "jsonwebtoken": "^9.0.1",
+
     "mongoose": "^7.4.1"
+
+  },
+
+  "devDependencies": {
+
+    "@types/cors": "^2.8.13",
+
+    "@types/express": "^4.17.17",
+
+    "@types/jsonwebtoken": "^9.0.2",
+
+    "@types/mongoose": "^5.11.97",
+
+    "@types/node": "^20.4.5",
+
+    "@typescript-eslint/parser": "^6.2.0",
+
+    "ts-node": "^10.9.1",
+
+    "ts-node-dev": "^2.0.0",
+
+    "typescript": "^5.1.6"
+
   }
+
 }
+

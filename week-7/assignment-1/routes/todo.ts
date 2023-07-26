@@ -1,9 +1,15 @@
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/index");
-const { Todo } = require("../db");
+// const express = require('express');
+// const { authenticateJwt, SECRET } = require("../middleware/index");
+// const { Todo } = require("../db");
+import express, { Request, Response } from 'express';
+import { authenticateJwt, SECRET } from '../middleware/index';
+import { Todo } from '../db/index';
+import { IRequest } from '../interfaces/IRequest';
+import { IResponse } from '../interfaces/IResponse';
+
 const router = express.Router();
 
-router.post('/todos', authenticateJwt, (req, res) => {
+router.post('/todos', authenticateJwt, (req: IRequest, res: IResponse) => {
   const { title, description } = req.body;
   const done = false;
   const userId = req.userId;
@@ -14,25 +20,25 @@ router.post('/todos', authenticateJwt, (req, res) => {
     .then((savedTodo) => {
       res.status(201).json(savedTodo);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       res.status(500).json({ error: 'Failed to create a new todo' });
     });
 });
 
 
-router.get('/todos', authenticateJwt, (req, res) => {
+router.get('/todos', authenticateJwt, (req: IRequest, res: IResponse) => {
   const userId = req.userId;
 
   Todo.find({ userId })
     .then((todos) => {
       res.json(todos);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       res.status(500).json({ error: 'Failed to retrieve todos' });
     });
 });
 
-router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
+router.patch('/todos/:todoId/done', authenticateJwt, (req: IRequest, res: Response) => {
   const { todoId } = req.params;
   const userId = req.userId;
 
@@ -43,9 +49,10 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
       }
       res.json(updatedTodo);
     })
-    .catch((err) => {
+    .catch((err: any) => {
       res.status(500).json({ error: 'Failed to update todo' });
     });
 });
 
-module.exports = router;
+// module.exports = router;
+export default router;
