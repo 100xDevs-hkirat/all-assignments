@@ -16,6 +16,7 @@
 }
 
 body {
+  position: relative;
   width: 100vw;
   height: 100vh;
   margin: 0px;
@@ -24,10 +25,55 @@ body {
 }
 
 #root {
+  position:   relative;
   width:100vw;
   height: 100vh;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
   font-family: Nunito;
+  overflow-x: hidden;
+}
+
+.todoCard {
+  min-width: 100px;
+  margin: 2px;
+  padding: 4px;
+  /* border: 2px solid ; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+.todoCard:hover {
+  transform: scale(0.99);
+}
+
+.todoCard > button {
+  margin: 10px;
+}
+
+.todoContainer {
+  width: max-content;
+  /* min-width: 800px; */
+}
+
+@media (max-width: 768px) {
+  body, #root {
+    overflow-x: auto; /* Prevent horizontal scrolling on mobile */
+  }
+  
+  .card, .todoCard {
+    max-width: 100%;
+    flex-wrap: wrap;
+    /* max-width: max-content; */
+    width: 100vh
+  }
+  
+  .todoContainer {
+    overflow-x: auto; /* Allow horizontal scrolling for the content on mobile */
+  }
 }

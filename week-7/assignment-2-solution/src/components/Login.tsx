@@ -7,24 +7,28 @@ import "./login.css";
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [, setAuthState] = useRecoilState(authState);
+  const [auth, setAuth] = useRecoilState(authState);
   const navigate = useNavigate();
 
   const handleLogin: React.FormEventHandler = async (e) => {
-    e.preventDefault();
-    const res = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      setAuthState(data.token);
-      navigate("/todo");
-      //   window.location.pathname = "/todos";
-    } else {
-      alert("Invalid credentials");
+      try {
+        e.preventDefault();
+        const res = await fetch("http://localhost:3000/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (data.token) {
+            console.log("login", data.token)
+          localStorage.setItem("token", data.token);
+          setAuth({...auth, token: data.token});
+          navigate("/todos");
+        } else {
+          alert("Invalid credentials");
+        }
+    } catch(e) {
+        alert(e);
     }
   };
   return (

@@ -30,7 +30,7 @@ button {
   outline: none;
 }
 
-button:hover {
+button:focus, button:hover {
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(240, 0, 0, 0.4);
   transform: scale(0.98)
@@ -38,4 +38,12 @@ button:hover {
 
 button:active {
     transform: scale(0.9)
+}
+
+a {
+    transition: .3s;
+}
+
+a:hover {
+    transform: scale(0.98)
 }

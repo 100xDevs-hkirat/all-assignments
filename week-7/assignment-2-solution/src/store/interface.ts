@@ -6,11 +6,12 @@ export interface IResTodo extends ITodo{
 export interface ITodo {
     title: string;
     description: string;
-    id: string | number;
+    _id: string | number;
+    done?: boolean;
 }
 
 export interface IUser extends Partial<IAuth> {
-    
+    username: string | null;
 }
 
 export interface IAuth {

@@ -6,7 +6,7 @@ import authState from "../store/authState";
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [, setAuthState] = useRecoilState(authState);
+  const [auth, setAuth] = useRecoilState(authState);
   const navigate = useNavigate();
 
   const handleSignup: React.FormEventHandler = async (e) => {
@@ -21,8 +21,8 @@ const Signup = () => {
       const data = await res.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
-        setAuthState(data.token);
-        navigate("/todo");
+        setAuth({...auth, token:data.token});
+        navigate("/todos");
       } else {
         alert("Error while signing up");
       }
