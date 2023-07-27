@@ -13,28 +13,27 @@ app.get("/", (req, res) => {
 });
 
 const adminAuthentication = (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password } = req.headers;
 
-  const admin = ADMINS.find(
-    (a) => (a.username === username) & (a.password === password)
-  );
-
+  const admin = ADMINS.find(a => a.username === username && a.password === password);
   if (admin) {
-    next()
-  } else (
-    res.status(403).json({ message : "Admin authentication has failed"})
-  )
+    next();
+  } else {
+    res.status(403).json({ message: 'Admin authentication failed' });
+  }
 };
-
+ 
 
 const userAuthentication = (req, res, next) => {
-  const { email, password } = req.body
-  const user = USERS.find(e => e.email === email & e.password === password)
+  const { username, password } = req.headers;
+  const user = USERS.find(e => e.username === username && e.password === password)
   if (user) {
+    req.user = user
+    // console.log("req user - ", user)
     next()
   } else {
-    req.user = user
-    res.status(403).json({ message: "User does not exist"})
+    // req.user = user
+    res.status(403).json({ message: "User authentication failed"})
   }
 }
 
@@ -56,63 +55,61 @@ app.post("/admin/login", adminAuthentication, (req, res) => {
   res.json({ message : "Admin logged in successfully"})
 });
 
-app.post("/admin/courses", (req, res) => {
-  // logic to create a course
-  const course = req.body
-
-  course.id = Date.now()
-
-  COURSES.push(course)
-  res.json({ message : "Course added succesfully haha", courseId : course.id})
-
+app.post('/admin/courses', adminAuthentication, (req, res) => {
+  const course = req.body;
+  course.id = Date.now(); // use timestamp as course ID
+  COURSES.push(course);
+  res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
-app.put("/admin/courses/:courseId", (req, res) => {
+app.put("/admin/courses/:courseId", adminAuthentication, (req, res) => {
   // logic to edit a course
-  const courseId = parseInt(req.params.courseId)
-  const course = COURSES.find(c => c.id === courseId)
-
+  const courseId = parseInt(req.params.courseId);
+  const course = COURSES.find(c => c.id === courseId);
   if (course){
     Object.assign(course, req.body)
     res.json({ message: " Course updated succesfully"})
   } else {
     res.status(400).json({ message : "Course not found"})
   }
-
-
 });
 
 app.get("/admin/courses", (req, res) => {
   // logic to get all courses
-  res.json({ courses:  COURSES})
+  res.json({ courses: COURSES})
 });
 
 
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
-  const user = req.body
-  const existingUser = USERS.find( a=> a.email === user.email)
+  const user = {...req.body, purchasedCourses:[]}
+  // console.log("signup route - ",user);
+  const existingUser = USERS.find( a=> a.username === user.username)
   if ( existingUser){
     res.json({ message : "User already exists"})
   } else {
     USERS.push(user)
-    res.json({ message : "User sign up successfull"})
+    res.json({ message : "User created successfull"})
   }
 });
 
 app.post("/users/login", userAuthentication, (req, res) => {
   // logic to log in user
+  // console.log("login route - ", req.user);
+  // console.log(USERS);
   res.json({ message: "User logged in succesfully"}) 
 });
 
 app.get("/users/courses", userAuthentication, (req, res) => {
   // logic to list all courses
-  res.json({ courses: COURSES.find(c => c.published)})
+  // console.log("all course route - ", req.user);
+  res.json({ courses : COURSES.find(c => c.published)})
 });
 
-app.post("/users/courses/:courseId",userAuthentication, (req, res) => {
+app.post("/users/courses/:courseId", userAuthentication, (req, res) => {
   // logic to purchase a course
+  console.log("update - ", req.body);
   const courseId = Number(req.params.courseId)
   const course = COURSES.find(c => c.id == courseId && c.published)
 
@@ -124,9 +121,9 @@ app.post("/users/courses/:courseId",userAuthentication, (req, res) => {
   }
 });
 
-app.get("/users/purchasedCourses", userAuthentication, (req, res) => {
+app.get("/users/purchasedCourses", userAuthentication, ( req, res) => {
   // logic to view purchased courses
-  const purchasedCourses = COURSES.filter(c=> req.user.purchasedCourses.include(c.id) )
+  const purchasedCourses = COURSES.filter(c=> req.user.purchasedCourses.includes(c.id) )
   res.json({ purchasedCourses})
 });
 
