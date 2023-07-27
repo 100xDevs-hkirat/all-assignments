@@ -1,43 +1,43 @@
 import { useEffect, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-/// This is the landing page. You need to add a link to the login page here.
-/// Maybe also check from the backend if the user is already logged in and then show them a logout button
-/// Logging a user out is as simple as deleting the token from the local storage.
-function Landing() {
+import axios from 'axios'
+
+const Landing = () => {
     const navigate = useNavigate();
     const [loggedin, setLoggedin] = useState(false)
     const token = localStorage.getItem('token')
 
-
-
     const loginFetch = async () => {
-        await fetch('http://localhost:3000/admin/loggedin', {
-            method: 'post',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        }).then(res => res.json())
-            .then(res => {
-                if (res.message === "Logged in") {
-                    setLoggedin(true)
-                } else {
-                    setLoggedin(false)
+        try {
+
+            const response = await axios({
+                url: 'http://localhost:3000/admin/loggedin',
+                method: 'post',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
                 }
             })
-            .catch(err => console.log(err))
 
+            const res = response.data;
+
+            if (res.message === "Logged in") {
+                setLoggedin(true)
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     const logout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('token')
         setLoggedin(false)
     }
 
     useEffect(() => {
         loginFetch()
     }, [])
-
 
 
     return (
@@ -64,11 +64,11 @@ function Landing() {
                             onClick={logout}
                         >Logout</Button>
                         <Button size={'large'} style={{ width: '20%', margin: '5px' }} variant="outlined"
-                            onClick={()=>navigate('/courses')}
+                            onClick={() => navigate('/courses')}
                         >Get Courses</Button>
                         <Button size={'large'} style={{ width: '20%', margin: '5px' }} variant="outlined"
-                            onClick={()=>navigate('/about')}
-                        >Add Courses</Button>
+                            onClick={() => navigate('/purchasedCourses')}
+                        >Purchased courses</Button>
                     </>
                 }
 
@@ -77,4 +77,4 @@ function Landing() {
     )
 }
 
-export default Landing;
+export default Landing

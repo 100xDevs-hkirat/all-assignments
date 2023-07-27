@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.full__page {
+    height: 100vh;
+    width: 100vw;
+}
+
+.mp{
+    margin: 1rem;
+    padding: 1rem;
+}
