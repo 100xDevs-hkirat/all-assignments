@@ -2,36 +2,39 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import authState from "../store/authState";
-import "./login.css";
 
-const Login: React.FC = () => {
+const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [, setAuthState] = useRecoilState(authState);
   const navigate = useNavigate();
 
-  const handleLogin: React.FormEventHandler = async (e) => {
+  const handleSignup: React.FormEventHandler = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      setAuthState(data.token);
-      navigate("/todo");
-      //   window.location.pathname = "/todos";
-    } else {
-      alert("Invalid credentials");
+    try {
+      const res = await fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        setAuthState(data.token);
+        navigate("/todo");
+      } else {
+        alert("Error while signing up");
+      }
+    } catch (e) {
+      alert(e);
     }
   };
   return (
     <div className="card">
-      <h1>Login</h1>
+      <h1>Signup</h1>
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSignup}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -56,10 +59,10 @@ const Login: React.FC = () => {
           required
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button type="submit">Signup</button>
       </form>
       <Link
-        to="/signup"
+        to="/login"
         style={{
           justifySelf: "flex-end",
           color: "white",
@@ -67,10 +70,10 @@ const Login: React.FC = () => {
           marginTop: "10px",
         }}
       >
-        Create an account
+        Have an account
       </Link>
     </div>
   );
 };
 
-export default Login;
+export default Signup;

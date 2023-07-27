@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./App.css";
 import Todo from "./components/Todo";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 import authState from "./store/authState";
 import { IUser } from "./store/interface";
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Todo />} />
           <Route path="/Todo" element={<Todo />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
         </Routes>
       </Router>
     </RecoilRoot>
