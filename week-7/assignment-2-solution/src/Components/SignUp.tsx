@@ -8,8 +8,10 @@ function SignUp() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="mt-[20%] p-4 mx-[30%] bg-slate-400 w-1/3 h-1/4 flex flex-col items-center justify-center rounded-lg">
+      <div className="text-white text-3xl">SignUp</div>
       <input
+        className="text-sm w-[80%] p-4 border-blue-950 border-2 rounded-xl m-3"
         type="email"
         placeholder="username"
         value={email}
@@ -18,6 +20,7 @@ function SignUp() {
         }}
       />
       <input
+        className="text-sm w-[80%] p-4 border-blue-950 border-2 rounded-xl m-3"
         type="password" // Corrected "texr" to "text"
         placeholder="password"
         value={password}
@@ -26,6 +29,7 @@ function SignUp() {
         }}
       />
       <button
+        className="text-sm w-[80%] p-3 bg-slate-200 rounded-2xl"
         onClick={() => {
           axios
             .post("http://localhost:3000/auth/signup", {
@@ -43,7 +47,7 @@ function SignUp() {
       >
         SignUp
       </button>
-    </>
+    </div>
   );
 }
 

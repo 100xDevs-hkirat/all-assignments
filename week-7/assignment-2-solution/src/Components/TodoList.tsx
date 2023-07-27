@@ -47,8 +47,9 @@ function AddTodo() {
   };
 
   return (
-    <>
+    <div className="mt-32 p-4 mx-[30%] bg-slate-400 w-1/3 h-1/4 flex flex-col items-center justify-center rounded-lg">
       <input
+        className="text-sm w-[80%] p-4 border-blue-950 border-2 rounded-xl m-3"
         type="text"
         placeholder="title"
         value={todoTitle}
@@ -57,6 +58,7 @@ function AddTodo() {
         }}
       />
       <input
+        className="text-sm w-[80%] p-4 border-blue-950 border-2 rounded-xl m-3"
         type="text" // Corrected "texr" to "text"
         placeholder="description"
         value={todoDescription}
@@ -64,8 +66,13 @@ function AddTodo() {
           setTodoDescription(e.target.value);
         }}
       />
-      <button onClick={handleAddTodo}>Add Todo</button>
-    </>
+      <button
+        className="text-sm w-[80%] p-3 bg-slate-200 rounded-2xl"
+        onClick={handleAddTodo}
+      >
+        Add Todo
+      </button>
+    </div>
   );
 }
 
@@ -85,7 +92,10 @@ function TodoList() {
   const Todos = useRecoilValue(todoAtom);
   return (
     <>
-      <div>
+      <div className="bg-slate-800 w-1/4 h-1/2 flex flex-col items-center justify-center rounded-lg mt-11 mx-[30%] p-1">
+        <div className="text-white text-3xl m-2 border-slate-800 border-2 border-b-slate-400">
+          Todos
+        </div>
         {Todos.filter((todo) => !todo.done).map((todo) => (
           <DisplayTodos
             title={todo.title}
@@ -107,8 +117,9 @@ function DisplayTodos(props: {
 }) {
   const [todos, setTodos] = useRecoilState<Array<TodoItemType>>(todoAtom);
   return (
-    <div className="flex">
+    <div className="flex rounded-lg w-[80%] h-10">
       <input
+        className="p-4 border-yellow-50 border-2 m-3 w-3"
         type="checkbox"
         onClick={() => {
           const updatedTodos = todos.map((todo) =>
@@ -127,9 +138,9 @@ function DisplayTodos(props: {
           );
         }}
       />
-      <div className="m-3 p-3 text-black border-blue-400 border-2">
+      <div className="m-1 p-1 text-blue-100 ">
         <h1>{props.title}</h1>
-        <h3>{props.description}</h3>
+        {/* <h3 className="m-1">{props.description}</h3> */}
       </div>
     </div>
   );
