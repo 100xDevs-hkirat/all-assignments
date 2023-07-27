@@ -1,0 +1,38 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Todo = exports.User = void 0;
+// import { ObjectId } from "mongoose";
+const mongoose_1 = __importDefault(require("mongoose"));
+// type mongoTodos = {
+//     _id:ObjectId,
+//     title:string,
+//     decription:string,
+//     done:boolean,
+//     userId:string,
+//     __v:0
+// }
+// type mongoUser = {
+//     _id:ObjectId,
+//     username:string,
+//     password:string,
+//     __v:0
+// }
+const userSchema = new mongoose_1.default.Schema({
+    username: String,
+    password: String,
+});
+const todoSchema = new mongoose_1.default.Schema({
+    title: String,
+    description: String,
+    done: Boolean,
+    userId: String,
+});
+const User = mongoose_1.default.model('User', userSchema);
+exports.User = User;
+const Todo = mongoose_1.default.model('Todo', todoSchema);
+exports.Todo = Todo;
+// export default mongoose.model("User",userSchema)
+// export default mongoose.model("Todo",todoSchema)
