@@ -1,9 +1,12 @@
 import {atom} from "recoil"
-
-export const userAtom = atom({
+type userDetails = {
+    username:string,
+    password:string
+}
+export const userAtom = atom<Array<userDetails>>({
     key:"userAtom",
-    default:{
-        username:"",
-        password:""
-    }
+    default:[{
+        username:"asbar@gmail.com",
+        password:"123456"
+    }]
 })

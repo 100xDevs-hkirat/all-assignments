@@ -15,8 +15,7 @@ const authenticateJwt = (req, res, next) => {
             if (err) {
                 return res.sendStatus(403);
             }
-            // We need to check if the user is undefined here to avoid runtime errors
-            if (!user) { // Also check if the 'id' property is present
+            if (!user) {
                 return res.sendStatus(403);
             }
             const userPayload = user; // Type assertion

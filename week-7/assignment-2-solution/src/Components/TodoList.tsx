@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 import { todoAtom } from "../store/todo/todo";
+import { useEffect } from "react";
+import axios from "axios";
 
 type TodoItemType = {
-  id: number | string;
+  _id: string;
   title: string;
   description: string;
   done: boolean;
@@ -15,15 +17,31 @@ function AddTodo() {
   const setTodos = useSetRecoilState<Array<TodoItemType>>(todoAtom); // Get the set function for the todoAtom
 
   const handleAddTodo = () => {
-    setTodos((prevTodos) => [
-      ...prevTodos,
-      {
-        id: prevTodos.length + 1,
-        title: todoTitle,
-        description: todoDescription,
-        done: false,
-      },
-    ]);
+    axios
+      .post(
+        "http://localhost:3000/todo/todos",
+        {
+          title: todoTitle,
+          description: todoDescription,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        setTodos((prevTodos) => [
+          ...prevTodos,
+          {
+            _id: res.data._id,
+            title: todoTitle,
+            description: todoDescription,
+            done: false,
+          },
+        ]);
+      });
+
     setTodoTitle(""); // Clear the input after adding todo
     setTodoDescription(""); // Clear the input after adding todo
   };
@@ -52,6 +70,18 @@ function AddTodo() {
 }
 
 function TodoList() {
+  const setTodos = useSetRecoilState(todoAtom);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/todo/todos", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setTodos(res.data);
+      });
+  }, []);
   const Todos = useRecoilValue(todoAtom);
   return (
     <>
@@ -59,9 +89,9 @@ function TodoList() {
         {Todos.filter((todo) => !todo.done).map((todo) => (
           <DisplayTodos
             title={todo.title}
-            key={todo.id}
+            key={todo._id}
             description={todo.description}
-            id={todo.id}
+            id={todo._id}
           />
         ))}
       </div>
@@ -80,17 +110,21 @@ function DisplayTodos(props: {
     <div className="flex">
       <input
         type="checkbox"
-        // onClick={() => {
-        //   const updateTodos = todos.map((todo)=>{
-        //     todo.id === props.id ? {...todo , done:true} : todo
-        //   });
-        //   setTodos(updateTodos);
-        // }}
         onClick={() => {
           const updatedTodos = todos.map((todo) =>
-            todo.id === props.id ? { ...todo, done: true } : todo
+            todo._id === props.id ? { ...todo, done: true } : todo
           );
+
           setTodos(updatedTodos);
+          axios.patch(
+            `http://localhost:3000/todo/todos/${props.id}/done`,
+            null,
+            {
+              headers: {
+                Authorization: localStorage.getItem("token"),
+              },
+            }
+          );
         }}
       />
       <div className="m-3 p-3 text-black border-blue-400 border-2">

@@ -36,7 +36,7 @@ router.get('/todos', index_1.authenticateJwt, (req, res) => {
 router.patch('/todos/:todoId/done', index_1.authenticateJwt, (req, res) => {
     const { todoId } = req.params;
     const userId = req.headers.userId;
-    index_2.Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
+    index_2.Todo.findOneAndUpdate({ _id: String(todoId), userId }, { done: true }, { new: true })
         .then((updatedTodo) => {
         if (!updatedTodo) {
             return res.status(404).json({ error: 'Todo not found' });

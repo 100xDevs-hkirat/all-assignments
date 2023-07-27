@@ -1,6 +1,6 @@
 import {atom} from "recoil"
 type TodoItemType = {
-    id: number | string;
+    _id:  string;
     title: string;
     description: string;
     done: boolean;
@@ -9,7 +9,7 @@ export let todoAtom = atom<Array<TodoItemType>>({
     key:"todoAtom",
     default:[
         {
-            id:1,
+            _id:"",
             title:"Demo",
             description:"this is demo todo",
             done:false

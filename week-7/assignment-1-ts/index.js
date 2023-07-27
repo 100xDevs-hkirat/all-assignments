@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // const express = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const todo_1 = require("./routes/todo");
 const auth_1 = require("./routes/auth");
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 mongoose_1.default.connect("mongodb://localhost:27017", {
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
