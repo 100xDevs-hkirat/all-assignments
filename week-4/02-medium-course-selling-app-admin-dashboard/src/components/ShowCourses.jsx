@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import React, { useEffect } from "react";
 import { Card, Grid, Box, CardContent, CardMedia, Typography, Button } from '@mui/material';
