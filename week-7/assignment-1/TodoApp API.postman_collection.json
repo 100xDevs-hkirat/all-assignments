@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "727f5bd9-00de-4216-b328-8350176d6589",
+		"name": "TodoApp API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5867708"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"tes1t111\",\n    \"password\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/signup",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmVlMTZmNDlmMmI1OGM3NTU4Yzk5MiIsImlhdCI6MTY5MDIzMTE1MSwiZXhwIjoxNjkwMjM0NzUxfQ.f2c89qZP_HsJWMwL0soeK9WGKC6a_wr_38DBKmILZzk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test\",\n    \"password\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"test\",\n    \"description\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/todo/todos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"todo",
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmVmMzAyMzdhZjUzMThjYzY2NDkyZSIsImlhdCI6MTY5MDIzNTY1MCwiZXhwIjoxNjkwMjM5MjUwfQ.fLA-j4lehmVMnq885V_GyUEMuAuzxSpU5_jACJuYIaA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/todo/todos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"todo",
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmVmMzAyMzdhZjUzMThjYzY2NDkyZSIsImlhdCI6MTY5MDIzNTY1MCwiZXhwIjoxNjkwMjM5MjUwfQ.fLA-j4lehmVMnq885V_GyUEMuAuzxSpU5_jACJuYIaA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/auth/me",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Todo",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJyb2xlIjoidXNlciIsImlhdCI6MTY5MDIzMTIwNywiZXhwIjoxNjkwMjM0ODA3fQ.cJkzwzlFF8a3wDSLgP5HsTmZy_G77bNyctWhNomDM1U",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/todo/todos/64bee1b41ed38434adc5b36e/done",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"todo",
+						"todos",
+						"64bee1b41ed38434adc5b36e",
+						"done"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
