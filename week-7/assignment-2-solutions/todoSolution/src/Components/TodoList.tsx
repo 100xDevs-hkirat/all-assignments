@@ -2,8 +2,15 @@ import React, { useContext, useState, useEffect } from 'react';
 import { authState } from '../store/authState.js';
 import {useRecoilValue} from "recoil";
 
+interface Todo {
+    _id : string,
+    title : string,
+    descrption : string,
+    done : boolean
+}
+
 const TodoList = () => {
-    const [todos, setTodos] = useState([]);
+    const [todos, setTodos] = useState<Todo[]>([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const authStateValue = useRecoilValue(authState);
