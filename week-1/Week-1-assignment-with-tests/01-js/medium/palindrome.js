@@ -5,9 +5,29 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
+function reverce(str) {
+  let strLen = str.length;
+  let revStr = "";
+  for (var i = strLen - 1; i >= 0; i--) {
+    revStr += str[i];
+  }
+  return revStr;
+}
+
+function fransformStr(str) {
+  var transformedString = str.replace(/[^A-Za-z]/g, "");
+  return transformedString;
+}
 
 function isPalindrome(str) {
-  return true;
+  var upperStr = str.toUpperCase();
+  var finalStr = fransformStr(upperStr);
+  let reverceString = reverce(finalStr);
+  if (reverceString === finalStr) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 module.exports = isPalindrome;
