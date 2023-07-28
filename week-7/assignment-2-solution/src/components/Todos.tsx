@@ -3,6 +3,7 @@ import authState from "../store/authState";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ITodo } from "../store/interface";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Todos: React.FC = () => {
   const [todos, setTodos] = useState<Array<ITodo>>([]);
@@ -17,14 +18,16 @@ const Todos: React.FC = () => {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const res = await fetch("http://localhost:3000/todo/todos", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${authStateValue.token}`,
-          },
-        });
-        if (res.ok) {
-          const data: Array<ITodo> = await res.json();
+        // const res = await fetch("http://localhost:3000/todo/todos", {
+        //   method: "GET",
+        //   headers: {
+        //     Authorization: `Bearer ${authStateValue.token}`,
+        //   },
+        // });
+        const res = await axios.get("/todo/todos");
+        if (res.status === 200) {
+          // const data: Array<ITodo> = await res.json();
+          const data: Array<ITodo> = res.data;
           setTodos(data);
         } else {
           console.error("Error /todos");
@@ -41,15 +44,20 @@ const Todos: React.FC = () => {
     setTitle("");
     setDescription("");
     try {
-      const res = await fetch("http://localhost:3000/todo/todos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authStateValue.token}`,
-        },
-        body: JSON.stringify({ title: title.toUpperCase(), description }),
+      // const res = await fetch("http://192.168.152.215:6000/todo/todos", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${authStateValue.token}`,
+      //   },
+      //   body: JSON.stringify({ title: title.toUpperCase(), description }),
+      // });
+      const res = await axios.post("/todo/todos", {
+        title: title.toUpperCase(),
+        description,
       });
-      const data: ITodo = await res.json();
+      // const data: ITodo = await res.json();
+      const data: ITodo = res.data;
       setTodos([...todos, data]);
     } catch (e) {
       //   alert(e);
@@ -58,23 +66,26 @@ const Todos: React.FC = () => {
   };
 
   const markDone = async (id: string | number) => {
-    const res = await fetch(`http://localhost:3000/todo/todos/${id}/done`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${authStateValue.token}`,
-      },
-    });
-    const updatedTodo: ITodo = await res.json();
+    // const res = await fetch(`http://192.168.152.215:6000/todo/todos/${id}/done`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     Authorization: `Bearer ${authStateValue.token}`,
+    //   },
+    // });
+    const res = await axios.patch(`/todo/todos/${id}/done`);
+
+    // const updatedTodo: ITodo = await res.json();
+    const updatedTodo: ITodo = res.data;
     setTodos(
       todos.map((todo) => (todo._id === updatedTodo._id ? updatedTodo : todo))
     );
   };
 
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        <h2>Welcome {authStateValue.username}</h2>
-        <div style={{ marginTop: 25, marginLeft: 20 }}>
+    <div style={{ margin: 10, marginLeft: 20 }}>
+      <div style={{ display: "flex" }} className="todo-header">
+        <h2>Welcome {authStateValue.username?.split("@")[0].toUpperCase()}</h2>
+        <div style={{ marginTop: 25, marginLeft: 20, top: 5, right: 5}}>
           <button
             onClick={() => {
               localStorage.removeItem("token");
@@ -88,21 +99,23 @@ const Todos: React.FC = () => {
       </div>
       <h2>Todo List</h2>
       <form onSubmit={addTodo}>
-      <input
-        type="text"
-        value={title}
-        placeholder="Title"
-        required
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <input
-        type="text"
-        value={description}
-        placeholder="Description"
-        required
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button type="submit">Add Todo</button>
+        <input
+          type="text"
+          value={title}
+          placeholder="Title"
+          autoComplete="off"
+          required
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <input
+          type="text"
+          value={description}
+          placeholder="Description"
+          autoComplete="off"
+          required
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <button type="submit">Add Todo</button>
       </form>
       <div className="todoContainer">
         {todos.map((todo) => (

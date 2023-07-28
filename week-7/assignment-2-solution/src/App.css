@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap");
 .card {
   width: 300px;
   height: 400px;
@@ -12,7 +11,7 @@
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2)
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -25,15 +24,22 @@ body {
 }
 
 #root {
-  position:   relative;
-  width:100vw;
+  position: relative;
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   font-family: Nunito;
   overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .todoCard {
@@ -56,35 +62,52 @@ body {
 }
 
 .todoCard > button {
+  min-width: 70px;
   margin: 10px;
 }
 
 .todoCard > p {
   margin: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .todoContainer {
+  position: absolute;
   width: max-content;
   margin: 5px;
+
   /* min-width: 800px; */
 }
 
 @media (max-width: 768px) {
-  body, #root {
+  body,
+  #root {
     overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
     min-width: none;
   }
-  
-   .todoCard {
+
+  .todoCard {
     min-width: 90vw;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     /* max-width: max-content; */
-    width: 100vh
+    /* width: 100vh */
   }
-  
+
   .todoContainer {
     overflow-x: hidden; /* Allow horizontal scrolling for the content on mobile */
     min-width: none;
     width: 98vw;
+  }
+
+  .todo-header {
+    position: relative;
+  }
+  .todo-header  div button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: red;
   }
 }

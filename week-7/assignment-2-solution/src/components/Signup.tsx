@@ -1,28 +1,34 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import authState from "../store/authState";
+import axios from "axios";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [auth, setAuth] = useRecoilState(authState);
+  const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   const handleSignup: React.FormEventHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+      // const res = await fetch("http://192.168.152.215:6000/auth/signup", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ username, password }),
+      // });
+      const res = await axios.post("/auth/signup", {
+        username,
+        password,
       });
 
-      const data = await res.json();
+      // const data = await res.json();
+      const data = res.data;
       if (data.token) {
         localStorage.setItem("token", data.token);
-        setAuth({...auth, token:data.token});
-        navigate("/todos");
+        setAuth({username: null, token:data.token});
+        navigate("/");
       } else {
         alert("Error while signing up");
       }
@@ -47,6 +53,7 @@ const Signup = () => {
           name="username"
           value={username}
           placeholder="Email"
+          autoComplete="username"
           required
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -56,6 +63,7 @@ const Signup = () => {
           name="password"
           value={password}
           placeholder="Password"
+          autoComplete="current-password"
           required
           onChange={(e) => setPassword(e.target.value)}
         />

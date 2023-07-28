@@ -3,7 +3,7 @@ import { IAuth } from './interface';
 
 const authState = atom<IAuth>({
     key: 'authState',
-    default: { token: null, username: null }
+    default: { token: null || localStorage.getItem("token"), username: null }
 });
 
 export default authState;

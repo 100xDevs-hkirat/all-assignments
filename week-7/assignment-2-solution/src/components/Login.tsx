@@ -1,27 +1,34 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
+import axios from "axios";
 import authState from "../store/authState";
 import "./login.css";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [auth, setAuth] = useRecoilState(authState);
+  const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   const handleLogin: React.FormEventHandler = async (e) => {
       try {
         e.preventDefault();
-        const res = await fetch("http://localhost:3000/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+        // const res = await fetch("http://192.168.152.215:6000/auth/login", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ username, password }),
+        // });
+        const res = await axios.post("/auth/login", {
+          username,
+          password, 
         });
-        const data = await res.json();
+
+        // const data = await res.json();
+        const data = res.data;
         if (data.token) {
           localStorage.setItem("token", data.token);
-          setAuth({...auth, token: data.token});
+          setAuth({username: null, token: data.token});
           navigate("/");
         } else {
           alert("Invalid credentials");
@@ -47,6 +54,7 @@ const Login: React.FC = () => {
           name="username"
           value={username}
           placeholder="Email"
+          autoComplete="username"
           required
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -56,6 +64,7 @@ const Login: React.FC = () => {
           name="password"
           value={password}
           placeholder="Password"
+          autoComplete="current-password"
           required
           onChange={(e) => setPassword(e.target.value)}
         />
