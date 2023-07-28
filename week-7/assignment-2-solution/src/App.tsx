@@ -4,7 +4,7 @@ import { RecoilRoot, useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 
 import "./App.css";
-import Todo from "./components/Todos";
+import Todos from "./components/Todos";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import authState from "./store/authState";
@@ -14,10 +14,9 @@ const App: React.FC = () => {
   return (
     <RecoilRoot>
       <Router>
-        <InitState />
         <Routes>
-          <Route path="/" element={<Todo />} />
-          <Route path="/todos" element={<Todo />} />
+          <Route path="/" element={<InitState />} />
+          <Route path="/todos" element={<Todos />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ITodo } from "../store/interface";
 import { useNavigate } from "react-router-dom";
 
-const Todo: React.FC = () => {
+const Todos: React.FC = () => {
   const [todos, setTodos] = useState<Array<ITodo>>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -16,9 +16,6 @@ const Todo: React.FC = () => {
 
   useEffect(() => {
     const getTodos = async () => {
-      console.log(authStateValue);
-      // console.log(authStateValue.token);
-      // console.log(`${authStateValue.token}`)
       try {
         const res = await fetch("http://localhost:3000/todo/todos", {
           method: "GET",
@@ -31,7 +28,6 @@ const Todo: React.FC = () => {
           setTodos(data);
         } else {
           console.error("Error /todos");
-          // alert("error");
         }
       } catch (e) {
         alert(e);
@@ -77,7 +73,6 @@ const Todo: React.FC = () => {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        {/* <>{console.log("authstate-value", authStateValue)}</> */}
         <h2>Welcome {authStateValue.username}</h2>
         <div style={{ marginTop: 25, marginLeft: 20 }}>
           <button
@@ -124,4 +119,4 @@ const Todo: React.FC = () => {
   );
 };
 
-export default Todo;
+export default Todos;

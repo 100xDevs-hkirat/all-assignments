@@ -20,7 +20,6 @@ const Login: React.FC = () => {
         });
         const data = await res.json();
         if (data.token) {
-            console.log("login", data.token)
           localStorage.setItem("token", data.token);
           setAuth({...auth, token: data.token});
           navigate("/");
