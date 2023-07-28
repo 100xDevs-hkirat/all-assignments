@@ -7,6 +7,15 @@
 */
 
 function isPalindrome(str) {
+  str = str.toLowerCase().replace(/[,.?! ]/g, "");
+  var strReversed = str;
+  for (var i = 0; i < str.length; i++) {
+    if (str[i] == strReversed[str.length - 1 - i]) {
+      continue;
+    } else {
+      return false;
+    }
+  }
   return true;
 }
 
