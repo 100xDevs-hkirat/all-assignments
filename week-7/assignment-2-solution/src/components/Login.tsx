@@ -23,7 +23,7 @@ const Login: React.FC = () => {
             console.log("login", data.token)
           localStorage.setItem("token", data.token);
           setAuth({...auth, token: data.token});
-          navigate("/todos");
+          navigate("/");
         } else {
           alert("Invalid credentials");
         }

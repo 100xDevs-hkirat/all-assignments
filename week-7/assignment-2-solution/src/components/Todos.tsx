@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import authState from "../store/authState";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ITodo } from "../store/interface";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +9,9 @@ const Todo: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   //   const authStateValue = useRecoilValue(authState);
-  const [authStateValue, setAuthState] = useRecoilState(authState);
+  // const [authStateValue, setAuthState] = useRecoilState(authState);
+  const authStateValue = useRecoilValue(authState);
+  const setAuthState = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +40,10 @@ const Todo: React.FC = () => {
     getTodos();
   }, [authStateValue]);
 
-  const addTodo = async () => {
+  const addTodo: React.FormEventHandler = async (e) => {
+    e.preventDefault();
+    setTitle("");
+    setDescription("");
     try {
       const res = await fetch("http://localhost:3000/todo/todos", {
         method: "POST",
@@ -46,12 +51,13 @@ const Todo: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authStateValue.token}`,
         },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ title: title.toUpperCase(), description }),
       });
       const data: ITodo = await res.json();
       setTodos([...todos, data]);
     } catch (e) {
       //   alert(e);
+      console.log(e);
     }
   };
 
@@ -71,6 +77,7 @@ const Todo: React.FC = () => {
   return (
     <div>
       <div style={{ display: "flex" }}>
+        {/* <>{console.log("authstate-value", authStateValue)}</> */}
         <h2>Welcome {authStateValue.username}</h2>
         <div style={{ marginTop: 25, marginLeft: 20 }}>
           <button
@@ -85,19 +92,23 @@ const Todo: React.FC = () => {
         </div>
       </div>
       <h2>Todo List</h2>
+      <form onSubmit={addTodo}>
       <input
         type="text"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
+        required
+        onChange={(e) => setTitle(e.target.value)}
       />
       <input
         type="text"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
         placeholder="Description"
+        required
+        onChange={(e) => setDescription(e.target.value)}
       />
-      <button onClick={addTodo}>Add Todo</button>
+      <button type="submit">Add Todo</button>
+      </form>
       <div className="todoContainer">
         {todos.map((todo) => (
           <div key={todo._id} className="todoCard">

@@ -32,10 +32,11 @@ const InitState: React.FC = () => {
 
   const init = async () => {
     const token = localStorage.getItem("token");
-    // console.log("token", token);
     if (!token) {
-      console.log("no token");
       navigate("/login");
+      return;
+    }
+    if(auth && auth.token && auth.username) {
       return;
     }
     try {
@@ -45,22 +46,18 @@ const InitState: React.FC = () => {
       if (response.ok) {
         const data: IUser = await response.json();
         setAuth({ token, username: data.username });
-        console.log("token", token)
-        console.log("auth", auth);
         navigate("/todos");
       } else {
         navigate("/login");
       }
     } catch (e) {
-      console.log(e);
       navigate("/login");
     }
   };
   React.useEffect(() => {
     init();
-    console.log("yes");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [auth, setAuth]);
   return <></>;
 };
 
