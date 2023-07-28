@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function registerUser(email,password,navigate){
     if (!email && !password) return;
-    axios.post('http://localhost:3000/admin/signup',{
+    axios.post('http://localhost:3000/users/signup',{
       username : email,
       password : password
     })
