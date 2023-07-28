@@ -1,0 +1,64 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: lightsteelblue;
+}
+.appbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.landing-page .options {
+  display: flex;
+  gap: 20px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+.page .form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border: 2px solid #101460;
+}
+
+#email,
+#password {
+  width: 300px;
+}
+
+.input {
+  width: 600px;
+}
+
+.button {
+  width: 100px;
+}
+
+.all-courses {
+  display: flex;
+  gap: 35px;
+  margin-top: 20px;
+  margin-left: 400px;
+  margin-right: 300px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.message {
+  font-weight: 500;
+  font-size: 22px;
+  text-align: center;
+  color: rgb(218, 18, 18);
+}

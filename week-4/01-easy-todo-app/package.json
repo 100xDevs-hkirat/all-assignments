@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -22,5 +25,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "vite": "^4.3.9"
-  }
+  },
+  "description": "Create the frontend for a TODO app. \r You should be able to \r 1. Create a new TODO\r 2. List all TODOs\r 3. Delete a TODO",
+  "main": "vite.config.js",
+  "author": "",
+  "license": "ISC",
+  "keywords": []
 }

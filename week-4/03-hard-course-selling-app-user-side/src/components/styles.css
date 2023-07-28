@@ -1,0 +1,130 @@
+.landing-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 400px;
+  padding-top: 200px;
+  gap: 50px;
+}
+
+.text-content {
+  flex: 1;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.title {
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.description {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.img-content {
+  flex: 1;
+  min-width: 40%;
+  max-width: 80%;
+}
+
+.button-style {
+  background-color: #bc1c44;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  width: 12rem;
+  height: 3.2rem;
+  border: 0;
+}
+
+@media (max-width: 480px) {
+  .landing-page-container {
+    flex-direction: column;
+    padding-left: 280px;
+    padding-top: 100px;
+  }
+  .text-content {
+    padding-bottom: 20px;
+    gap: 40px;
+  }
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .description {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .button-style {
+    width: 10rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1200px) {
+  .landing-page-container {
+    padding-left: 300px;
+    padding-top: 100px;
+  }
+  .text-content {
+    padding-bottom: 20px;
+    gap: 40px;
+  }
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .description {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .button-style {
+    width: 10rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+  .img-content {
+    width: 400px;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1700px) {
+  .landing-page-container {
+    padding-left: 300px;
+    padding-top: 100px;
+  }
+  .text-content {
+    padding-bottom: 20px;
+    gap: 40px;
+  }
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .description {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .button-style {
+    width: 10rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+  .img-content {
+    width: 700px;
+  }
+}

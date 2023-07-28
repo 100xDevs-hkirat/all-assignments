@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px;
+  gap: 10px;
+}
+
+.todo-container,
+.update-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 170px;
+  width: 400px;
+  margin-left: 200px;
+}
+
+header {
+  background-color: rgb(141, 57, 141);
+  width: 100%;
+  padding: 0.1px 0px;
+  text-align: center;
+  color: beige;
+  border-radius: 5px;
+  width: 100%;
+  margin: 0;
+}
+
+header h1 {
+  width: 100%;
+}
