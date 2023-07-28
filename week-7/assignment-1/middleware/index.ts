@@ -19,9 +19,9 @@ const authenticateJwt = (req:AuthenticatedRequest, res:Response, next:NextFuncti
         return res.sendStatus(403);
       }
       if (typeof user === 'string') {
-        req.userId = user;
+        return res.sendStatus(403);
       } else {
-        req.userId = user.id as string;
+        req.headers["userId"] = user.id;
       }
       next();
     });
