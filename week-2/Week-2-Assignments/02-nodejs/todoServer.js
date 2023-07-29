@@ -41,9 +41,103 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const uuid = require('uuid');
+const fs = require('fs');
+const { log } = require('console');
+const filePath = "./files/todoData.json";
 
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+});
+
+app.get('/todos', (req, res) => {
+    loadData(res, data => {
+        res.status(200).send(JSON.stringify(Object.values(data.todos)));
+    });
+})
+
+app.get('/todos/:id', (req, res) => {
+    loadData(res, data => {
+        let result = data.todos[req.params.id];
+        if (result === undefined) res.sendStatus(404);
+        res.status(200).send(JSON.stringify(result));
+    })
+})
+
+app.post('/todos', (req, res) => {
+    loadData(res, data => {
+        let id = uuid.v4();
+        data.todos[id] = {
+                id,
+                title: req.body.title,
+                completed: req.body.completed,
+                description: req.body.description
+        };
+        writeData(data,()=>{
+            res.status(201).send(JSON.stringify({ id }));
+        })
+    })
+})
+
+app.put('/todos/:id', (req, res) => {
+    loadData(res, data => {
+        if(data.todos[req.params.id]){
+            data.todos[req.params.id].title = req.body.title;
+            data.todos[req.params.id].description = req.body.description;
+            writeData(data,()=>{
+                res.status(201).send()
+            })
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(404);
+        }
+    })
+})
+
+app.delete('/todos/:id',(req,res)=>{
+    loadData(res,data=>{
+        if(data.todos[req.params.id]){
+            delete data.todos[req.params.id];
+            writeData(data,()=>{
+                res.sendStatus(200);
+            })
+        } else {
+            res.sendStatus(404);
+        }
+    })
+})
+
+const fileError = (error, res) => {
+    console.log("Internal Error:", error);
+    return res.status(500).send(JSON.stringify({
+        status: "failure",
+        message: error.message
+    }))
+}
+
+//This function will load and parse the data. Also it handles the Error
+const loadData = (res, cllbck) => {
+    fs.readFile(filePath, (err, data) => {
+        if (err) {
+            return fileError(err, res);
+        }
+        if (data) {
+            return cllbck(JSON.parse(data.toString()));
+        }
+    })
+}
+
+//Wrapper function to write the data to the JSON file
+const writeData = (data,cllbck) => {
+    fs.writeFile(filePath,JSON.stringify(data,null,4),cllbck);
+}
+
+//app.listen(3000);
+console.log("Server started at 3000");
 
 module.exports = app;
