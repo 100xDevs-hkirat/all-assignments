@@ -2,8 +2,8 @@
 Convert this from JS to typescript.
 We have a simple backend for a TODO application.
 First, just go through the codebase and make sure you understand it. There is a postman collection for you to try this out locally
-Run node index.js to run the app locally and try all the routes in postman.
-You WILL need mongoDB running locally, or a cloud mongoDB instance. Please replace the mongoDB url in index.js with your own mongoDB url.
+Run node index.ts to run the app locally and try all the routes in postman.
+You WILL need mongoDB running locally, or a cloud mongoDB instance. Please replace the mongoDB url in index.ts with your own mongoDB url.
 
 ### Steps to follow
  - First step in doing this is to convert the JS files to TS files (replacing the extension of all files).
