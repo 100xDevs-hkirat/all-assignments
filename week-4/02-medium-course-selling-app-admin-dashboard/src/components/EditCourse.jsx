@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-/// You need to add input boxes to take input for users to create a course.
-/// I've added one input so you understand the api to do it.
-function CreateCourse() {
+import { useParams } from "react-router-dom";
+
+const EditCourse = () => {
+  const param = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
-  const addCourse = () => {
-    fetch("http://localhost:3000/admin/courses", {
-      method: "POST",
+  const editCourse = () => {
+    fetch(`http://localhost:3000/admin/courses/${param.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -17,21 +18,22 @@ function CreateCourse() {
       navigate("/courses");
     });
   };
-
   return (
-    <div>
-      <h1>Create Course Page</h1>
+    <>
+      {/* {JSON.stringify(param)} */}
+      <div>EditCourse</div>
       <div>
         <input value={title} onChange={(e) => setTitle(e.target.value)} />
         <button
           onClick={() => {
-            addCourse();
+            editCourse();
           }}
         >
-          Add Course
+          Edit Course
         </button>
       </div>
-    </div>
+    </>
   );
-}
-export default CreateCourse;
+};
+
+export default EditCourse;
