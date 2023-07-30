@@ -1,16 +1,16 @@
 
-const express = require("express");
+import express from "express";
 const app = express();
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const port = 3000;
-const authRoutes = require("./routes/auth");
-const todoRoutes = require("./routes/todo");
-const cors = require("cors");
+import {router} from "./routes/auth";
+import {todoRouter} from "./routes/todo";
+import cors from "cors";
 
 app.use(cors());
 app.use(express.json());
-app.use("/auth", authRoutes);
-app.use("/todo", todoRoutes);
+app.use("/auth", router);
+app.use("/todo", todoRouter);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

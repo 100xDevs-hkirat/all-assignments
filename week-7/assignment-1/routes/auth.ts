@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 import  express,{Request , Response} from 'express';
 const { authenticateJwt, SECRET } = require("../middleware/");
 import { User } from "../db";
-const router = express.Router();
+export const router = express.Router();
 
   router.post('/signup', async (req : Request, res : Response) => {
     const { username, password } = req.body;
@@ -36,5 +36,3 @@ const router = express.Router();
         res.status(403).json({ message: 'User not logged in' });
       }
     });
-
-  module.exports = router

@@ -1,9 +1,10 @@
 import {Request , Response, Router} from "express";
+import * as Api from "../types/api/Todo" ;
 const { authenticateJwt, SECRET } = require("../middleware/index");
-const { Todo } = require("../db");
-const router = Router();
+import { Todo } from "../db";
+export const todoRouter = Router();
 
-router.post('/todos', authenticateJwt, (req : Request, res : Response) => {
+todoRouter.post('/todos', authenticateJwt, (req : Request, res : Response) => {
   const { title, description } = req.body;
   const done = false;
   const userId = req.body.userId;
@@ -11,7 +12,7 @@ router.post('/todos', authenticateJwt, (req : Request, res : Response) => {
   const newTodo = new Todo({ title, description, done, userId });
 
   newTodo.save()
-    .then((savedTodo : any) => {
+    .then((savedTodo : Api.Todo) => {
       res.status(201).json(savedTodo);
     })
     .catch((err : Error) => {
@@ -20,11 +21,11 @@ router.post('/todos', authenticateJwt, (req : Request, res : Response) => {
 });
 
 
-router.get('/todos', authenticateJwt, (req: Request, res: Response) => {
+todoRouter.get('/todos', authenticateJwt, (req: Request, res: Response) => {
   const userId = req.body.userId;
 
   Todo.find({ userId })
-    .then((todos : any) => {
+    .then((todos : Api.Todo) => {
       res.json(todos);
     })
     .catch((err : Error) => {
@@ -32,12 +33,12 @@ router.get('/todos', authenticateJwt, (req: Request, res: Response) => {
     });
 });
 
-router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
+todoRouter.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
   const { todoId } = req.params;
   const userId = req.body.userId;
 
   Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
-    .then((updatedTodo : any) => {
+    .then((updatedTodo : Api.Todo) => {
       if (!updatedTodo) {
         return res.status(404).json({ error: 'Todo not found' });
       }
@@ -47,5 +48,3 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
       res.status(500).json({ error: 'Failed to update todo' });
     });
 });
-
-module.exports = router;
