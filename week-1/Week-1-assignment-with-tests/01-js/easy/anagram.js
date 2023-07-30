@@ -13,5 +13,6 @@ function isAnagram(str1, str2) {
 }
 
 // isAnagram('','');
+// contribution count test
 
 module.exports = isAnagram;
