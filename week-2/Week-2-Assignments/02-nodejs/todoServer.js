@@ -41,9 +41,76 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs= require('fs');
+const { log } = require('console');
 
 const app = express();
 
 app.use(bodyParser.json());
 
-module.exports = app;
+
+function findIndex(todos, id){
+  for(let i=0; i< todos.length; i++){
+    if(todos[i].id=== id) return i;
+  }
+  return -1;
+}
+
+function removeAtIndex(todos, index){
+  const newTodos= [];
+  for(let i=0; i< todos.lenght; i++){
+    if(i !== index) newTodos.push(todos[i]);
+  }
+
+  return newTodos;
+}
+
+app.get('/todos', (req, res)=>{
+  fs.readFile('todos.json', 'utf-8', (err, data)=>{
+    if(err) throw err;
+    res.json(JSON.parse(data));
+    // aliter: res.send(JSON.parse(data));
+  })
+})
+
+app.post('/todos', (req,res)=>{
+  let cnt= 0;
+  const newTodo= {
+    id: cnt++,
+    name: 'papi'
+  }
+
+  fs.readFile('todos.json', 'utf-8', (err, data)=>{
+    if(err) throw err;
+    const todos= JSON.parse(data);
+    todos.push(newTodo);
+
+    fs.writeFile('todos.json', JSON.stringify(todos), (err)=> {
+      if(err) throw err;
+      res.status(201).json(newTodo);
+    })
+  })
+})
+
+app.delete('/todos/:id', (req, res)=>{
+  fs.readFile('todos.json', 'utf-8', (err, data)=>{
+    if(err) throw err;
+
+    const todos= JSON.parse(data);
+    const index= findIndex(todos, JSON.parse(req.params.id));
+
+    if(index== -1){
+      res.status(401).send();
+    }else{
+      todos= removeAtIndex(todos, index);
+      fs.writeFile('todos.json', JSON.stringify(todos), (err)=>{
+        if(err) throw err;
+        res.status(200).send();
+      });
+    }
+  })
+})
+
+app.listen(3000, ()=>{
+  console.log("server is up and running")
+})
