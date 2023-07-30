@@ -105,17 +105,17 @@ app.get("/admin/courses/:courseId", authenticateJwt, (req, res) => {
 
 // User routes
 app.post("/users/signup", (req, res) => {
-  const { username, password } = req.body;
+  const { name, username, password } = req.body;
   const user = USERS.find((u) => u.username === username);
   if (user) res.status(403).json({ message: "User already exists" });
   else {
-    const newUser = { username, password };
+    const newUser = { name, username, password };
     USERS.push(newUser);
     fs.writeFileSync("users.json", JSON.stringify(USERS));
     const token = jwt.sign({ username, role: "user" }, SECRET, {
       expiresIn: "1h",
     });
-    res.json({ message: "User created successfully", token });
+    res.json({ message: "User registered successfully", token });
   }
 });
 
@@ -142,12 +142,20 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
     const user = USERS.find((u) => u.username === req.user.username);
     if (user) {
       if (!user.purchasedCourses) user.purchasedCourses = [];
-
       user.purchasedCourses.push(course);
       fs.writeFileSync("users.json", JSON.stringify(USERS));
-      res.json({ message: "Course purchased successfully" });
+      res.json({
+        message: "Course purchased successfully",
+        course: course,
+      });
     } else res.status(403).json({ message: "User not found" });
   } else res.status(404).json({ message: "Course not found" });
+});
+
+app.get("/users/courses/:courseId", authenticateJwt, (req, res) => {
+  const course = COURSES.find((c) => c.id === parseInt(req.params.courseId));
+  if (course) res.json({ course: course });
+  else res.status(404).send({ message: "Not Found" });
 });
 
 app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
