@@ -4,8 +4,8 @@ import {useSetRecoilState} from "recoil";
 import {authState} from "../store/authState.js";
 
 const Signup = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const handleSignup = async () => {
         const response = await fetch('http://localhost:3000/auth/signup', {
@@ -17,7 +17,7 @@ const Signup = () => {
         const data = await response.json();
         if (data.token) {
             localStorage.setItem("token", data.token)
-            window.location = "/todos";
+            window.location.href = "/todos";
         } else {
             alert("Error while signing up");
         }
