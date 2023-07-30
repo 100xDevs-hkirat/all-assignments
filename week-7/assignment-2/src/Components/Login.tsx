@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const handleLogin = async () => {
         const response = await fetch('http://localhost:3000/auth/login', {
@@ -15,7 +15,7 @@ const Login = () => {
         const data = await response.json();
         if (data.token) {
             localStorage.setItem("token", data.token)
-            window.location = "/todos";
+            window.location.href = "/todos";
         } else {
             alert("invalid credentials");
         }
