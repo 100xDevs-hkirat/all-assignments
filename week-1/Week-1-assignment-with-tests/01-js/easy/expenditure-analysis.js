@@ -47,20 +47,20 @@ const transactions = [
 ];
 
 function calculateTotalSpentByCategory(transactions) {
-  let obj = new Map();
-  for(let purchase of transactions) {
-    if(!obj.has(purchase.category)) {
-      obj.set(purchase.category, purchase.price);
+ let obj = new Map();
+  for(trans of transactions) {
+    if(!obj.has(trans.category)) {
+      obj.set(trans.category, trans.price);
     }else {
-      let current = obj.get(purchase.category);
-      obj.set(purchase.category, purchase.price + current);
+      let current = obj.get(trans.category);
+      obj.set(trans.category, trans.price + current);
     }
-  }
-  return [...obj].map(([key, value]) => ({
-    category: key,
-    totalSpent : value
-  }))
-}
+ }
+ return [...obj].map(([key, value]) => ({
+  category :  key,
+  totalSpent : value}
+ )
+)}
 
 calculateTotalSpentByCategory(transactions);
 module.exports = calculateTotalSpentByCategory;
