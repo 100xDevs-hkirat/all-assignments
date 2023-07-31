@@ -46,7 +46,7 @@ console.log(ADMINS);
 // console.log(ADMINS);
 
 const adminSecretKey = "admin";
-const userSecretKey = "user";
+const userSecretKey = "users";
 
 const adminAuthenticateJwt = (req,res,next) => {
   const token = req.headers.authorization.split(' ')[1];
