@@ -5,8 +5,18 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
-
 function isPalindrome(str) {
+  var tempStr=str.toLowerCase();
+
+  var s= tempStr.replace(/[^a-zA-Z0-9]/g, '');
+  // console.log(s);
+  var j=s.length-1;
+  for(var i=0 ; i < s.length/2 ; i++){
+    if(s[i]!==s[j--]){
+      return false;
+    }
+
+  }
   return true;
 }
 
