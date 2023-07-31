@@ -17,6 +17,67 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+  calculate(expression) {
+    // Remove continuous spaces and validate the expression for invalid characters
+    const cleanedExpression = expression.replace(/\s+/g, "");
+    const invalidCharactersRegex = /[^+\-*/()\d.]/g;
+    if (invalidCharactersRegex.test(cleanedExpression)) {
+      throw new Error("Invalid characters in the expression");
+    }
+
+    // Check for balanced parentheses
+    const stack = [];
+    for (const char of cleanedExpression) {
+      if (char === "(") {
+        stack.push(char);
+      } else if (char === ")") {
+        if (stack.length === 0) {
+          throw new Error("Unbalanced parentheses in the expression");
+        }
+        stack.pop();
+      }
+    }
+    if (stack.length > 0) {
+      throw new Error("Unbalanced parentheses in the expression");
+    }
+
+    try {
+       this.result = eval(cleanedExpression);
+      if (typeof this.result !== "number" || !isFinite(this.result)) {
+        throw new Error("Invalid arithmetic operation");
+      }
+      return this.result;
+    } catch (error) {
+      throw new Error("Invalid expression");
+    }
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  add(num) {
+    this.result += num;
+  }
+  subtract(num) {
+    this.result -= num;
+  }
+  multiply(num) {
+    this.result *= num;
+  }
+  divide(num) {
+    if (num === 0) {
+      throw new Error("Cannot divide by zero");
+    }
+    this.result /= num;
+  }
+  clear() {
+    this.result = 0;
+  }
+}
 
 module.exports = Calculator;

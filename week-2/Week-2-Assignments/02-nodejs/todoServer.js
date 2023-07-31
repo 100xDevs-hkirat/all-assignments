@@ -39,11 +39,74 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
+const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-
 app.use(bodyParser.json());
+// const port = 3000;
+
+let todos = [];
+function findIndexof(array, id) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id === id) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// API 1 Getting all todos
+app.get("/todos", (req, res) => {
+  if (todos.length === 0) {
+    res.status(404).send();
+  }
+  res.status(200).json(todos);
+});
+
+// API 2 Retrieve a specific todo item by ID
+app.get("/todos/:id", (req, res) => {
+  let index = findIndexof(todos, parseInt(req.params.id));
+  if (index === -1) {
+    res.status(404).send();
+  } else {
+    // todos[index].title = req.body.title;
+    // todos[index].description = req.body.description;
+    res.status(200).json(todos[index]);
+  }
+});
+
+// API 3 posting a new to do
+app.post("/todos", (req, res) => {
+  const newTodo = {
+    id: Math.floor(Math.random() * 1000000),
+    title: req.body.title,
+    description: req.body.description,
+  };
+  let ansObj = {
+    id: newTodo.id,
+  };
+  todos.push(newTodo);
+  res.status(201).json(ansObj);
+});
+
+// api 4 updating a existing todo
+app.put("/todos/:id", (req, res) => {
+  let index = findIndexof(todos, parseInt(req.params.id));
+  if (index === -1) {
+    res.status(404).send();
+  } else {
+    res.status(200).json();
+  }
+});
+
+app.delete("/todos/:id", (req, res) => {
+  let index = findIndexof(todos, parseInt(req.params.id));
+  if (index === -1) {
+    res.status(404).send();
+  } else {
+    todos.splice(index, 1);
+    res.status(200).send();
+  }
+});
 
 module.exports = app;
