@@ -17,6 +17,79 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+    this.allowed = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "0",
+      "+",
+      "-",
+      "/",
+      "*",
+    ];
+  }
 
+  add(n) {
+    this.result += n;
+    console.log(this.result);
+  }
+
+  subtract(n) {
+    this.result -= n;
+    console.log(this.result);
+  }
+
+  multiply(n) {
+    this.result *= n;
+    console.log(this.result);
+  }
+
+  divide(n) {
+    if (n === 0) throw new Error("can't divide by zero");
+    this.result /= n;
+    console.log(this.result);
+  }
+
+  clear() {
+    this.result = 0;
+    console.log(this.result);
+  }
+
+  getResult() {
+    console.log(this.result);
+    return this.result;
+  }
+
+  calculate(str) {
+    str = str.split("");
+    let tmp = [];
+    str.forEach((chr, i) => {
+      if (this.allowed.includes(chr)) tmp.push(chr);
+    });
+    str = tmp.join("");
+    this.result = eval(str);
+    console.log(this.result, str);
+  }
+}
+
+const calci = new Calculator();
+calci.add(3);
+calci.subtract(1);
+calci.multiply(10);
+calci.divide(2);
+calci.clear();
+calci.getResult();
+
+calci.calculate(`10+ab7`);
+calci.calculate(`10+ab -9 cc 7`);
+calci.calculate(`a+9-c+6`);
 module.exports = Calculator;

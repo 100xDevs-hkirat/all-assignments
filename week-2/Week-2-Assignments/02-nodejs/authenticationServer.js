@@ -29,9 +29,44 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
-const PORT = 3000;
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
+const bodyParser = require("body-parser");
+const PORT = 3001;
 const app = express();
+const users = [];
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+// curl -X POST localhost:3001/signup/    -d '{"email": "testuser@gmail.com", "password": "testpassword", "firstName":"John", "lastName":"Son"}'   -H "Content-Type: application/json"
+app.post("/signup", (req, res) => {
+  const { email, password, firstName, lastName } = req.body;
+  const id = uuidv4();
+  users.push({ id, email, password, firstName, lastName });
+  res.status(201).send("Signup successful");
+});
 
+// curl -X POST localhost:3001/login/   -d '{"email": "testuser@gmail.com", "password": "testpassword"}'   -H "Content-Type: application/json"
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const user = users.filter(
+    (ele) => ele.email === email && ele.password === password
+  );
+  if (user.length > 0) res.status(200).send(JSON.stringify(user[0]));
+  else res.status(404).send("User not found");
+});
+
+// curl -X GET localhost:3001/data/   -d '{"email": "testuser@gmail.com", "password": "testpassword"}'   -H "Content-Type: application/json"
+app.get("/data", (req, res) => {
+  const { email, password } = req.headers;
+  console.log(users, email, password);
+  const user = users.filter(
+    (ele) => ele.email === email && ele.password === password
+  );
+  if (user.length > 0) res.status(200).send(JSON.stringify({ users }));
+  else res.status(401).send("Unauthorized");
+});
+
+app.listen(PORT, () => {
+  console.log("Server started!!!!");
+});
 module.exports = app;
