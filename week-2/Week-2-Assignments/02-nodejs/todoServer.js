@@ -41,9 +41,24 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const app = express();
-
 app.use(bodyParser.json());
+const port = 3000;
+
+let todos = [];
+app.get("/todos", (req, res)=>{
+  res.status(200).json(todos);
+});
+
+
+
+
+
+
+app.listen(port, () => {
+  console.log(`Express App listening on port ${port}`);
+});
+
+
 
 module.exports = app;
