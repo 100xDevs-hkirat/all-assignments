@@ -4,7 +4,8 @@
 import app from './app';
 import mongoose from 'mongoose';
 const DATABASE_URI = "mongodb://localhost:27017";
-const PORT = 3000;
+const PORT = 5000;
+const HOST = "192.168.214.215";
 const mongooseConnect = () => {
     const reconnectTimeout = 5000;
     const connect = () => {
@@ -35,6 +36,6 @@ const mongooseConnect = () => {
     connect();
 };
 mongooseConnect();
-const server = app.listen(PORT, () => {
-    console.log(`Server listening on: ${PORT}`);
+const server = app.listen(PORT, HOST, () => {
+    console.log(`Server listening on: http://${HOST}:${PORT}`);
 });
