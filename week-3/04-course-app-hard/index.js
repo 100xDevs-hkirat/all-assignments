@@ -36,7 +36,7 @@ const Course = mongoose.model('Course', courseSchema);
 
 // Connect to MongoDB
 // DONT MISUSE THIS THANKYOU!!
-mongoose.connect('mongodb+srv://aadityanikam2004:I3LVVCBiEazcfHd5@cluster0.00dztjl.mongodb.net/course_selling_application', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "course_selling_application" });
+mongoose.connect('', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "course_selling_application" });
 
 function adminGenerateJwt(user) {
   let admin = { username: user.username };
