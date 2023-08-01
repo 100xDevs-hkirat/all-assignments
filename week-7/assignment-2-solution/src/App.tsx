@@ -16,7 +16,7 @@ import Signup from "./components/Signup";
 import authState from "./store/authState";
 import { IUser } from "./store/interface";
 
-axios.defaults.baseURL = "http://192.168.152.215:5000";
+axios.defaults.baseURL = "http://192.168.214.215:5000";
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 axios.interceptors.request.use(

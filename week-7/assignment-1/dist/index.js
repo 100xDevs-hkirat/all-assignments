@@ -5,7 +5,7 @@ import app from './app';
 import mongoose from 'mongoose';
 const DATABASE_URI = "mongodb://localhost:27017";
 const PORT = 5000;
-const HOST = "192.168.214.215";
+const HOST = "wifi";
 const mongooseConnect = () => {
     const reconnectTimeout = 5000;
     const connect = () => {
