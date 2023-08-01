@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require("cors")
 var jwt = require('jsonwebtoken');
 const app = express();
+app.use(cors())
+
 
 app.use(express.json());
 const secret_key = "json_secretKey"
@@ -66,7 +69,7 @@ app.post('/admin/signup', (req, res) => {
       id:ADMINS.length+1
     }
     ADMINS.push(user)
-    res.status(201).send({
+    res.json({
       message:"admin signedup successfully",
       token:token
     })
@@ -102,6 +105,12 @@ app.post('/admin/login', (req, res) => {
   }
 });
 
+//me
+app.get('/admin/me',adminAuthentication,(req, res)=>{
+  let username = req.user.username
+  res.json({username:username})
+})
+
 // POST /admin/courses
 //    Description: Creates a new course.
 //    Input: Headers: { 'Authorization': 'Bearer jwt_token_here' }, Body: { title: 'course title', description: 'course description', price: 100, imageLink: 'https://linktoimage.com', published: true }
@@ -117,7 +126,7 @@ app.post('/admin/courses', adminAuthentication, (req, res) => {
     COURSES.push(course)
     res.status(200).send({message:'Course created successfully', courseId:course.id})
   }else{
-    res.status(400).send({message:'request body is required'})
+    res.json({message:'request body is required'})
   }
 
 });
