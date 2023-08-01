@@ -1,27 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
+import AddTodo from "./Components/AddTodo";
+import DisplayTodos from "./Components/DisplayTodos";
+import "./style.css";
+import axios from "axios";
+
+const client = axios.create({ baseURL: "http://localhost:3000" });
 
 function App() {
-  const [todos, setTodos] = useState([])
-    // fetch all todos from server
+  const [todos, setTodos] = useState([]);
+  // fetch all todos from server
+  useEffect(() => {
+    client
+      .get("/todos")
+      .then((response) => {
+        setTodos(response.data);
+        console.log("Data Fetched! " + response.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <>
       <div>
-        <h1>Easy Todo App</h1>
-        <input type="text" />
+        <div className="container">
+          <AddTodo setTodos={setTodos} todos={todos} client={client} />
+        </div>
+        <DisplayTodos todos={todos} setTodos={setTodos} client={client} />
       </div>
     </>
-  )
+  );
 }
 
-function Todo(props) {
-    // Add a delete button here so user can delete a TODO.
-    return <div>
-        {props.title}
-    </div>
-}
-
-export default App
+export default App;
