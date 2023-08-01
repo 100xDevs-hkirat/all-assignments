@@ -2,8 +2,12 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-
-app.use(cors());
+const connectDb = require("./src/Db/connection");
+const { User,Admin,Course } = require("./src/Db/model");
+app.use(() => { 
+  cors();
+  console.log("cors");
+});
 app.use(express.json());
 
 let ADMINS = [];
@@ -12,30 +16,30 @@ let COURSES = [];
 
 const Secret_key = "MI68258";
 // Admin routes
-app.post("/admin/signup", (req, res) => {
+app.post("/admin/signup", async(req, res) => {
   // logic to sign up admin
   const data = {
-    isAdmin: true,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
   };
   console.log(JSON.stringify(data));
-  const index = ADMINS.findIndex((item) => item.email == data.email);
-  console.log(index);
-  if (index != -1) {
+  const admin = await Admin.findOne({ email:data.email });
+  console.log(admin);
+  const newAdmin = new Admin(data);
+  if (admin) {
     return res.status(401).send("Admin is already registred , please login");
   }
-  if (ADMINS.push(data) && data.email) {
+  if (newAdmin.save()) {
     const payload = {
-      email: req.headers.email,
-      password: req.headers.password,
+      email: req.body.email,
+      password: req.body.password,
     };
     const token = jwt.sign(payload, Secret_key, { expiresIn: "1h" });
-    res.status(200).send(`Bearer ${token}`);
+    res.status(200).json(`Bearer ${token}`);
   } else {
     return res
-      .status(401)
+      .status(403)
       .send(
         "Some error while creating admin , please try again after sometime"
       );
@@ -57,26 +61,32 @@ const authenticatejwt = (req, resp, next) => {
     resp.sendStatus(401);
   }
 }
-app.get("/test", authenticatejwt, (req, resp) => { 
+app.get("/detail/me", authenticatejwt, async (req, resp) => { 
+  const admin = await Admin.findOne({ email: req.user.email });
+  if (!admin) { 
+    resp.sendStatus(403).json({ message: "Admin doesn't exist" });
+    return;
+  }
   resp.json({
-    user: req.user
+    email:admin.email
   })
 })
-app.post("/admin/login", (req, res) => {
+app.post("/admin/login", async (req, res) => {
   // logic to log in admin
   const cred = {
     email: req.body.email,
     password: req.body.password,
   };
   console.log(JSON.stringify(cred));
-  const index = ADMINS.findIndex((item) => item.email == cred.email);
-  if (index != -1 && ADMINS[index].isAdmin) {
-    if (ADMINS[index].password != cred.password) {
+  const admin = await Admin.findOne({ email: cred.email });
+  console.log(admin);
+  if (admin.email==cred.email) {
+    if (admin.password != cred.password) {
       return res.status(403).send("Invalid Password");
     } else {
       const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
       console.log(token);
-    res.json({ message: "Login successfull" ,token});
+    res.sendStatus(200).json({ message: "Login successfull" ,token});
     }
   } else {
     return res.sendStatus(401);
@@ -212,6 +222,11 @@ app.get("/users/purchasedCourses", (req, res) => {
   // logic to view purchased courses
 });
 
+app.use(() => { 
+  connectDb();
+           console.log("connectiong to db");
+
+});
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
 });
