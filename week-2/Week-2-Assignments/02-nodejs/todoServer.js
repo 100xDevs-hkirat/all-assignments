@@ -41,9 +41,168 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs').promises;
+const Joi = require('joi');
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
+
+const find = () => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(__dirname + '/todos.json', 'utf-8')
+      .then((data) => resolve(JSON.parse(data)))
+      .catch((err) => reject(err));
+  });
+};
+
+const findById = async (id) => {
+  const todos = await find();
+  return todos.filter((todo) => todo.id === id)[0] ?? null;
+};
+
+const save = async (data) => {
+  const todos = await find();
+  todos.push(data);
+  return new Promise((resolve, reject) => {
+    fs.writeFile(__dirname + '/todos.json', JSON.stringify(todos), {
+      encoding: 'utf-8',
+    })
+      .then(() => resolve(data))
+      .catch((err) => reject(err));
+  });
+};
+
+const updateByIdAndUpdate = async (todoId, update) => {
+  const todo = await findById(todoId);
+
+  if (todo) {
+    update = { ...todo, ...update };
+
+    let todos = await find();
+
+    const updateIndex = todos.findIndex((todo) => todo.id === todoId);
+    todos.splice(updateIndex, 1, update);
+
+    return new Promise((resolve, reject) => {
+      fs.writeFile(__dirname + '/todos.json', JSON.stringify(todos), {
+        encoding: 'utf-8',
+      })
+        .then(() => resolve(update))
+        .catch((err) => reject(err));
+    });
+  } else {
+    throw new Error('Todo does not exists.');
+  }
+};
+
+const deleteById = async (todoId) => {
+  const todo = await findById(todoId);
+
+  if (todo) {
+    let todos = await find();
+
+    const deleteIndex = todos.findIndex((todo) => todo.id === todoId);
+    todos.splice(deleteIndex, 1);
+
+    return new Promise((resolve, reject) => {
+      fs.writeFile(__dirname + '/todos.json', JSON.stringify(todos), {
+        encoding: 'utf-8',
+      })
+        .then(() => resolve())
+        .catch((err) => reject(err));
+    });
+  } else {
+    throw new Error('Todo does not exists.');
+  }
+};
+
+//schemas
+
+const todoSchema = Joi.object({
+  title: Joi.string().required(),
+  completed: Joi.boolean().default(false),
+  description: Joi.string().required(),
+});
+
+const updateTodoSchema = Joi.object({
+  title: Joi.string(),
+  completed: Joi.boolean(),
+  description: Joi.string(),
+});
+
+// schema validators
+const validateBody = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    next();
+  };
+};
+
+// controllers
+const getAllTodos = async (req, res) => {
+  const todos = await find();
+  res.send(todos);
+};
+
+const getTodoById = async (req, res) => {
+  const todoId = req.params.id;
+  const todo = await findById(todoId);
+  if (todo) {
+    res.send(todo);
+  } else {
+    res.sendStatus(404);
+  }
+};
+
+const createTodo = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const todo = req.body;
+  const newTodo = await save({ id: uuidv4(), ...todo });
+  res.status(201).json({ ...newTodo });
+};
+
+const updateTodo = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const todoId = req.params.id;
+  let update = req.body;
+
+  try {
+    const updatedTodo = await updateByIdAndUpdate(todoId, update);
+    res.status(200).json({ id: updatedTodo.id });
+  } catch (err) {
+    res.sendStatus(404);
+  }
+};
+
+const deleteTodo = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const todoId = req.params.id;
+  try {
+    await deleteById(todoId);
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(404);
+  }
+};
+
+// routes
+app.get('/todos', getAllTodos);
+
+app.get('/todos/:id', getTodoById);
+
+app.post('/todos', validateBody(todoSchema), createTodo);
+
+app.put('/todos/:id', validateBody(updateTodoSchema), updateTodo);
+
+app.delete('/todos/:id', deleteTodo);
+
+app.listen(3000, () => console.log('server'));
 
 module.exports = app;

@@ -1,0 +1,12 @@
+[
+  {
+    "username": "nitin96",
+    "password": "Qwerty@123",
+    "purchasedCourses": [
+      "64cb2d9c-4336-4acc-a3c1-acbef99a5a76",
+      "7a0b184b-848c-4c5c-89db-04c32eb98f0f"
+    ]
+  },
+  { "username": "test", "password": "Qwerty@123", "purchasedCourses": [] },
+  { "username": "asd", "password": "Qwerty@123", "purchasedCourses": [] }
+]
