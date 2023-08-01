@@ -17,6 +17,76 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor(){
+    this.result=0;
+  }
+
+  add(n){
+    if(this.isValidNumber(n))
+    {
+      this.result+=n;  
+    }
+    else{
+      throw new Error("Invalid Number");
+    }
+  }
+  subtract(n){
+    if(this.isValidNumber(n)){
+      this.result-=n;
+    }
+    else{
+      throw new Error("Invalid Number");
+    }
+  }
+  multiply(n){
+    if(this.isValidNumber(n)){
+      this.result*=n;
+    }
+    else{
+      throw new Error("Invalid Number");
+    }
+  }
+  divide(n){
+    if(this.isValidNumber(n)){
+      if(n==0){
+        throw new Error("Invalid Number");
+      }
+      else{
+
+        this.result/=n;
+      }
+    }
+    else{
+      throw new Error("Invalid Number");
+    }
+  }
+  clear() {
+    this.result = 0;
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  isValidNumber(num) {
+    return typeof num === "number" && !isNaN(num);
+  }
+
+  calculate(expression) {
+    try {
+      const cleanedExpression = expression.replace(/\s+/g, ""); // Remove all spaces
+      const parsedResult = eval(cleanedExpression);
+      if (this.isValidNumber(parsedResult)) {
+        this.result = parsedResult;
+      } else {
+        throw new Error("Invalid input: Not a valid number");
+      }
+    } catch (error) {
+      throw new Error("Invalid input: Unable to calculate the expression");
+    }
+  }
+}
+
 
 module.exports = Calculator;
