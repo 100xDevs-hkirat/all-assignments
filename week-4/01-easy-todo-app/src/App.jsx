@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import AddTodo from "./Components/AddTodo";
 import DisplayTodos from "./Components/DisplayTodos";
-import "../public/style.css";
+import "./style.css";
+import axios from "axios";
+
+const client = axios.create({ baseURL: "http://localhost:3000" });
 
 function App() {
   const [todos, setTodos] = useState([]);
   // fetch all todos from server
   useEffect(() => {
-    fetch("http://localhost:3000/todos")
-      .then((response) => response.json())
-      .then((data) => {
-        setTodos(data);
-        console.log("Data Fetched! " + data);
+    client
+      .get("/todos")
+      .then((response) => {
+        setTodos(response.data);
+        console.log("Data Fetched! " + response.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -21,17 +24,12 @@ function App() {
     <>
       <div>
         <div className="container">
-          <AddTodo setTodos={setTodos} todos={todos} />
+          <AddTodo setTodos={setTodos} todos={todos} client={client} />
         </div>
-        <DisplayTodos todos={todos} setTodos={setTodos} />
+        <DisplayTodos todos={todos} setTodos={setTodos} client={client} />
       </div>
     </>
   );
-}
-
-function Todo(props) {
-  // Add a delete button here so user can delete a TODO.
-  return <div>{props.title}</div>;
 }
 
 export default App;

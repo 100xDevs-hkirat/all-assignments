@@ -21,6 +21,7 @@ body {
     color: antiquewhite;
     width: 40%;
     margin-top: 3%;
+    display: block;
 }
 
 .container button {

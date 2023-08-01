@@ -1,21 +1,17 @@
 import React from "react";
 
-export default function DisplayTodos({ todos, setTodos }) {
+export default function DisplayTodos({ todos, setTodos, client }) {
   const handleDelete = (e) => {
-    fetch("http://localhost:3000/todos/" + e.target.parentElement.id, {
-      method: "DELETE",
-    }).then((response) => {
-      if (response.ok) {
-        console.log("Todo Deleted!");
+    client
+      .delete(`/todos/${e.target.parentElement.id}`)
+      .then((response) => {
         setTodos(
           todos.filter(
             (todo) => todo.id !== parseInt(e.target.parentElement.id)
           )
         );
-      } else {
-        console.log("Some error deleting todo..");
-      }
-    });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
