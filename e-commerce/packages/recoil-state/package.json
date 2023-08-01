@@ -1,0 +1,9 @@
+{
+  "name": "recoil-state",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "recoil": "^0.7.7"
+  }
+}
