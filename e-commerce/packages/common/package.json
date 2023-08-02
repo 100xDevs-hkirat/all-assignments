@@ -1,5 +1,5 @@
 {
-  "name": "recoil-state",
+  "name": "common",
   "version": "0.0.0",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
@@ -9,8 +9,6 @@
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "react": "^17.0.2",
