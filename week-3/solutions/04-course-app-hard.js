@@ -157,3 +157,25 @@ app.get('/users/purchasedCourses', authenticateJwt, async (req, res) => {
 });
 
 app.listen(3000, () => console.log('Server running on port 3000'));
+
+app.post("/admin/courses",validateAdmin,cors(corsOptions),upload.single("imageLink"),async (req, res) => {
+    const course = {
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      imageLink: req.file.filename, // Use the filename of the uploaded image
+      published: req.body.published,
+    };
+
+    const createCourse = await Courses.create(course);
+
+    // Construct the URL of the uploaded image
+    const imageUrl = `http://localhost:3000/${req.file.filename}`;
+
+    return res.status(201).json({
+      message: "Course created successfully",
+      createCourse,
+      imageUrl: imageUrl, // Include the imageUrl in the response
+    });
+  }
+);
