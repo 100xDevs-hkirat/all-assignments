@@ -1,5 +1,19 @@
 
-import {mongoose} from "mongoose";
+import mongoose from "mongoose";
+
+interface User {
+    _id: string;
+    username: string;
+    password: string;
+  }
+
+  interface Todo {
+    _id: string;
+    title: string;
+    description: string;
+    done: boolean;
+    userId: string;
+  }
 
 const userSchema = new mongoose.Schema({
     username: String,
@@ -13,11 +27,7 @@ const todoSchema = new mongoose.Schema({
     userId: String,
 });
 
-const User = mongoose.model('User', userSchema);
-const Todo = mongoose.model('Todo', todoSchema);
+export const User = mongoose.model('User', userSchema);
+export const Todo = mongoose.model('Todo', todoSchema);
 
 
-export default {
-    User,
-    Todo
-}

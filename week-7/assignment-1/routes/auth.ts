@@ -1,10 +1,14 @@
-const jwt = require("jsonwebtoken");
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/");
-const { User } = require("../db");
+
+import jwt from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import express from 'express';
+import  { authenticateJwt, SECRET } from '../middleware/index';
+import { User } from "../db/index";
+
 const router = express.Router();
 
   router.post('/signup', async (req, res) => {
+    // here the req and res are infered as Request and Response that means router has a generic type which has Request and Response as default so no type is required for req and res here
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (user) {
@@ -29,7 +33,8 @@ const router = express.Router();
   });
 
     router.get('/me', authenticateJwt, async (req, res) => {
-      const user = await User.findOne({ _id: req.userId });
+      const userId = req.headers["user-id"];
+      const user = await User.findOne({ _id: userId });
       if (user) {
         res.json({ username: user.username });
       } else {
@@ -37,4 +42,4 @@ const router = express.Router();
       }
     });
 
-  module.exports = router
+export default router;

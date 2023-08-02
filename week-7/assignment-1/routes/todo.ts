@@ -1,14 +1,25 @@
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/index");
-const { Todo } = require("../db");
+
+import express from 'express';
+import { authenticateJwt, SECRET } from '../middleware/index';
+import { Todo } from '../db';
 const router = express.Router();
 
-router.post('/todos', authenticateJwt, (req, res) => {
-  const { title, description } = req.body;
-  const done = false;
-  const userId = req.userId;
 
-  const newTodo = new Todo({ title, description, done, userId });
+interface CreateTodoInput {
+  title: string;
+  description: string;
+  done: boolean;
+  userId: string;
+}
+
+// to check whether the user is sending a right value or not we use Zod for input validation libraries to fix if errorsnous data is sent
+
+router.post('/todos', authenticateJwt, (req, res) => {
+  const inputs: CreateTodoInput = req.body;
+  const done = false;
+  const userId = req.headers["user-id"];
+
+  const newTodo = new Todo({ title: inputs.title, description: inputs.description, done, userId });
 
   newTodo.save()
     .then((savedTodo) => {
@@ -19,9 +30,8 @@ router.post('/todos', authenticateJwt, (req, res) => {
     });
 });
 
-
 router.get('/todos', authenticateJwt, (req, res) => {
-  const userId = req.userId;
+  const userId = req.headers["user-id"];
 
   Todo.find({ userId })
     .then((todos) => {
@@ -34,7 +44,7 @@ router.get('/todos', authenticateJwt, (req, res) => {
 
 router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
   const { todoId } = req.params;
-  const userId = req.userId;
+  const userId = req.headers["user-id"];
 
   Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
     .then((updatedTodo) => {
@@ -48,4 +58,4 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

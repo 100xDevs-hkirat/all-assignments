@@ -1,12 +1,17 @@
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/index");
-const { Todo } = require("../db");
-const router = express.Router();
-router.post('/todos', authenticateJwt, (req, res) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const index_1 = require("../middleware/index");
+const db_1 = require("../db");
+const router = express_1.default.Router();
+router.post('/todos', index_1.authenticateJwt, (req, res) => {
     const { title, description } = req.body;
     const done = false;
-    const userId = req.userId;
-    const newTodo = new Todo({ title, description, done, userId });
+    const userId = req.headers["user-id"];
+    const newTodo = new db_1.Todo({ title, description, done, userId });
     newTodo.save()
         .then((savedTodo) => {
         res.status(201).json(savedTodo);
@@ -15,9 +20,9 @@ router.post('/todos', authenticateJwt, (req, res) => {
         res.status(500).json({ error: 'Failed to create a new todo' });
     });
 });
-router.get('/todos', authenticateJwt, (req, res) => {
-    const userId = req.userId;
-    Todo.find({ userId })
+router.get('/todos', index_1.authenticateJwt, (req, res) => {
+    const userId = req.headers["user-id"];
+    db_1.Todo.find({ userId })
         .then((todos) => {
         res.json(todos);
     })
@@ -25,10 +30,10 @@ router.get('/todos', authenticateJwt, (req, res) => {
         res.status(500).json({ error: 'Failed to retrieve todos' });
     });
 });
-router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
+router.patch('/todos/:todoId/done', index_1.authenticateJwt, (req, res) => {
     const { todoId } = req.params;
-    const userId = req.userId;
-    Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
+    const userId = req.headers["user-id"];
+    db_1.Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
         .then((updatedTodo) => {
         if (!updatedTodo) {
             return res.status(404).json({ error: 'Todo not found' });
@@ -39,4 +44,4 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
         res.status(500).json({ error: 'Failed to update todo' });
     });
 });
-module.exports = router;
+exports.default = router;
