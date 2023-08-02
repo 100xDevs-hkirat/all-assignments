@@ -4,10 +4,9 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const connectDb = require("./src/Db/connection");
 const { User,Admin,Course } = require("./src/Db/model");
-app.use(() => { 
-  cors();
-  console.log("cors");
-});
+
+app.use(cors());
+  
 app.use(express.json());
 
 let ADMINS = [];
@@ -62,12 +61,13 @@ const authenticatejwt = (req, resp, next) => {
   }
 }
 app.get("/detail/me", authenticatejwt, async (req, resp) => { 
+  console.log("detail request hit ")
   const admin = await Admin.findOne({ email: req.user.email });
   if (!admin) { 
     resp.sendStatus(403).json({ message: "Admin doesn't exist" });
     return;
   }
-  resp.json({
+  resp.status(200).json({
     email:admin.email
   })
 })
@@ -77,16 +77,13 @@ app.post("/admin/login", async (req, res) => {
     email: req.body.email,
     password: req.body.password,
   };
-  console.log(JSON.stringify(cred));
   const admin = await Admin.findOne({ email: cred.email });
-  console.log(admin);
   if (admin.email==cred.email) {
     if (admin.password != cred.password) {
       return res.status(403).send("Invalid Password");
     } else {
       const token = jwt.sign(cred, Secret_key, { expiresIn: "1h" });
-      console.log(token);
-    res.sendStatus(200).json({ message: "Login successfull" ,token});
+    res.status(200).json({ message: "Login successfull" ,token});
     }
   } else {
     return res.sendStatus(401);
@@ -222,11 +219,8 @@ app.get("/users/purchasedCourses", (req, res) => {
   // logic to view purchased courses
 });
 
-app.use(() => { 
-  connectDb();
-           console.log("connectiong to db");
-
-});
+connectDb();
+ 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
 });
