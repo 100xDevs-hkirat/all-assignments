@@ -1,54 +1,28 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const adminRouter=require('./routes/admin')
+const userRouter=require('./routes/user')
 
-app.use(express.json());
+//Step1:- use the mongoose library
+const mongoose = require('mongoose')
 
-let ADMINS = [];
-let USERS = [];
-let COURSES = [];
+app.use(express.json())
+app.use(cors())
 
-// Admin routes
-app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
-});
+app.use('/admin', adminRouter)
+app.use('/users', userRouter)
 
-app.post('/admin/login', (req, res) => {
-  // logic to log in admin
-});
 
-app.post('/admin/courses', (req, res) => {
-  // logic to create a course
-});
-
-app.put('/admin/courses/:courseId', (req, res) => {
-  // logic to edit a course
-});
-
-app.get('/admin/courses', (req, res) => {
-  // logic to get all courses
-});
-
-// User routes
-app.post('/users/signup', (req, res) => {
-  // logic to sign up user
-});
-
-app.post('/users/login', (req, res) => {
-  // logic to log in user
-});
-
-app.get('/users/courses', (req, res) => {
-  // logic to list all courses
-});
-
-app.post('/users/courses/:courseId', (req, res) => {
-  // logic to purchase a course
-});
-
-app.get('/users/purchasedCourses', (req, res) => {
-  // logic to view purchased courses
-});
+//Step4:- Connect with the mongodb database using the connection string
+mongoose.connect(
+  'mongodb+srv://tina:9123053629@cluster0.iz0rmjm.mongodb.net/CourseApp',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+)
 
 app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+  console.log('Server is listening on port 3000')
+})
