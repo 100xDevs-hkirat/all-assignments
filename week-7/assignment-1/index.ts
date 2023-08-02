@@ -18,4 +18,4 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
 
-mongoose.connect('mongodb+srv://swarajballal:3G2bm0d3yH5JRxGY@cluster0.4gfnpvc.mongodb.net/courses', { dbName: "courses" });
+mongoose.connect('courses', { dbName: "courses" });

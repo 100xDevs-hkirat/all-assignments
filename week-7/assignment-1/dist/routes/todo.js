@@ -7,11 +7,12 @@ const express_1 = __importDefault(require("express"));
 const index_1 = require("../middleware/index");
 const db_1 = require("../db");
 const router = express_1.default.Router();
+// to check whether the user is sending a right value or not we use Zod for input validation libraries to fix if errorsnous data is sent
 router.post('/todos', index_1.authenticateJwt, (req, res) => {
-    const { title, description } = req.body;
+    const inputs = req.body;
     const done = false;
     const userId = req.headers["user-id"];
-    const newTodo = new db_1.Todo({ title, description, done, userId });
+    const newTodo = new db_1.Todo({ title: inputs.title, description: inputs.description, done, userId });
     newTodo.save()
         .then((savedTodo) => {
         res.status(201).json(savedTodo);
