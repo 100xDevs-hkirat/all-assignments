@@ -151,14 +151,10 @@ app.get("/users/courses", authenticateJwt, (req, res) => {
 
 app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
   // logic to purchase a course
-  // console.log('req - ', req.user);
   const courseId = parseInt(req.params.courseId);
   const course = COURSES.find((c) => c.id == courseId);
-  // console.log('course - ',course);
   if (course) {
     const user = USERS.find((u) => u.username === req.user.user);
-    // console.log("username - ", user);
-    
     if (user) {
       if (!user.purchasedCourses) {
         user.purchasedCourses = [];
@@ -176,8 +172,6 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
 app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
   // logic to view purchased courses
   const user = USERS.find( u => u.username === req.user.user);
-  console.log('username - ', req.user);
-  // console.log('purchased courses - ', user.purchasedCourses);
   if (user && user.purchasedCourses ){
     res.json({ purchasedCourses : user.purchasedCourses })
   } else {
