@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Belanosima&display=swap");
+
+.addcourse-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.addcourse-form {
+  margin-top: 16px;
+  width: 500px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+  padding: 30px 46px;
+  text-align: center;
+}
+
+.addcourse-form .addcourse-title {
+  font-family: "Belanosima", sans-serif;
+  margin-bottom: 10px;
+}
+
+.input {
+  margin: 10px 0px;
+}

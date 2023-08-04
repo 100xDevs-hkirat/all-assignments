@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Belanosima&display=swap");
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-form {
+  margin-top: 16px;
+  width: 480px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
+  padding: 30px 46px;
+}
+
+.login-form .login-title {
+  font-family: "Belanosima", sans-serif;
+}
+
+.input {
+  margin: 10px 0px;
+}
+.login-form .bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.btn-container {
+  margin-top: 14px;
+  margin-bottom: 16px;
+}
+
+.btn-container .btn {
+  background-color: rgb(156, 39, 176);
+  font-family: "Belanosima", sans-serif;
+}
+
+.btn-container .btn:hover {
+  background-color: rgba(156, 39, 176, 0.9);
+}
+
+.bottom p {
+  display: inline;
+}

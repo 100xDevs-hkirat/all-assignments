@@ -1,0 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Belanosima&display=swap");
+
+.main {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #eeedef;
+  font-family: "Belanosima", sans-serif;
+}

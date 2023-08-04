@@ -2,9 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const cors = require("cors");
 
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -15,17 +16,9 @@ let COURSES = [];
 
 let secret = "CourseMedium";
 
-try {
-  ADMINS = JSON.parse(fs.readFileSync("admins.json", "utf8"));
-  USERS = JSON.parse(fs.readFileSync("users.json", "utf8"));
-  COURSES = JSON.parse(fs.readFileSync("courses.json", "utf8"));
-} catch (error) {
-  throw error;
-}
-
 function generatejwt(payload) {
   let token = jwt.sign({ username: payload.username, id: payload.id }, secret, {
-    expiresIn: "1h",
+    expiresIn: "10h",
   });
   return token;
 }
@@ -34,28 +27,26 @@ function authenticateJwt(req, res, next) {
   let authheader = req.headers.authorization;
   if (authheader) {
     let token = authheader.split(" ")[1];
-
-    jwt.verify(token, secret, (err, user) => {
-      if (err) {
-        res.status(403).json({
-          message: "Invaild token or expried",
-        });
-      }
-
+    try {
+      const user = jwt.verify(token, secret);
       req.user = user;
       next();
-    });
+    } catch (error) {
+      return res.status(403).json({
+        message: "invalid token",
+      });
+    }
   }
 }
 
 // Admin routes
 app.post("/admin/signup", (req, res) => {
-  let { username, password } = req.body;
+  let { firstname, username, password } = req.body;
   fs.readFile("admins.json", "utf-8", (err, data) => {
     if (err) throw err;
     let admins = JSON.parse(data);
     let existingAdmin = admins.find(
-      (a) => a.username == username && a.password == password
+      a => a.username == username && a.password == password
     );
     if (existingAdmin) {
       res.status(403).json({
@@ -65,18 +56,20 @@ app.post("/admin/signup", (req, res) => {
     } else {
       let admin = {
         id: Math.floor(Math.random() * 10000),
+        firstname: firstname,
         username: username,
         password: password,
         createdAt: new Date(),
       };
       admins.push(admin);
-      fs.writeFile("admins.json", JSON.stringify(admins), (err) => {
+      fs.writeFile("admins.json", JSON.stringify(admins), err => {
         if (err) throw err;
         let token = generatejwt(admin);
         res.status(201).json({
           message: "Admin created successfully",
           success: true,
           token: token,
+          data: admin,
         });
       });
     }
@@ -87,13 +80,18 @@ app.post("/admin/signup", (req, res) => {
 
 app.post("/admin/login", (req, res) => {
   // logic to log in admin
-  let { username, password } = req.headers;
+  console.log(req.body);
+  let username = req.body.email;
+  const { password } = req.body;
+  console.log(username);
   fs.readFile("admins.json", "utf-8", (err, data) => {
     if (err) throw err;
     let admins = JSON.parse(data);
+    console.log(admins);
     let existingAdmin = admins.find(
-      (a) => a.username == username && a.password == password
+      a => a.username == username && a.password == password
     );
+    console.log(existingAdmin);
     if (existingAdmin) {
       let token = generatejwt(existingAdmin);
       res.status(200).json({
@@ -110,15 +108,23 @@ app.post("/admin/login", (req, res) => {
   });
 });
 
+app.get("/admin/me", authenticateJwt, (req, res) => {
+  res.status(200).json({
+    username: req.user.username,
+    success: true,
+  });
+});
+
 app.post("/admin/courses", authenticateJwt, (req, res) => {
   // logic to create a course
+  console.log(req.body);
   let course = {
     title: req.body.title,
     description: req.body.description,
     price: req.body.price,
     imageLink: req.body.imageLink,
     published: req.body.published,
-    courseId: COURSES.length + 1,
+    courseId: Math.floor(Math.random() * 12000),
   };
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -127,7 +133,7 @@ app.post("/admin/courses", authenticateJwt, (req, res) => {
 
     let courses = JSON.parse(data);
     courses.push(course);
-    fs.writeFile("courses.json", JSON.stringify(courses), "utf-8", (err) => {
+    fs.writeFile("courses.json", JSON.stringify(courses), "utf-8", err => {
       if (err) {
         throw err;
       }
@@ -143,16 +149,19 @@ app.post("/admin/courses", authenticateJwt, (req, res) => {
 app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
   // logic to edit a course
   let courseId = req.params.courseId;
+  // console.log(req.body);
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
       throw err;
     }
     let courses = JSON.parse(data);
-    let courseIndex = courses.findIndex((i) => i.courseId == courseId);
+    let courseIndex = courses.findIndex(i => i.courseId == courseId);
+    // console.log(courseIndex);
     if (courseIndex !== -1) {
       let updatedCourse = { ...courses[courseIndex], ...req.body };
       courses[courseIndex] = updatedCourse;
-      fs.writeFile("courses.json", JSON.stringify(courses), (err) => {
+      // console.log(courses);
+      fs.writeFile("courses.json", JSON.stringify(courses), err => {
         if (err) {
           throw err;
         }
@@ -170,7 +179,71 @@ app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
   });
 });
 
-app.get("/admin/courses", (req, res) => {
+app.get("/admin/courses/:courseId", (req, res) => {
+  try {
+    console.log("hello world");
+    let courseId = req.params.courseId;
+    console.log(courseId);
+    fs.readFile("courses.json", "utf-8", (err, data) => {
+      if (err) throw err;
+      let courses = JSON.parse(data);
+      let course = courses.find(course => course.courseId == courseId);
+      if (course) {
+        res.status(200).json({
+          message: "Successfully fetched a course",
+          success: true,
+          course: course,
+        });
+      } else {
+        res.status(200).json({
+          message: "Course does'nt exists",
+          success: false,
+        });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+});
+
+app.delete("/admin/courses/:courseId", authenticateJwt, (req, res) => {
+  try {
+    let courseId = req.params.courseId;
+    // console.log(courseId);
+    fs.readFile("courses.json", "utf-8", (err, data) => {
+      if (err) throw err;
+      let courses = JSON.parse(data);
+      // console.log(courses);
+      let newCourses = courses.filter(course => {
+        return course.courseId != courseId;
+      });
+      // console.log(newCourses);
+      fs.writeFile("courses.json", JSON.stringify(newCourses), err => {
+        if (err) {
+          throw err;
+        }
+
+        res.status(200).json({
+          message: "Successfully deleted a courses",
+          success: true,
+          courseId: courseId,
+        });
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+});
+
+app.get("/admin/courses", authenticateJwt, (req, res) => {
   // logic to get all courses
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -186,12 +259,12 @@ app.get("/admin/courses", (req, res) => {
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
-  let { username, password } = req.body;
+  let { username, password } = req.body.body;
   fs.readFile("users.json", "utf-8", (err, data) => {
     if (err) throw err;
     let users = JSON.parse(data);
     let existingUser = users.find(
-      (a) => a.username == username && a.password == password
+      a => a.username == username && a.password == password
     );
     if (existingUser) {
       res.status(403).json({
@@ -206,7 +279,7 @@ app.post("/users/signup", (req, res) => {
         createdAt: new Date(),
       };
       users.push(user);
-      fs.writeFile("users.json", JSON.stringify(users), (err) => {
+      fs.writeFile("users.json", JSON.stringify(users), err => {
         if (err) throw err;
         let token = generatejwt(user);
         res.status(201).json({
@@ -221,12 +294,12 @@ app.post("/users/signup", (req, res) => {
 
 app.post("/users/login", (req, res) => {
   // logic to log in user
-  let { username, password } = req.headers;
+  let { username, password } = req.body.body;
   fs.readFile("users.json", "utf-8", (err, data) => {
     if (err) throw err;
     let users = JSON.parse(data);
     let existingUser = users.find(
-      (a) => a.username == username && a.password == password
+      a => a.username == username && a.password == password
     );
     if (existingUser) {
       let token = generatejwt(existingUser);
@@ -263,13 +336,13 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) throw err;
     let courses = JSON.parse(data);
-    let course = courses.find((c) => c.courseId == courseId);
+    let course = courses.find(c => c.courseId == courseId);
     if (course) {
       fs.readFile("users.json", "utf-8", (err, userData) => {
         if (err) throw err;
         let users = JSON.parse(userData);
         let user = users.find(
-          (u) => u.username == req.user.username && u.id == req.user.id
+          u => u.username == req.user.username && u.id == req.user.id
         );
         if (user) {
           if (!user.purchasedcourses) {
@@ -277,7 +350,7 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
             console.log(user);
           }
           user.purchasedcourses.push(course);
-          fs.writeFile("users.json", JSON.stringify(users), (err) => {
+          fs.writeFile("users.json", JSON.stringify(users), err => {
             if (err) throw err;
             res.status(200).json({
               message: "course purchased successfully",
@@ -306,7 +379,7 @@ app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
     if (err) throw err;
     let users = JSON.parse(data);
     let user = users.find(
-      (u) => u.username == req.user.username && u.id == req.user.id
+      u => u.username == req.user.username && u.id == req.user.id
     );
     console.log(user.id);
     console.log(user.purchasedCourses);

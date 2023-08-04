@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Belanosima&display=swap");
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background-color: white;
+  box-shadow: 0 0px 20px 0px rgba(0, 0, 0, 0.05);
+}
+
+.nav .log {
+  font-family: "Belanosima", sans-serif;
+}
+
+.nav .btn {
+  background-color: rgb(156, 39, 176);
+  font-family: "Belanosima", sans-serif;
+}
+
+.nav .btn:hover {
+  background-color: rgba(156, 39, 176, 0.9);
+}
+
+.nav .log {
+  color: rgb(156, 39, 176);
+}

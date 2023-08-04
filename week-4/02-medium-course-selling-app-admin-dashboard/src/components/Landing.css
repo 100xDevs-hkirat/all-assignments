@@ -1,0 +1,45 @@
+.landing-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.landing-page .title h1 {
+  background-image: linear-gradient(to left, #9c27b0, #f9cb28);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.title {
+  margin-top: 12px;
+}
+
+.landing-page .btns {
+  font-size: 1.2rem;
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.btns a {
+  width: 200px;
+  text-align: center;
+  text-decoration: none;
+  /* border: 1px solid black; */
+  padding: 8px 28px;
+  border-radius: 8px;
+  background-color: #9c27b0;
+  color: white;
+}
+
+.btns a:hover {
+  background-color: rgba(156, 39, 176, 0.9);
+}

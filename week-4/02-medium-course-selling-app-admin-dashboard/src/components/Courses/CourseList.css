@@ -1,0 +1,26 @@
+.course-list {
+  margin: 0px 48px;
+  padding: 48px 58px;
+}
+
+.course-list h1 {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.courses {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+h2 {
+  background-image: linear-gradient(to left, #9c27b0, #f9cb28);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 3rem;
+  font-weight: 600;
+}

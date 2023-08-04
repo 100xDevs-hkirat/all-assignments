@@ -1,1 +1,50 @@
-[{"title":"java","description":"learn java in 30 day","price":"499","imageLink":"https://www.google.com/imgres?imgurl=https%3A%2F%2F1000logos.net%2Fwp-content%2Fuploads%2F2020%2F09%2FJava-Logo.png&tbnid=qt1xQyXSEQHuTM&vet=12ahUKEwjj-qDjze3_AhUp3DgGHRkzBkwQMygBegUIARDnAQ..i&imgrefurl=https%3A%2F%2F1000logos.net%2Fjava-logo%2F&docid=20P0dWoJnqralM&w=4000&h=2500&q=java&ved=2ahUKEwjj-qDjze3_AhUp3DgGHRkzBkwQMygBegUIARDnAQ","published":"false","courseId":1}]
+[
+  {
+    "title": "Crash Course: Build a Full-Stack Web App in a Weekend!",
+    "description": "A quick, fun, and hands-on introduction to web development. Build a complete app with HTML, CSS, JavaScript, and React!",
+    "price": "12",
+    "imageLink": "https://www.keycdn.com/img/support/full-stack-development.png",
+    "published": true,
+    "courseId": 9896
+  },
+  {
+    "title": "The Complete SQL Bootcamp: Go from Zero to Hero",
+    "description": "Become an expert at SQL!",
+    "price": "12",
+    "imageLink": "https://www.w2solution.co.jp/wp-content/uploads/2023/01/-e1673938684663.png",
+    "published": true,
+    "courseId": 2872
+  },
+  {
+    "title": "100 Days of Code: The Complete Python Pro Bootcamp for 2023",
+    "description": "Master Python by building 100 projects in 100 days. Learn data science, automation, build websites, games and apps!",
+    "price": "12",
+    "imageLink": "https://developers.redhat.com/sites/default/files/styles/article_feature/public/blog/2021/05/Python-01.png?itok=qO_bpcrR",
+    "published": true,
+    "courseId": 3650
+  },
+  {
+    "title": "Advanced CSS and Sass: Flexbox, Grid, Animations and More!",
+    "description": "The most advanced and modern CSS course on the internet: master flexbox, CSS Grid, responsive design, and so much more.",
+    "price": "12",
+    "imageLink": "https://blog.openreplay.com/images/sass-for-web-development/images/hero.png",
+    "published": true,
+    "courseId": 1954
+  },
+  {
+    "title": "Complete Linux Security & Hardening with Practical Examples",
+    "description": "The Best Linux Security Course that prepare you to protects your Systems from attacks by hackers. Helps in RHCSA & RHCE",
+    "price": "12",
+    "imageLink": "https://media.geeksforgeeks.org/wp-content/uploads/s2-1.jpg",
+    "published": true,
+    "courseId": 4942
+  },
+  {
+    "title": "Fundamentals of Network Engineering",
+    "description": "Understanding the first principles of networking to build low latency and high throughput backends",
+    "price": "12",
+    "imageLink": "https://i0.wp.com/biztechcollege.com/wp-content/uploads/2021/01/Cloud-Network-Engineer-vs-Network-Engineer.png?fit=1920%2C1080&ssl=1",
+    "published": true,
+    "courseId": 11612
+  }
+]
