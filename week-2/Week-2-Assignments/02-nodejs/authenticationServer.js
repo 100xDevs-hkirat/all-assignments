@@ -34,4 +34,90 @@ const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
 
+// JSON Parse Middle Ware
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+// Allow cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+})
+
+//Empty User Array
+let userList = [];
+
+// Get Unique Timestamp
+function getTimeStamp() {
+  return Math.floor(Date.now()/100);
+}
+
+// Check if user exists
+function checkUserExists(email) {
+  return userList.some((element) => {
+    return element.email == email;
+  });
+}
+
+// Login User
+function loginUser(email, password) {
+  return userList.find((element) => {
+    return (element.email == email && element.password == password);
+  });
+}
+
+// Sign up 
+app.post("/signup", (req, res) => {
+  if(!checkUserExists(req.body.email)) {
+    const newUser = {
+      id: getTimeStamp(), // unique random id
+      email: req.body.email,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    };
+
+    userList.push(newUser);
+    res.status(201).send("Signup successful");
+  }
+  else {
+    console.log(userList);
+    res.status(400).send("User already exists");
+  }
+  
+});
+
+// Get Data
+app.get("/data", (req, res) => {
+  const user = loginUser(req.headers.email, req.headers.password);
+  if(user!=undefined) {
+    const users = userList.map((user) => {
+      return {"email":user.email, "firstname":user.firstName, "lastname":user.lastName};
+    });
+    res.status(200).json({users:users});
+  }
+  else {
+    res.status(401).send("Unauthorized");
+  }
+});
+
+// Login User
+app.post("/login", (req, res) => {
+  const user = loginUser(req.body.email, req.body.password)
+  //If user exists
+  if(user!=undefined) {
+    res.status(200).json({email:user.email, firstName:user.firstName, lastName:user.lastName});
+  }
+  //Invalid credentials
+  else {
+    res.status(401).send("Invalid credentials");
+  }
+});
+
+// app.listen(3000, (() => {
+//   console.log("Server listening on port 3000");
+// }))
+
 module.exports = app;

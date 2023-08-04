@@ -21,5 +21,46 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+// Allow cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+})
+
+app.get('/files', (req, res) => {
+  try {
+
+    fs.readdir('./files/', (err, files) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(files);
+      }
+    });
+    
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.get('/file/:filename', (req, res) => {
+  const filename = req.params.filename;
+  fs.readFile('./files/'+filename, "utf8", (err, data) => {
+    if (err) 
+      res.status(404).send('File not found');
+    else
+      res.send(data);
+  });
+});
+
+app.get('*', (req, res) => {
+  res.status(404).send('Route not found');
+});
+
+// app.listen(3000, () => {
+//   console.log('File server listening on port 3000');
+// });
 
 module.exports = app;
