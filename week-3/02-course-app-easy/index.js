@@ -32,6 +32,17 @@ const isAdmin = (username, password) => {
   return {...flag, pass: false};
 }
 
+const isUser = (username, password) => {
+  const flag = USERS.find(user => user.username === username);
+  if(flag == undefined) {
+    return 0;
+  }
+  if(flag.password === password) {
+    return {...flag, pass: true}
+  }
+  return {...flag, pass: false};
+}
+
 const editCourse = (courseId, body) => {
   for(let i in COURSES) {
     if(COURSES[i].courseId === courseId) {
@@ -56,6 +67,17 @@ const editCourse = (courseId, body) => {
   return 0;
 }
 
+const purchaseCourse = (courseId, userId) => {
+  const course = COURSES.find(course => course.courseId == courseId);
+  if(course == undefined) {
+    return 0;
+  }
+  const user = USERS.find(user => user.id == userId);
+  course.purchaser.push(user);
+  user.purchasedCourses.push(course);
+  return 1;
+}
+
 
 // Admin routes
 app.post('/admin/signup', (req, res) => {
@@ -65,7 +87,8 @@ app.post('/admin/signup', (req, res) => {
     return res.status(400).json({message: "Bad fetch request"});
   }
   const id = generateRandomId(10);
-  const admin = {username, password, id};
+  const courses = [];
+  const admin = {username, password, id, courses};
   const isAdmin = ADMINS.find(a => a.username == username);
   if(isAdmin != undefined) {
     return res.status(400).json({message: "Username already exixts :("});
@@ -106,8 +129,15 @@ app.post('/admin/courses', (req, res) => {
     return res.status(400).json({ message: 'Password error' });
   }
   const courseId = generateRandomId(Math.floor(Math.random() * 20) + 1);
-  const course = {title, description, price, imageLink, published, courseId, username};
+  const purchaser = [];
+  const course = {title, description, price, imageLink, published, courseId, creator: is.id, purchaser};
   COURSES.push(course);
+  for(let i in ADMINS) {
+    if(ADMINS[i].username == username) {
+      ADMINS[i].courses.push(course);
+      break;
+    }
+  }
   return res.status(200).json({
     message: 'Course created successfully',
     courseId
@@ -128,7 +158,7 @@ app.put('/admin/courses/:courseId', (req, res) => {
   }
   const state = editCourse(courseId, body);
   if(!state) {
-    return res.status(404).json({message: "Course not found :(, Invalid params"});
+    return res.status(404).json({message: "Invalid params!"});
   }
   return res.status(200).json({ message: 'Course updated successfully' });
 });
@@ -138,7 +168,7 @@ app.get('/admin/courses', (req, res) => {
   const {username, password} = req.headers;
   const is = isAdmin(username, password);
   if(is == 0) {
-    return res.status(404).json({message: "Only Admins can edit course :)"});
+    return res.status(404).json({message: "Only Admins can see courses :)"});
   }
   if(is.pass == false) {
     return res.status(400).json({ message: 'Password error' });
@@ -154,7 +184,8 @@ app.post('/users/signup', (req, res) => {
     return res.status(400).json({message: "Bad fetch request"});
   }
   const id = generateRandomId(10);
-  const user = {username, password, id};
+  const purchasedCourses = [];
+  const user = {username, password, id, purchasedCourses};
   const isUser = USERS.find(a => a.username == username);
   if(isUser != undefined) {
     return res.status(400).json({message: "Username already exixts :("});
@@ -167,18 +198,62 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+  const {username, password} = req.headers;
+  const is = isUser(username, password);
+  if(is == 0) {
+    return res.status(404).json({
+      message: "User not found :("
+    });
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  return res.status(200).json({ message: 'Logged in successfully' });
 });
 
 app.get('/users/courses', (req, res) => {
   // logic to list all courses
+  const {username, password} = req.headers;
+  const is = isUser(username, password);
+  if(is == 0) {
+    return res.status(404).json({message: "Login to see Courses :)"});
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  return res.status(200).json({COURSES});
 });
 
 app.post('/users/courses/:courseId', (req, res) => {
   // logic to purchase a course
+  const {courseId} = req.params;
+  const {username, password} = req.headers;
+  const is = isUser(username, password);
+  if(is == 0) {
+    return res.status(404).json({message: "Login to see Courses :)"});
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  // Check if transaction is successfull;
+  const isPurchase = purchaseCourse(courseId, is.id);
+  if(isPurchase == 0) {
+    return res.status(404).json({message: "Invalid Params!"});
+  };
+  return res.status(200).json({ message: 'Course purchased successfully' })
 });
 
 app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
+  const {username, password} = req.headers;
+  const is = isUser(username, password);
+  if(is == 0) {
+    return res.status(404).json({message: "Login to see Courses :)"});
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  return res.status(200).json({purchasedCourses: is.purchasedCourses})
 });
 
 app.listen(3000, () => {
