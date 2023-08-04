@@ -73,13 +73,50 @@ const purchaseCourse = (courseId, userId) => {
     return 0;
   }
   const user = USERS.find(user => user.id == userId);
+  if(course.published == false) {
+    return 11;
+  }
   course.purchaser.push(user);
   user.purchasedCourses.push(course);
   return 1;
 }
 
 
+// Middlewares
+
+const adminAuth = (req, res, next) => {
+  const {username, password} = req.headers;
+  const is = isAdmin(username, password);
+  if(is == 0) {
+    return res.status(404).json({
+      message: "User not found :("
+    });
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  req.admin = is;
+  next();
+}
+
+const userAuth = (req, res, next) => {
+  const {username, password} = req.headers;
+  const is = isUser(username, password);
+  if(is == 0) {
+    return res.status(404).json({
+      message: "User not found :("
+    });
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  req.user = is;
+  next();
+}
+
+
 // Admin routes
+
 app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
   const {username, password} = req.body;
@@ -100,40 +137,21 @@ app.post('/admin/signup', (req, res) => {
 });
 
 
-app.post('/admin/login', (req, res) => {
+app.post('/admin/login', adminAuth, (req, res) => {
   // logic to log in admin
-  const {username, password} = req.headers;
-  const is = isAdmin(username, password);
-  if(is == 0) {
-    return res.status(404).json({
-      message: "User not found :("
-    });
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
   return res.status(200).json({ message: 'Logged in successfully' });
 });
 
-app.post('/admin/courses', (req, res) => {
+app.post('/admin/courses', adminAuth, (req, res) => {
   // logic to create a course
-  const {username, password} = req.headers;
+  const admin = req.admin;
   const {title, description, price, imageLink, published} = req.body;
-  const is = isAdmin(username, password);
-  if(is == 0) {
-    return res.status(404).json({
-      message: "Only Admin can create a course :("
-    });
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
   const courseId = generateRandomId(Math.floor(Math.random() * 20) + 1);
   const purchaser = [];
-  const course = {title, description, price, imageLink, published, courseId, creator: is.id, purchaser};
+  const course = {title, description, price, imageLink, published, courseId, creator: admin.id, purchaser};
   COURSES.push(course);
   for(let i in ADMINS) {
-    if(ADMINS[i].username == username) {
+    if(ADMINS[i].username == admin.username) {
       ADMINS[i].courses.push(course);
       break;
     }
@@ -144,18 +162,10 @@ app.post('/admin/courses', (req, res) => {
   });
 });
 
-app.put('/admin/courses/:courseId', (req, res) => {
+app.put('/admin/courses/:courseId', adminAuth, (req, res) => {
   // logic to edit a course
   const {courseId} = req.params;
-  const {username, password} = req.headers;
   const body = req.body;
-  const is = isAdmin(username, password);
-  if(is == 0) {
-    return res.status(404).json({message: "Only Admins can edit course :)"});
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
   const state = editCourse(courseId, body);
   if(!state) {
     return res.status(404).json({message: "Invalid params!"});
@@ -163,16 +173,8 @@ app.put('/admin/courses/:courseId', (req, res) => {
   return res.status(200).json({ message: 'Course updated successfully' });
 });
 
-app.get('/admin/courses', (req, res) => {
+app.get('/admin/courses', adminAuth, (req, res) => {
   // logic to get all courses
-  const {username, password} = req.headers;
-  const is = isAdmin(username, password);
-  if(is == 0) {
-    return res.status(404).json({message: "Only Admins can see courses :)"});
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
   return res.status(200).json({COURSES});
 });
 
@@ -196,64 +198,35 @@ app.post('/users/signup', (req, res) => {
   });
 });
 
-app.post('/users/login', (req, res) => {
+app.post('/users/login', userAuth, (req, res) => {
   // logic to log in user
-  const {username, password} = req.headers;
-  const is = isUser(username, password);
-  if(is == 0) {
-    return res.status(404).json({
-      message: "User not found :("
-    });
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
   return res.status(200).json({ message: 'Logged in successfully' });
 });
 
-app.get('/users/courses', (req, res) => {
+app.get('/users/courses', userAuth, (req, res) => {
   // logic to list all courses
-  const {username, password} = req.headers;
-  const is = isUser(username, password);
-  if(is == 0) {
-    return res.status(404).json({message: "Login to see Courses :)"});
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
-  return res.status(200).json({COURSES});
+  let readyCourses = COURSES.filter(course => course.published == true);
+  return res.status(200).json({courses: readyCourses});
 });
 
-app.post('/users/courses/:courseId', (req, res) => {
+app.post('/users/courses/:courseId', userAuth, (req, res) => {
   // logic to purchase a course
   const {courseId} = req.params;
-  const {username, password} = req.headers;
-  const is = isUser(username, password);
-  if(is == 0) {
-    return res.status(404).json({message: "Login to see Courses :)"});
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
+  const user = req.user;
+
   // Check if transaction is successfull;
-  const isPurchase = purchaseCourse(courseId, is.id);
+
+  const isPurchase = purchaseCourse(courseId, user.id);
   if(isPurchase == 0) {
     return res.status(404).json({message: "Invalid Params!"});
   };
   return res.status(200).json({ message: 'Course purchased successfully' })
 });
 
-app.get('/users/purchasedCourses', (req, res) => {
+app.get('/users/purchasedCourses', userAuth, (req, res) => {
   // logic to view purchased courses
-  const {username, password} = req.headers;
-  const is = isUser(username, password);
-  if(is == 0) {
-    return res.status(404).json({message: "Login to see Courses :)"});
-  }
-  if(is.pass == false) {
-    return res.status(400).json({ message: 'Password error' });
-  }
-  return res.status(200).json({purchasedCourses: is.purchasedCourses})
+  const user = req.user;
+  return res.status(200).json({purchasedCourses: user.purchasedCourses});
 });
 
 app.listen(3000, () => {
