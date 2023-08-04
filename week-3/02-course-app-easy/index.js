@@ -32,6 +32,30 @@ const isAdmin = (username, password) => {
   return {...flag, pass: false};
 }
 
+const editCourse = (courseId, body) => {
+  for(let i in COURSES) {
+    if(COURSES[i].courseId === courseId) {
+      if(body.title != '' || body.title != undefined) {
+        COURSES[i].title = body.title;
+      }
+      if(body.description != '' || body.description != undefined) {
+        COURSES[i].description = body.description;
+      }
+      if(body.price != '' || body.price != undefined) {
+        COURSES[i].price = body.price;
+      }
+      if(body.imageLink != '' || body.imageLink != undefined) {
+        COURSES[i].imageLink = body.imageLink;
+      }
+      if(body.published != '' || body.published != undefined) {
+        COURSES[i].published = body.published;
+      }
+      return 1;
+    }
+  }
+  return 0;
+}
+
 
 // Admin routes
 app.post('/admin/signup', (req, res) => {
@@ -51,6 +75,7 @@ app.post('/admin/signup', (req, res) => {
     message: 'Admin created successfully'
   });
 });
+
 
 app.post('/admin/login', (req, res) => {
   // logic to log in admin
@@ -81,7 +106,7 @@ app.post('/admin/courses', (req, res) => {
     return res.status(400).json({ message: 'Password error' });
   }
   const courseId = generateRandomId(Math.floor(Math.random() * 20) + 1);
-  const course = {title, description, price, imageLink, published, courseId};
+  const course = {title, description, price, imageLink, published, courseId, username};
   COURSES.push(course);
   return res.status(200).json({
     message: 'Course created successfully',
@@ -91,15 +116,53 @@ app.post('/admin/courses', (req, res) => {
 
 app.put('/admin/courses/:courseId', (req, res) => {
   // logic to edit a course
+  const {courseId} = req.params;
+  const {username, password} = req.headers;
+  const body = req.body;
+  const is = isAdmin(username, password);
+  if(is == 0) {
+    return res.status(404).json({message: "Only Admins can edit course :)"});
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  const state = editCourse(courseId, body);
+  if(!state) {
+    return res.status(404).json({message: "Course not found :(, Invalid params"});
+  }
+  return res.status(200).json({ message: 'Course updated successfully' });
 });
 
 app.get('/admin/courses', (req, res) => {
   // logic to get all courses
+  const {username, password} = req.headers;
+  const is = isAdmin(username, password);
+  if(is == 0) {
+    return res.status(404).json({message: "Only Admins can edit course :)"});
+  }
+  if(is.pass == false) {
+    return res.status(400).json({ message: 'Password error' });
+  }
+  return res.status(200).json({COURSES});
 });
 
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
+  const {username, password} = req.body;
+  if(!username || username == '' || !password || password == '') {
+    return res.status(400).json({message: "Bad fetch request"});
+  }
+  const id = generateRandomId(10);
+  const user = {username, password, id};
+  const isUser = USERS.find(a => a.username == username);
+  if(isUser != undefined) {
+    return res.status(400).json({message: "Username already exixts :("});
+  }
+  USERS.push(user);
+  return res.status(200).json({
+    message: 'User created successfully'
+  });
 });
 
 app.post('/users/login', (req, res) => {
