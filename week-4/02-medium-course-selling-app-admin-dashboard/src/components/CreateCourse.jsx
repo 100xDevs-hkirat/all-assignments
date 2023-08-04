@@ -4,10 +4,41 @@ import React from "react";
 function CreateCourse() {
     const [title, setTitle] = React.useState("");
 
+    const createCourseHandler = () => {
+
+        fetch('http://localhost:3000/admin/courses', {
+            method: 'POST',
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                title: title,
+            })
+        })
+        .then((res) => {
+            if(res.ok) {
+                return res.json();
+            }
+
+            return Promise.reject(res);
+        })
+        .then((data) => {
+            alert(`${data.message} Course Id: ${data.courseId}`);
+        })
+        .catch((err) => {
+            console.log("Error: " + err);
+        });
+    }
+
     return <div>
         <h1>Create Course Page</h1>
-        <input type={"text"} onChange={e => setTitle(e.target.value)} />
-        <button onClick={() => console.log(title)}>Create Course</button>
+        Title <input type={"text"} onChange={e => setTitle(e.target.value)} />
+        <br/><br/>
+        <button onClick={createCourseHandler}>Create Course</button>
+        <br />
+        <br />
+        Show list of all courses <a href="/courses">click here</a>
     </div>
 }
 export default CreateCourse;

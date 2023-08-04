@@ -1,8 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const app = express();
+const app = express();  
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -81,6 +83,17 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
 
 app.get('/admin/courses', authenticateJwt, (req, res) => {
   res.json({ courses: COURSES });
+});
+
+app.get('/courses/:courseId', authenticateJwt, (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const courseIndex = COURSES.findIndex(c => c.id === courseId);
+
+  if (courseIndex > -1) {
+    res.json(COURSES[courseIndex]);
+  } else {
+    res.status(404).json({ message: 'Course not found' });
+  }
 });
 
 app.post('/users/signup', (req, res) => {
