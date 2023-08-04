@@ -16,9 +16,19 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const express_1 = __importDefault(require("express"));
 const middleware_1 = require("../middleware/");
 const db_1 = require("../db");
+const zod_1 = require("zod");
 const router = express_1.default.Router();
+const inputProps = zod_1.z.object({
+    username: zod_1.z.string().min(5).max(12).email(),
+    password: zod_1.z.string().min(8).max(14)
+});
 router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
+    const parseInput = inputProps.safeParse(req.body);
+    if (!parseInput.success) {
+        return res.status(411).json({ msg: parseInput.error });
+    }
+    let username = parseInput.data.username;
+    let password = parseInput.data.password;
     const user = yield db_1.User.findOne({ username });
     if (user) {
         res.status(403).json({ message: 'User already exists' });

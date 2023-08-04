@@ -2,10 +2,22 @@ import jwt  from "jsonwebtoken";
 import express from'express';
 import { authenticateJwt, SECRET } from "../middleware/";
 import { User } from "../db";
+import {z} from "zod"
 const router = express.Router();
 
+
+const inputProps = z.object({
+  username:z.string().min(5).max(12).email(),
+  password:z.string().min(8).max(14)
+})
+
   router.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const parseInput = inputProps.safeParse(req.body)
+    if(!parseInput.success){
+      return res.status(411).json({msg:parseInput.error})
+    }
+    let username = parseInput.data.username;
+    let password = parseInput.data.password;
     const user = await User.findOne({ username });
     if (user) {
       res.status(403).json({ message: 'User already exists' });
