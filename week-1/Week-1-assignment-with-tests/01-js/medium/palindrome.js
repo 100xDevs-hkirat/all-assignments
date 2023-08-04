@@ -5,9 +5,10 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
-
 function isPalindrome(str) {
-  return true;
+  const cleanString = str.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const reverse = cleanString.split("").reverse().join("");
+  return cleanString === reverse;
 }
 
 module.exports = isPalindrome;
