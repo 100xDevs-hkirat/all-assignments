@@ -27,25 +27,10 @@ export default function Register() {
     const data = new FormData(event.currentTarget);
     if(data.get('password') !== data.get('confirm_password')) alert('Password and confirm password must be same');
     else{
-    //   const response = await fetch('http://localhost:3000/admin/signup', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     username: data.get('email'),
-    //     password: data.get('password'),
-    //   }),
-    //   headers:{
-    //     'Content-type':'application/json'
-    // }
-    // });
-    //   resp = await response.json();
-    //   response.status !== 200 ? alert(resp.message) : alert(resp.message);
-    //   if(response.status === 200){
-    //     localStorage.setItem('accessToken', resp.token);
-    //   }
     try{
       const response = await axios({
         method: 'post',
-        url: '/admin/signup',
+        url: '/users/signup',
         data:{
           'username': data.get('email'),
           'password': data.get('password'),
@@ -53,7 +38,7 @@ export default function Register() {
       });
       //response.status === 201 && alert(response.data.message) && localStorage.setItem('accessToken', response.data.token);
       if(response.status === 201){
-        alert('Registered successfully');
+        alert('Registered Successfully');
         localStorage.setItem('accessToken', response.data.token);
         navigate('/courses');
       }

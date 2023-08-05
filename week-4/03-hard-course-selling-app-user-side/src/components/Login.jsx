@@ -56,7 +56,7 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-  //   const response = await fetch("http://localhost:3000/admin/login", {
+  //   const response = await fetch("http://localhost:3000/users/login", {
   //     method: "POST",
   //     headers:{
   //         'username': data.get('email'),
@@ -74,7 +74,7 @@ export default function Login() {
     try{
       const response = await axios({
         method: 'post',
-        url: '/admin/login',
+        url: '/users/login',
         headers:{
           'username': data.get('email'),
           'password': data.get('password'),
