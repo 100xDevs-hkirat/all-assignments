@@ -67,7 +67,7 @@ const purchaseCourse = (courseId, userId) => {
   }
   const user = USERS.find(user => user.id == userId);
   course.purchaser.push({ userId });
-  user.purchasedCourses.push({ courseId });
+  user.purchasedCourses.push({ course });
   return 1;
 }
 
@@ -234,22 +234,123 @@ app.get('/admin/courses', tokenAuth, (req, res) => {
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
+  fs.readFile("users.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: `Internal Server Error - ${err}` })
+    }
+    USERS = JSON.parse(data);
+    const { username, password } = req.body;
+    if (!username || username == '' || !password || password == '') {
+      return res.status(400).json({ message: "Bad fetch request" });
+    }
+    const id = generateRandomId(10);
+    const purchasedCourses = [];
+    const user = { username, password, id, purchasedCourses };
+    const isUser = USERS.find(a => a.username == username);
+    if (isUser != undefined) {
+      return res.status(400).json({ message: "Username already exixts :(" });
+    }
+    USERS.push(user);
+    fs.writeFile("users.json", JSON.stringify(USERS), (err) => {
+      if (err) {
+        return res.status(500).json({ message: `Internal Server Error - ${err}` })
+      }
+    })
+    const token = jwt.sign({ username, password, id }, SECRET_KEY, { expiresIn: "1h" });
+    return res.status(200).json({
+      message: 'User created successfully',
+      token
+    });
+  })
 });
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+  fs.readFile("users.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: `Internal Server Error - ${err}` })
+    }
+    USERS = JSON.parse(data);
+    const { username, password } = req.headers;
+    if (username == '' || username == undefined || password == '' || password == undefined) {
+      return res.status(400).json({ message: "Bad fetch Request :(" });
+    }
+    const is = isUser(username, password);
+    if (is == 0) {
+      return res.status(404).json({ message: "User not found :)" });
+    }
+    if (is.pass == false) {
+      return res.status(400).json({ message: "Wrong password :)" });
+    }
+    const token = jwt.sign({ username, password, id: is.id }, SECRET_KEY, { expiresIn: '1h' });
+    return res.status(200).json({ message: 'Logged in successfully', token });
+  })
 });
 
-app.get('/users/courses', (req, res) => {
+app.get('/users/courses', tokenAuth, (req, res) => {
   // logic to list all courses
+  fs.readFile("courses.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: `Internal Server Error - ${err}` })
+    }
+    COURSES = JSON.parse(data);
+    const courses = COURSES.filter(course => course.published == true);
+    return res.status(200).json({ courses });
+  })
 });
 
-app.post('/users/courses/:courseId', (req, res) => {
+app.post('/users/courses/:courseId', tokenAuth, (req, res) => {
   // logic to purchase a course
+  fs.readFile("courses.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: `Internal Server Error: ${err}` });
+    }
+    COURSES = JSON.parse(data);
+    const user = req.user;
+    const { courseId } = req.params;
+    fs.readFile("users.json", "utf-8", (err, data) => {
+      if (err) {
+        return res.status(500).json({ message: `Internal Server Error: ${err}` });
+      }
+      USERS = JSON.parse(data);
+      // Check if transaction is successfull;
+      const isPurchase = purchaseCourse(courseId, user.id);
+      if (isPurchase == 0) {
+        return res.status(404).json({ message: "Invalid Params!" });
+      };
+      fs.writeFile("courses.json", JSON.stringify(COURSES), (err) => {
+        if (err) {
+          return res.status(500).json({ message: `Internal Server Error: ${err}` });
+        }
+      });
+      fs.writeFile("users.json", JSON.stringify(USERS), (err) => {
+        if (err) {
+          return res.status(500).json({ message: `Internal Server Error: ${err}` });
+        }
+      });
+      return res.status(200).json({ message: 'Course purchased successfully' })
+    });
+  })
 });
 
-app.get('/users/purchasedCourses', (req, res) => {
+app.get('/users/purchasedCourses', tokenAuth, (req, res) => {
   // logic to view purchased courses
+  const user = req.user;
+  fs.readFile("users.json", "utf-8", (err, data1) => {
+    if (err) {
+      return res.status(500).json({ message: `Internal Server Error: ${err}` });
+    }
+    USERS = JSON.parse(data1);
+    fs.readFile("courses.json", "utf-8", (err, data2) => {
+      if (err) {
+        return res.status(500).json({ message: `Internal Server Error: ${err}` });
+      }
+      COURSES = JSON.parse(data2);
+      const data = USERS.find(use => use.id == user.id);
+      const purchasedCourses = data.purchasedCourses
+      return res.status(200).json({ purchasedCourses })
+    })
+  })
 });
 
 app.listen(3000, () => {
