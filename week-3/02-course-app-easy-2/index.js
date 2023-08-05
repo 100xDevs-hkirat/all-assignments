@@ -1,9 +1,9 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const app = express();
 const PORT = 3000;
-require('dotenv').config();
+require("dotenv").config();
 
 const DB_LINK = process.env.DB_LINK;
 
@@ -18,21 +18,30 @@ let COURSES = [];
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
-  purchasedCourses : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course'}]
-})
+  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+});
 
 const adminSchema = new mongoose.Schema({
-  username:  String,
-  password: String
-})
+  username: String,
+  password: String,
+});
 
 const courseSchema = new mongoose.Schema({
   title: String,
   description: String,
   prices: Number,
   imageLink: String,
-  published: Boolean
-})
+  published: Boolean,
+});
+
+// mongoose collection
+
+const User = mongoose.model("User", userSchema);
+const Admin = mongoose.model("User", adminSchema);
+const Course = mongoose.model("User", courseSchema);
+
+// connect to mongoDB
+mongoose.connect(DB_LINK, { useNewUrlParse: true, useUnifiedTopology: true});
 
 app.get("/", (req, res) => {
   res.json({ message: "Home route" });
@@ -136,7 +145,7 @@ app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
   }
 });
 
-app.get("/admin/courses", authenticateJwt,(req, res) => {
+app.get("/admin/courses", authenticateJwt, (req, res) => {
   // logic to get all courses
   res.json({ courses: COURSES });
 });
@@ -171,7 +180,7 @@ app.post("/users/login", (req, res) => {
 
 app.get("/users/courses", authenticateJwt, (req, res) => {
   // logic to list all courses
-  res.json({ courses: COURSES});
+  res.json({ courses: COURSES });
 });
 
 app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
@@ -187,7 +196,7 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
       let purchasedCourses = user.purchasedCourses.push(course);
       res.json({ message: "Course purchased successfully" });
     } else {
-      res.status(404).json({ message: "User not found"})
+      res.status(404).json({ message: "User not found" });
     }
   } else {
     res.status(404).json({ message: "Course not found" });
@@ -196,11 +205,11 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
 
 app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
   // logic to view purchased courses
-  const user = USERS.find( u => u.username === req.user.user);
-  if (user && user.purchasedCourses ){
-    res.json({ purchasedCourses : user.purchasedCourses })
+  const user = USERS.find((u) => u.username === req.user.user);
+  if (user && user.purchasedCourses) {
+    res.json({ purchasedCourses: user.purchasedCourses });
   } else {
-    res.status(404).json({ message : " No courses purchased"})
+    res.status(404).json({ message: " No courses purchased" });
   }
 });
 
