@@ -76,8 +76,8 @@ const purchaseCourse = (courseId, userId) => {
   if(course.published == false) {
     return 11;
   }
-  course.purchaser.push(user);
-  user.purchasedCourses.push(course);
+  course.purchaser.push(userId);
+  user.purchasedCourses.push(courseId);
   return 1;
 }
 
@@ -152,7 +152,7 @@ app.post('/admin/courses', adminAuth, (req, res) => {
   COURSES.push(course);
   for(let i in ADMINS) {
     if(ADMINS[i].username == admin.username) {
-      ADMINS[i].courses.push(course);
+      ADMINS[i].courses.push(courseId);
       break;
     }
   }
@@ -226,7 +226,8 @@ app.post('/users/courses/:courseId', userAuth, (req, res) => {
 app.get('/users/purchasedCourses', userAuth, (req, res) => {
   // logic to view purchased courses
   const user = req.user;
-  return res.status(200).json({purchasedCourses: user.purchasedCourses});
+  const userData = USERS.find(sue => sue.id == user.id);
+  return res.status(200).json({purchasedCourses: userData.purchasedCourses});
 });
 
 app.listen(3000, () => {
