@@ -86,7 +86,7 @@ const isUser = (username, password) => {
 
 // Middleware
 const adminTokenAuth = (req, res, next) => {
-  const { authorization } = req.headers;
+  let { authorization } = req.headers;
   if(!authorization) {
     return res.status(401).json({ message: "Unauthorized :)" })
   }
@@ -104,7 +104,7 @@ const adminTokenAuth = (req, res, next) => {
 }
 
 const userTokenAuth = (req, res, next) => {
-  const { authorization } = req.headers;
+  let { authorization } = req.headers;
   if(!authorization) {
     return res.status(401).json({ message: "Unauthorized :)" })
   }
