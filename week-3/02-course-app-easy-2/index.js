@@ -65,7 +65,7 @@ const purchaseCourse = (courseId, userId) => {
   }
   const user = USERS.find(user => user.id == userId);
   course.purchaser.push({userId});
-  user.purchasedCourses.push({courseId});
+  user.purchasedCourses.push({course});
   return 1;
 }
 
