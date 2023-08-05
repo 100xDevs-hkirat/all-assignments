@@ -103,7 +103,7 @@ app.post('/admin/signup', (req, res) => {
     return res.status(400).json({message: "Bad fetch request"});
   }
   const id = generateRandomId(10);
-  const token = jwt.sign({username, password}, SECRET_KEY, {expiresIn: "1h"});
+  const token = jwt.sign({username, id}, SECRET_KEY, {expiresIn: "1h"});
   const courses = [];
   const admin = {username, password, courses, id};
   const isAdmin = ADMINS.find(a => a.username == username);
@@ -130,7 +130,7 @@ app.post('/admin/login', (req, res) => {
   if(is.pass == false) {
     return res.status(400).json({ message: 'Password error' });
   }
-  const token = jwt.sign({username, password, id: is.id}, SECRET_KEY, {expiresIn: "1h"});
+  const token = jwt.sign({username, id: is.id}, SECRET_KEY, {expiresIn: "1h"});
   return res.status(200).json({ message: 'Logged in successfully', token})
 });
 
@@ -189,7 +189,7 @@ app.post('/users/signup', (req, res) => {
     return res.status(400).json({message: "Username already exixts :("});
   }
   USERS.push(user);
-  const token = jwt.sign({username, password, id}, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({username, id}, SECRET_KEY, { expiresIn: "1h" });
   return res.status(200).json({
     message: 'User created successfully',
     token
@@ -209,7 +209,7 @@ app.post('/users/login', (req, res) => {
   if(is.pass == false) {
     return res.status(400).json({message: "Wrong password :)"});
   }
-  const token = jwt.sign({username, password, id: is.id}, SECRET_KEY, {expiresIn: '1h'});
+  const token = jwt.sign({username, id: is.id}, SECRET_KEY, {expiresIn: '1h'});
   return res.status(200).json({message: 'Logged in successfully', token});
 });
 
