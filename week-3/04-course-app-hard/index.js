@@ -40,7 +40,7 @@ const Course = mongoose.model('Course', courseSchema);
 
 // Helper
 const adminAuth = (req, res, next) => {
-  const {authorization} = req.headers;
+  let {authorization} = req.headers;
   if(!authorization) {
     return res.status(401).json({message: "Unauthorized!"});
   }
