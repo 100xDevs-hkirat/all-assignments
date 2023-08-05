@@ -1,0 +1,31 @@
+[33mcommit 7ca4b25c065b698b173d6819b29feed198754792[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: 100xdevs-admin <100xdevs@gmail.com>
+Date:   Thu Jul 27 22:28:56 2023 +0530
+
+    added index.js
+
+[1mdiff --git a/week-7/assignment-1/index.js b/week-7/assignment-1/index.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f209398[m
+[1m--- /dev/null[m
+[1m+++ b/week-7/assignment-1/index.js[m
+[36m@@ -0,0 +1,19 @@[m
+[32m+[m
+[32m+[m[32mconst express = require("express");[m
+[32m+[m[32mconst app = express();[m
+[32m+[m[32mconst mongoose = require("mongoose");[m
+[32m+[m[32mconst port = 3000;[m
+[32m+[m[32mconst authRoutes = require("./routes/auth");[m
+[32m+[m[32mconst todoRoutes = require("./routes/todo");[m
+[32m+[m[32mconst cors = require("cors");[m
+[32m+[m
+[32m+[m[32mapp.use(cors());[m
+[32m+[m[32mapp.use(express.json());[m
+[32m+[m[32mapp.use("/auth", authRoutes);[m
+[32m+[m[32mapp.use("/todo", todoRoutes);[m
+[32m+[m
+[32m+[m[32mapp.listen(port, () => {[m
+[32m+[m[32m    console.log(`Example app listening at http://localhost:${port}`)[m
+[32m+[m[32m})[m
+[32m+[m
+[32m+[m[32mmongoose.connect('mongodb://localhost:27017/courses', { dbName: "courses" });[m
