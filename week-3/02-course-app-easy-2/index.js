@@ -37,11 +37,21 @@ const courseSchema = new mongoose.Schema({
 // mongoose collection
 
 const User = mongoose.model("User", userSchema);
-const Admin = mongoose.model("User", adminSchema);
-const Course = mongoose.model("User", courseSchema);
+const Admin = mongoose.model("Admin", adminSchema);
+const Course = mongoose.model("Course", courseSchema);
 
 // connect to mongoDB
-mongoose.connect(DB_LINK, { useNewUrlParse: true, useUnifiedTopology: true});
+mongoose.connect(DB_LINK, { useNewUrlParser: true, useUnifiedTopology: true});
+
+const db = mongoose.connection;
+
+db.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
+});
+
+db.once("connected", () => {
+  console.log("db connected");
+});
 
 app.get("/", (req, res) => {
   res.json({ message: "Home route" });
