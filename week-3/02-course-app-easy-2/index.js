@@ -1,13 +1,38 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose');
 const app = express();
 const PORT = 3000;
+require('dotenv').config();
+
+const DB_LINK = process.env.DB_LINK;
 
 app.use(express.json());
 
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
+
+// mongoose schema
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  purchasedCourses : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course'}]
+})
+
+const adminSchema = new mongoose.Schema({
+  username:  String,
+  password: String
+})
+
+const courseSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  prices: Number,
+  imageLink: String,
+  published: Boolean
+})
 
 app.get("/", (req, res) => {
   res.json({ message: "Home route" });
