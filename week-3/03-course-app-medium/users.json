@@ -1,1 +1,43 @@
-[{"username":"akash","password":"rsndom","id":"Swnb4b8Wq7","purchasedCourses":[{"courseId":"6prThyrF5"},{"courseId":"6prThyrF5"},{"course":{"title":"course title","description":"course description","price":100,"imageLink":"https://linktoimage.com","published":true,"courseId":"6prThyrF5","creator":"sMcDk5Kf3p","purchaser":[{"userId":"Swnb4b8Wq7"},{"userId":"Swnb4b8Wq7"},{"userId":"Swnb4b8Wq7"}]}}]},{"username":"krish","password":"rsndom","id":"RxfEP3WaSz","purchasedCourses":[]}]
+[
+    {
+        "username": "akash",
+        "password": "rsndom",
+        "id": "Swnb4b8Wq7",
+        "purchasedCourses": [
+            {
+                "courseId": "6prThyrF5"
+            },
+            {
+                "courseId": "6prThyrF5"
+            },
+            {
+                "course": {
+                    "title": "course title",
+                    "description": "course description",
+                    "price": 100,
+                    "imageLink": "https://linktoimage.com",
+                    "published": true,
+                    "courseId": "6prThyrF5",
+                    "creator": "sMcDk5Kf3p",
+                    "purchaser": [
+                        {
+                            "userId": "Swnb4b8Wq7"
+                        },
+                        {
+                            "userId": "Swnb4b8Wq7"
+                        },
+                        {
+                            "userId": "Swnb4b8Wq7"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "username": "krish",
+        "password": "rsndom",
+        "id": "RxfEP3WaSz",
+        "purchasedCourses": []
+    }
+]

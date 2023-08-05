@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "2003"
+const ADMINS_SECRET_KEY = "2003";
+const USERS_SECRET_KEY = "2018";
 
 app.use(express.json());
 
@@ -84,9 +85,21 @@ const isUser = (username, password) => {
 
 
 // Middleware
-const tokenAuth = (req, res, next) => {
+const adminTokenAuth = (req, res, next) => {
   const { authorization } = req.headers;
-  const decoded = jwt.verify(authorization, SECRET_KEY, (err, decoded) => {
+  const decoded = jwt.verify(authorization, ADMINS_SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(400).json({ message: "Token is being disturbed :)" })
+    }
+    return decoded;
+  });
+  req.user = decoded;
+  next();
+}
+
+const userTokenAuth = (req, res, next) => {
+  const { authorization } = req.headers;
+  const decoded = jwt.verify(authorization, USERS_SECRET_KEY, (err, decoded) => {
     if (err) {
       return res.status(400).json({ message: "Token is being disturbed :)" })
     }
@@ -153,7 +166,7 @@ app.post('/admin/login', (req, res) => {
   })
 });
 
-app.post('/admin/courses', tokenAuth, (req, res) => {
+app.post('/admin/courses', adminTokenAuth, (req, res) => {
   // logic to create a course
   fs.readFile("admins.json", "utf-8", (err, data) => {
     if (err) {
@@ -197,7 +210,7 @@ app.post('/admin/courses', tokenAuth, (req, res) => {
   })
 });
 
-app.put('/admin/courses/:courseId', tokenAuth, (req, res) => {
+app.put('/admin/courses/:courseId', adminTokenAuth, (req, res) => {
   // logic to edit a course
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -220,7 +233,7 @@ app.put('/admin/courses/:courseId', tokenAuth, (req, res) => {
   })
 });
 
-app.get('/admin/courses', tokenAuth, (req, res) => {
+app.get('/admin/courses', adminTokenAuth, (req, res) => {
   // logic to get all courses
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -287,7 +300,7 @@ app.post('/users/login', (req, res) => {
   })
 });
 
-app.get('/users/courses', tokenAuth, (req, res) => {
+app.get('/users/courses', userTokenAuth, (req, res) => {
   // logic to list all courses
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -299,7 +312,7 @@ app.get('/users/courses', tokenAuth, (req, res) => {
   })
 });
 
-app.post('/users/courses/:courseId', tokenAuth, (req, res) => {
+app.post('/users/courses/:courseId', userTokenAuth, (req, res) => {
   // logic to purchase a course
   fs.readFile("courses.json", "utf-8", (err, data) => {
     if (err) {
@@ -333,7 +346,7 @@ app.post('/users/courses/:courseId', tokenAuth, (req, res) => {
   })
 });
 
-app.get('/users/purchasedCourses', tokenAuth, (req, res) => {
+app.get('/users/purchasedCourses', userTokenAuth, (req, res) => {
   // logic to view purchased courses
   const user = req.user;
   fs.readFile("users.json", "utf-8", (err, data1) => {
