@@ -87,9 +87,15 @@ const isUser = (username, password) => {
 // Middleware
 const adminTokenAuth = (req, res, next) => {
   const { authorization } = req.headers;
+  if(!authorization) {
+    return res.status(401).json({ message: "Unauthorized :)" })
+  }
+  if(authorization.startsWith("Bearer")) {
+    authorization = authorization.split(" ")[1];
+  }
   const decoded = jwt.verify(authorization, ADMINS_SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(400).json({ message: "Token is being disturbed :)" })
+      return res.status(403).json({ message: "Forbidded :)" })
     }
     return decoded;
   });
@@ -99,9 +105,15 @@ const adminTokenAuth = (req, res, next) => {
 
 const userTokenAuth = (req, res, next) => {
   const { authorization } = req.headers;
+  if(!authorization) {
+    return res.status(401).json({ message: "Unauthorized :)" })
+  }
+  if(authorization.startsWith("Bearer")) {
+    authorization = authorization.split(" ")[1];
+  }
   const decoded = jwt.verify(authorization, USERS_SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(400).json({ message: "Token is being disturbed :)" })
+      return res.status(403).json({ message: "Forbidden :)" })
     }
     return decoded;
   });
