@@ -39,11 +39,92 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
+var TODOS = [];
+var todosId = 1;
+const PORT = 3000;
+const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-
 app.use(bodyParser.json());
+
+app.get("/todos", (req, res) => {
+  return res.status(200).send(TODOS);
+});
+
+app.post("/todos", (req, res) => {
+  const title = req.body.title;
+  const completed = req.body.completed;
+  const description = req.body.description;
+  const todoId = todosId++;
+  TODOS.push({
+    title: title,
+    completed: completed,
+    description: description,
+    id: todoId,
+  });
+  return res.status(201).send({ id: todoId });
+});
+
+app.get("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  let todoInd = -1;
+  for (let i = 0; i < TODOS.length; i++) {
+    if (todoId === TODOS[i].id) {
+      todoInd = i;
+    }
+  }
+  if (todoInd === -1) {
+    return res.status(404).send("Not Found");
+  } else {
+    return res.status(200).send(TODOS[todoInd]);
+  }
+});
+
+app.put("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  const title = req.body.title;
+  const completed = req.body.completed;
+  const description = req.body.description;
+  let todoInd = -1;
+  for (let i = 0; i < TODOS.length; i++) {
+    if (todoId === TODOS[i].id) {
+      todoInd = i;
+    }
+  }
+  if (todoInd === -1) {
+    return res.status(404).send("Not Found");
+  } else {
+     if (title !== undefined) {
+        TODOS[todoInd].title = title;
+      }
+      if (completed !== undefined) {
+        TODOS[todoInd].completed = completed;
+      }
+      if (description !== undefined) {
+        TODOS[todoInd].description = description;
+      }
+    return res.status(200).send(TODOS[todoInd]);
+  }
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  let todoInd = -1;
+  for (let i = 0; i < TODOS.length; i++) {
+    if (todoId === TODOS[i].id) {
+      todoInd = i;
+    }
+  }
+  if (todoInd === -1) {
+    return res.status(404).send("Not Found");
+  } else {
+    TODOS.splice(todoInd, 1);
+    return res.status(200).send("OK");
+  }
+});
+
+// app.listen(PORT, () => {
+//   console.log(`Example app listening on port ${PORT}`);
+// });
 
 module.exports = app;

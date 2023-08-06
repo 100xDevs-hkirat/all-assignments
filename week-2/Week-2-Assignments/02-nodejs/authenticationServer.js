@@ -28,10 +28,93 @@
 
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
-
-const express = require("express")
+var USERS = [];
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const PORT = 3000;
 const app = express();
+app.use(express.json());
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+app.get("/", (req, res) => {
+  return res.status(200).send("Heartbeat!");
+});
+
+app.post("/signup", (req, res) => {
+  const email = req.body.email;
+  for (let i = 0; i < USERS.length; i++) {
+    if (email == USERS[i].email) {
+      return res.status(400).send("Bad Request");
+    }
+  }
+  const password = req.body.password;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const userId = uuidv4();
+
+  USERS.push({
+    email: email,
+    password: password,
+    firstName: firstName,
+    lastName: lastName,
+    userId: userId,
+  });
+  res.status(201).send("Signup successful");
+});
+
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  let userInd = -1;
+  for (let i = 0; i < USERS.length; i++) {
+    if (email === USERS[i].email) {
+      userInd = i;
+    }
+  }
+  if (userInd === -1) {
+    return res.status(400).send("Bad Request");
+  }
+  const password = req.body.password;
+  if (password !== USERS[userInd].password) {
+    return res.status(401).send("Unauthorized");
+  } else {
+    const userData = {
+      email: email,
+      firstName: USERS[userInd].firstName,
+      lastName: USERS[userInd].lastName,
+    };
+    return res.status(200).send(userData);
+  }
+});
+
+app.get("/data", (req, res) => {
+  const email = req.headers.email;
+  let userInd = -1;
+  for (let i = 0; i < USERS.length; i++) {
+    if (email === USERS[i].email) {
+      userInd = i;
+    }
+  }
+  if (userInd === -1) {
+    return res.status(400).send("Bad Request");
+  }
+  const password = req.headers.password;
+  if (password !== USERS[userInd].password) {
+    return res.status(401).send("Unauthorized");
+  } else {
+    const data = USERS.map((a) => {
+      return {
+        email: a.email,
+        firstName: a.firstName,
+        lastName: a.lastName,
+        userId: a.userId,
+      };
+    });
+    return res.status(200).send({ users: data });
+  }
+});
+
+// app.listen(PORT, () => {
+//   console.log(`Example app listening on port ${PORT}`);
+// });
 
 module.exports = app;

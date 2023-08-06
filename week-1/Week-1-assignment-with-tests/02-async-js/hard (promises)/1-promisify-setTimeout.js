@@ -3,4 +3,11 @@
 */
 
 function wait(n) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, n * 1000);
+  });
 }
+
+const n = 4;
+wait(n);
+console.log(`here before ${n} seconds!`);
