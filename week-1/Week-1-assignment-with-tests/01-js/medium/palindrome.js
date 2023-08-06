@@ -7,7 +7,10 @@
 */
 
 function isPalindrome(str) {
-  return true;
+  var cleanedStr = str.trim().replace(/[^A-Za-z0-9]/g,'').toLowerCase();
+  var revCleanedStr = Array.from(cleanedStr).reverse().join('')
+  return revCleanedStr===cleanedStr;
 }
 
+console.log(isPalindrome("A man, a plan, a canal: Panama"))
 module.exports = isPalindrome;
