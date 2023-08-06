@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { IItem } from '../interfaces/item';
 import * as itemsService from '../services/items';
 
 export const getAll = async (req: Request, res:Response) => {

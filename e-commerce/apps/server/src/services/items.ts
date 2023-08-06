@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { IItem } from "../interfaces/item";
+import { IItem } from "common";
 
 export const findAll = async () => {
   try {

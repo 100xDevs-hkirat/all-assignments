@@ -2,8 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "start": "node dist/index.js",
+    "dev": "yarn build && concurrently -k \"tsc -w\" \"nodemon dist/index.js\"",
+    "build": "rm -rf ./dist && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,8 +18,11 @@
     "helmet": "^7.0.0"
   },
   "devDependencies": {
+    "common": "*",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1",
     "typescript": "^5.1.6"
   }
 }
