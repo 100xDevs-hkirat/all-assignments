@@ -108,28 +108,26 @@ const userAuthentication = (req, res, next) => {
 };
 
 // Admin routes
-app.post("/admin/signup", (req, res) => {
-  const admin = req.body;
-  const existingAdmin = ADMINS.find((a) => a.username === admin.username);
-
-  if (existingAdmin) {
+app.post("/admin/signup",async (req, res) => {
+  const { username, password } =  req.body;
+  const admin = await Admin.findOne({ username });
+  if (admin) {
     res.status(403).json({ message: "Admin already exists" });
   } else {
-    ADMINS.push(admin);
-    const token = generateToken(admin);
+    const newAdmin = new Admin({ username, password });
+    await newAdmin.save();
+    const token = jwt.sign({ username, password }, secretKey, { expiresIn: '1h'})
     res.json({ message: "Admin signup successful", token });
   }
 });
 
-app.post("/admin/login", adminAuthentication, (req, res) => {
+app.post("/admin/login", adminAuthentication, async(req, res) => {
   // logic to log in admin
   const { username, password } = req.headers;
-  const admin = ADMINS.find(
-    (a) => a.username === username && a.password === password
-  );
+  const admin = await Admin.findOne({ username, password });
 
   if (admin) {
-    const token = generateToken(admin);
+    const token = jwt.sign({ username, role: 'admin'}. secretKey, {expiresIn: '1hr'});
     res.json({ message: "Admin logged in successfully", token });
   } else {
     res.status(403).send({ message: "Admin login failed" });
