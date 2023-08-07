@@ -6,7 +6,7 @@ export const useLocalStorage = (storageKey, fallback) => {
         );
 
     useEffect(() => {
-        localStorage.setItem(storageKey, state);
+        localStorage.setItem(storageKey, JSON.stringify(state));
     }, [state, storageKey]);
 
     return [state, setState];

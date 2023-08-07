@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { loading, user } from "../recoil/atom";
+import { getToken, loading, user } from "../recoil/atom";
 import { baseUrl } from "./Register";
 import axios from "axios";
 import { useLocalStorage } from "../assets/useLocalStorage";
@@ -12,6 +12,7 @@ function Login() {
     const [loader, setloader] = useRecoilState(loading);
     const setClient = useSetRecoilState(user);
     const [state, setState] = useLocalStorage("token", null);
+    const setToken = useSetRecoilState(getToken);
     const navigate = useNavigate();
 
     const usernameRef = useRef(null);
@@ -36,11 +37,10 @@ function Login() {
             usernameRef.current.value = "";
             passwordRef.current.value = "";
             setState(response.data.token);
+            setToken(response.data.token)
             toast.success(response.data.message);
             setloader(false);
-            setTimeout(() => {
-                navigate("/courses")
-            }, 5000);
+            navigate("/about")
             return;
 
         }).catch(err => {

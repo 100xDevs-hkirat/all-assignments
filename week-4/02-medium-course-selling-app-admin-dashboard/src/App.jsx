@@ -10,7 +10,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { loading, user } from './recoil/atom';
 import RestrictedRoute from './components/RestrictedRoute';
 import { Toaster } from 'react-hot-toast';
-import LoadingBar from 'react-loading-bar';
 // This file shows how you can do routing in React.
 // Try going to /login, /register, /about, /courses on the website and see how the html changes
 // based on the route.

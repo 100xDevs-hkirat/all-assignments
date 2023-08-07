@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { useRecoilState } from "recoil";
-import { loading, user } from "../recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { getToken, loading, user } from "../recoil/atom";
 import axios from "axios";
 import { useLocalStorage } from "../assets/useLocalStorage";
 import { Toaster, toast } from 'react-hot-toast'
@@ -14,6 +14,7 @@ function Register() {
     const [client, setClient] = useRecoilState(user);
     const [loader, setLoader] = useRecoilState(loading);
     const [state, setState] = useLocalStorage("token", "");
+    const setToken = useSetRecoilState(getToken);
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
     const emailRef = useRef(null);
@@ -38,8 +39,9 @@ function Register() {
             passwordRef.current.value = '';
             emailRef.current.value = '';
             setState(response.data.token);
+            setToken(response.data.token);
             toast.success(response.data.message);
-            navigate("/courses");
+            navigate("/about");
             setLoader(false);
         }).catch(err => {
             if (err) {
