@@ -40,11 +40,13 @@ function Register() {
             setState(response.data.token);
             toast.success(response.data.message);
             navigate("/courses");
+            setLoader(false);
         }).catch(err => {
             if (err) {
                 if (err.response.status == 403) {
                     toast.error("Username already exist");
                 }
+                setLoader(false);
             }
         })
 
@@ -52,7 +54,6 @@ function Register() {
 
     return (
         <>
-            <Toaster />
             <div className="flex h-screen bg-gray-100">
                 <div className="m-auto bg-white rounded-lg p-8 shadow-md w-[400px] hover:shadow-2xl transition-all">
                     <h2 className="text-2xl font-semibold mb-4">Register</h2>

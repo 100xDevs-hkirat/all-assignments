@@ -7,16 +7,18 @@ import ShowCourses from './components/ShowCourses';
 import NoMatch from './components/NoMatch';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { user } from './recoil/atom';
+import { loading, user } from './recoil/atom';
 import RestrictedRoute from './components/RestrictedRoute';
-
+import { Toaster } from 'react-hot-toast';
+import LoadingBar from 'react-loading-bar';
 // This file shows how you can do routing in React.
 // Try going to /login, /register, /about, /courses on the website and see how the html changes
 // based on the route.
 // You can also try going to /random and see what happens (a route that doesnt exist)
 function App() {
     const client = useRecoilValue(user);
-    return (
+    return (<>
+        <Toaster />    
         <Router>
             <Routes>
                 <Route path="/" element={<Landing />} />
@@ -35,6 +37,7 @@ function App() {
                 <Route path="*" element={<NoMatch />} />
             </Routes>
         </Router>
+    </>
     );
 }
 

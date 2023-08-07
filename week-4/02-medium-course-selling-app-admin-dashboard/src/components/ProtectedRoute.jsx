@@ -6,7 +6,6 @@ import { user } from '../recoil/atom'
 const ProtectedRoute = () => {
 
     const client = useRecoilValue(user);
-    console.log(client)
     return (<>
         {Object.keys(client).length ? <Outlet /> : <Navigate to={"register"} /> }
     </>)
