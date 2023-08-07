@@ -41,9 +41,61 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const { v4: uuidv4 } = require('uuid');
+const path = require("path")
+const cors = require("cors")
 const app = express();
+const port = 3000;
 
+app.use(cors())
 app.use(bodyParser.json());
+
+let todos = [];
+
+app.get("/todos", (req,res)=>{
+  res.json(todos);
+})
+
+app.get("/todos/:id",(req,res)=>{
+  const { id } = req.params;
+  const todo = todos.find(t => t.id === parseInt(id));
+  res.json(todo)
+})
+
+app.post("/todos", (req,res)=>{
+  const id = uuidv4()
+  const newTodo = {title: req.body.title, description: req.body.description, id: id};
+  todos.push(newTodo)
+  res.status(201).json(newTodo);
+
+})
+ 
+app.put("/todos/:id", (req,res)=>{
+  const { id } = req.params;
+  const {title, description} = req.body;
+  const index = todos.findIndex((t) => t.id === id);
+  if (index >= 0) { 
+    todos[index].title = title;
+    todos[index].description = description;
+    res.json(todos[index]);
+  } else {
+    res.status(404).send();
+  }
+})
+app.delete("/todos/:id", (req,res)=>{
+  const { id } = req.params;
+  todos = todos.filter(t=>t.id !== id);
+  res.status(200).send("Deleted!");
+
+  }
+)
+
+app.get("/", (req, res)=> {
+  res.sendFile(path.join(__dirname,"index.html"))
+})
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
 
 module.exports = app;
