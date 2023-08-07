@@ -111,6 +111,11 @@ app.delete('/todos/:id', (req, res)=>{
   })
 })
 
+//all other routes
+app.use((req,res,next)=>{
+  res.status(404).send();
+})
+
 app.listen(3000, ()=>{
   console.log("server is up and running")
 })
