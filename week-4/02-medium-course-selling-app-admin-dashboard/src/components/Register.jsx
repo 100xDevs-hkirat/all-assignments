@@ -10,7 +10,6 @@ export const baseUrl = `http://localhost:3000`;
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
-    const [client, setClient] = useRecoilState(user);
     const [loader, setLoader] = useRecoilState(loading);
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
@@ -19,7 +18,7 @@ function Register() {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        if(token || Object.keys(client).length) {
+        if(token) {
             toast.success("Clearing Client Data");
             localStorage.clear();
         }
@@ -44,7 +43,6 @@ function Register() {
             passwordRef.current.value = '';
             emailRef.current.value = '';
             localStorage.setItem("token", response.data.token);
-            // setToken(response.data.token);
             toast.success(response.data.message);
             navigate("/");
             setLoader(false);

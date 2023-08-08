@@ -143,7 +143,7 @@ app.post('/users/login', (req, res) => {
 
 
 app.get('/users/courses', authenticateJwt, (req, res) => {
-  res.json({ courses: COURSES });
+  res.json({ courses: COURSES.filter(course => course.published == true) });
 });
 
 app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {

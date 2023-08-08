@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { Toaster } from "react-hot-toast"
 import LandingPage from './components/LandingPage'
 import Courses from './components/Courses'
 import Course from './components/Course'
@@ -11,11 +12,13 @@ import Register from './components/Register'
 import PurchasedCourse from './components/PurchasedCourse'
 import ProtectedRoute from './components/ProtectedRoute'
 import Nav from './components/Nav'
+import Restricted from './components/Restricted'
 
 function App() {
 
   return (
     <>
+      <Toaster />
       <Router>
         <Nav />
         <Routes>
@@ -27,8 +30,12 @@ function App() {
             <Route path='/courses/:id' element={<Course />} />
             <Route path='/purchase' element={<PurchasedCourse />} />
           </Route>
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route
+            element={<Restricted />}
+          >
+            <Route path='/register' element={<Register />} />
+            <Route path='/login' element={<Login />} />
+          </Route>
         </Routes>
       </Router>
     </>

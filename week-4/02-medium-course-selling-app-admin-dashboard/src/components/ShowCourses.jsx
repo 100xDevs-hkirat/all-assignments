@@ -1,6 +1,5 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { Link } from "react-router-dom";
 import { localCourses } from "../recoil/atom";
 import Course from "./Course";
 
@@ -18,7 +17,6 @@ function ShowCourses() {
                         <Course key={course.id} course={course} />
                     ))}
                 </div>
-                <Link to={"/about"} >Create</Link>
             </div>
         </>
     )

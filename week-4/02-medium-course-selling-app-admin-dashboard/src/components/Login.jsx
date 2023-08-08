@@ -4,22 +4,21 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { loading, user } from "../recoil/atom";
 import { baseUrl } from "./Register";
 import axios from "axios";
-import { useLocalStorage } from "../assets/useLocalStorage";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 /// File is incomplete. You need to add input boxes to take input for users to login.
 function Login() {
-    const [loader, setloader] = useRecoilState(loading);
     const [client, setClient] = useRecoilState(user);
+    const [loader, setloader] = useRecoilState(loading);
     const navigate = useNavigate();
 
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
 
     useEffect(() => {
-        if(token || Object.keys(client).length) {
+        if(token) {
             toast.success("Clearing Client Data");
             localStorage.clear();
         }
@@ -51,6 +50,7 @@ function Login() {
             return;
 
         }).catch(err => {
+            console.log(err)
             if(err) {
                 if(err.response.status == 403) {
                     toast.error(err.response.data.message);

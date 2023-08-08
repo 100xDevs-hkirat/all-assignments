@@ -5,12 +5,9 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
 const RestrictedRoute = () => {
-    const client = useRecoilValue(user);
-    
-
     return (
         <>
-            {Object.keys(client).length ? <Navigate to={"/"} /> : <Outlet />}
+            {localStorage.getItem("token") ? <Navigate to={"/"} /> : <Outlet />}
         </>
     )
 }
