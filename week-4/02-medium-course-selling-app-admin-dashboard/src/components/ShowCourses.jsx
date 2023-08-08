@@ -2,23 +2,27 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import { Link } from "react-router-dom";
 import { localCourses } from "../recoil/atom";
+import Course from "./Course";
 
 function ShowCourses() {
     // const [courses, setCourses] = React.useState([]);
     const courses = useRecoilValue(localCourses)
     // Add code to fetch courses from the server
     // and set it in the courses state variable.
-    return <div>
-        <h1>Create Course Page</h1>
-        <Link to={"/"} >Home</Link>
-        {courses.map(c => <Course title={c.title} />)}
-    </div>
+    return (
+        <>
+            <div className="bg-gray-100 min-h-screen p-10 flex flex-col justify-center items-center gap-y-8">
+                <h1 className="text-3xl drop-shadow-md hover:drop-shadow-2xl transition-all font-semibold tracking-wide font-mono mb-4">Available Courses</h1>
+                <div className="flex flex-wrap gap-7 justify-center items-center">
+                    {courses.map(course => (
+                        <Course key={course.id} course={course} />
+                    ))}
+                </div>
+                <Link to={"/about"} >Create</Link>
+            </div>
+        </>
+    )
 }
 
-function Course(props) {
-    return <div>
-        <h1>{props.title}</h1>
-    </div>
-}
 
 export default ShowCourses;
