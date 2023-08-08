@@ -1,0 +1,96 @@
+body {
+  background-color: #171723;
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+  height: 100vh;
+  margin: 0;
+}
+
+.heading {
+  letter-spacing: 0.5rem;
+  color: aquamarine;
+}
+
+.app-container {
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  padding-top: 2rem;
+}
+
+.create-todo,
+.todo-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  background-color: #25273d;
+  padding: 0 1rem;
+  border-radius: 5px;
+}
+
+.input {
+  background-color: transparent;
+  color: #fff;
+  padding: 1rem 0;
+  border: none;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.checkbox {
+  margin-right: 1rem;
+  padding: 0.7rem;
+  border: #666 solid 1px;
+  border-radius: 50%;
+  left: 0.5rem;
+}
+
+.checkbox-checked {
+  background-color: aquamarine;
+}
+
+.todos {
+  margin-top: 1.5rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.todo-item {
+  padding: 0.8rem 1rem;
+  margin: 0;
+  border-radius: 0;
+  border-bottom: #666 solid 0.8px;
+}
+
+.todo-item:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.todo-item:last-child {
+  border-radius: 0 0 5px 5px;
+  border-bottom: none;
+}
+
+.todo-title {
+  flex-grow: 1;
+  letter-spacing: 0.1rem;
+  font-size: small;
+}
+
+.todo-complete {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.delete-btn {
+  all: unset;
+  background-color: transparent;
+  color: lightcoral;
+  font-size: small;
+  cursor: pointer;
+}

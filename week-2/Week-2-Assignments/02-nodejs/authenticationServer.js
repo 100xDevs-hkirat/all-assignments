@@ -29,9 +29,63 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(express.json());
+// app.listen(PORT, () => {
+//   console.log(`Server is listening on port ${PORT}`);
+// });
+
+const users = [];
+
+const auth = (req, res, next) => {
+  const { username, password } = req.headers;
+
+  const valid = users.some(
+    (e) => e.username === username && e.password === password
+  );
+
+  if (valid) next();
+  else return res.status(401).send("Unauthorized");
+};
+
+app.post("/signup", (req, res) => {
+  const { username, password, email, firstName, lastName } = req.body;
+
+  if (!users.some((e) => e.username === username)) {
+    users.push({
+      id: users.length,
+      username,
+      password,
+      firstName,
+      lastName,
+      email,
+    });
+  } else {
+    return res.status(400).send("Username already exist!!");
+  }
+  return res.status(201).send("Signup successful");
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find((e) => e.username === username);
+  if (user && user.password === password) {
+    return res.status(200).send({
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
+  } else {
+    return res.status(401).send("Unauthorized");
+  }
+});
+
+app.get("/data", auth, (req, res) => {
+  return res.send({ users: users.map(({ password, ...rest }) => rest) });
+});
 
 module.exports = app;

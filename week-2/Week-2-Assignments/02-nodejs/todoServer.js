@@ -39,11 +39,245 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const { PrismaClient } = require("@prisma/client");
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
+app.listen(3000, () => console.log("Server started on port 3000"));
+const todos = [];
+const TODO_DB = "./todoDB.json";
+const prisma = new PrismaClient();
+
+// const readTodoDB = async () => {
+//   new Promise((resolve, reject) => {
+//     fs.readFile(TODO_DB, "utf-8", (err, data) => {
+//       if (err) {
+//         return reject(err);
+//       }
+//       return resolve(data);
+//     });
+//   });
+// };
+
+// const writeTodoDB = (data) =>
+//   new Promise((resolve, reject) => {
+//     fs.writeFile(TODO_DB, data, (err) => {
+//       if (err) {
+//         return reject(err);
+//       }
+//       return resolve();
+//     });
+//   });
+
+app.get("/todos", (req, res) => {
+  prisma.todo
+    .findMany()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ err });
+    });
+});
+
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  prisma.todo.findUnique({
+    where: {
+      id,
+    },
+  }).then((data) => {
+    if (!data) {
+      return res.status(404).send("Todo not found");
+    }
+    return res.send(data);
+  }).catch((err) => {
+    res.status(500).send({ err });
+  });
+
+  // readTodoDB()
+  //   .then((data) => {
+  //     const todos = JSON.parse(data);
+  //     const todo = todos.find((todo) => todo.id === id);
+
+  //     if (!todo) {
+  //       return res.status(404).send("Todo not found");
+  //     }
+
+  //     return res.send(todo);
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({ err });
+  //   });
+});
+
+app.post("/todos", (req, res) => {
+  const { title, description, completed } = req.body;
+
+  prisma.todo
+    .create({
+      data: {
+        title,
+        description,
+        completed,
+      },
+    })
+    .then((data) => {
+      res.status(201).send({ id: data.id });
+    })
+    .catch((err) => {
+      res.status(500).send({ err });
+    });
+  // readTodoDB()
+  //   .then((data) => {
+  //     const todos = JSON.parse(data);
+  //     const todo = {
+  //       id: uuidv4(),
+  //       title,
+  //       description,
+  //       completed,
+  //     };
+
+  //     todos.push(todo);
+
+  //     writeTodoDB(JSON.stringify(todos))
+  //       .then(() => {
+  //         res.status(201).send({ id: todo.id });
+  //       })
+  //       .catch((err) => {
+  //         res.status(500).send({ err });
+  //       });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({ err });
+  //   });
+});
+
+app.put("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  const { title, description, completed } = req.body;
+  prisma.todo
+    .findUnique({
+      where: {
+        id,
+      },
+    })
+    .then((data) => {
+      if (!data) {
+        return res.status(404).send("Todo not found");
+      }
+    })
+    .catch((err) => {
+      return res.status(500).send({ err });
+    });
+
+  prisma.todo
+    .update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        description,
+        completed,
+      },
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ err });
+    });
+  // readTodoDB()
+  //   .then((data) => {
+  //     const todos = JSON.parse(data);
+  //     var todo = todos.find((todo) => todo.id === id);
+  //     if (!todo) {
+  //       return res.status(404).send("Todo not found");
+  //     }
+  //     const index = todos.indexOf(todo);
+  //     todo = {
+  //       ...todo,
+  //       title: title ?? todo.title,
+  //       description: description ?? todo.description,
+  //       completed: completed ?? todo.completed,
+  //     };
+
+  //     todos[index] = todo;
+
+  //     writeTodoDB(JSON.stringify(todos))
+  //       .then(() => {
+  //         res.send(todo);
+  //       })
+  //       .catch((err) => {
+  //         res.status(500).send({ err });
+  //       });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({ err });
+  //   });
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  prisma.todo
+    .findUnique({
+      where: {
+        id,
+      },
+    })
+    .then((data) => {
+      if (!data) {
+        return res.status(404).send("Todo not found");
+      }
+    })
+    .catch((err) => {
+      return res.status(500).send({ err });
+    });
+
+  prisma.todo
+    .delete({
+      where: {
+        id,
+      },
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ err });
+    });
+  // readTodoDB()
+  //   .then((data) => {
+  //     const todos = JSON.parse(data);
+  //     const todo = todos.find((todo) => todo.id === id);
+  //     if (!todo) {
+  //       return res.status(404).send("Todo not found");
+  //     }
+  //     const index = todos.indexOf(todo);
+  //     todos.splice(index, 1);
+  //     writeTodoDB(JSON.stringify(todos))
+  //       .then(() => {
+  //         res.send(todo);
+  //       })
+  //       .catch((err) => {
+  //         res.status(500).send({ err });
+  //       });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({ err });
+  //   });
+});
+
+app.use((req, res) => {
+  res.status(404).send("Route not found");
+});
 
 module.exports = app;
