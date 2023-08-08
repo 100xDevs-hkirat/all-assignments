@@ -16,10 +16,48 @@
 
     Testing the server - run `npm run test-fileServer` command in terminal
  */
-const express = require('express');
-const fs = require('fs');
-const path = require('path'); 
-const app = express();
-
-
-module.exports = app;
+    const fs = require('fs');
+    const path = require('path');
+    const express = require('express');
+    require('dotenv').config();
+  
+    const app = express();
+    
+    // Set the directory path from the environment variable
+    const dir = process.env.DIRECTORY;
+    
+    app.get('/files', (req, res) => {
+        fs.readdir(dir, (err, files) => {
+            if (err) {
+                console.error('Error reading directory:', err);
+                res.status(500).send('Internal Server Error');
+                return;
+            }
+            res.status(200).json(files);
+        });
+    });
+    
+    app.get('/file/:filename', (req, res) => {
+        const filename = req.params.filename;
+        const filePath = path.join(dir, filename);
+    
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading file:', err);
+                res.status(404).send('File not found');
+                return;
+            }
+            res.status(200).send(data);
+        });
+    });
+    
+    app.use((req, res) => {
+        res.status(404).send('Route not found.');
+    });
+    
+    app.listen(3000, () => {
+        console.log(`Listening at http://localhost:3000`);
+    });
+    
+    module.exports = app;
+    
