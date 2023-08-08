@@ -1,1 +1,1 @@
-[]
+[{"title":"Full Stack Development","description":"By adding e.stopPropagation() in the onClick handlers of the update and delete buttons, you ensure that clicking the buttons won't trigger the parent ","price":"3","imageLink":"3","published":false,"id":30},{"title":"Full Stack Development","description":"By adding e.stopPropagation() in the onClick handlers of the update and delete buttons, you ensure that clicking the buttons won't trigger the parent ","price":"2","imageLink":"3","published":false,"id":4}]
