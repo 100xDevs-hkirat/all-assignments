@@ -2,9 +2,10 @@ import axios from "axios";
 import React, { useRef, useState } from "react";
 import { baseUrl } from "./Register";
 import { useLocalStorage } from "../assets/useLocalStorage";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { coursesList, getToken, loading } from "../recoil/atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { coursesList, loading, localCourses } from "../recoil/atom";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 /// You need to add input boxes to take input for users to create a course.
 /// I've added one input so you understand the api to do it.
 // Headers: { 'Authorization': 'Bearer jwt_token_here' },
@@ -16,7 +17,8 @@ import { toast } from "react-hot-toast";
 function CreateCourse() {
 
     const [loader, setLoader] = useRecoilState(loading);
-    const state = useRecoilValue(getToken);
+    const navigate = useNavigate();
+    const setLocalCourses = useSetRecoilState(localCourses);
     const [published, setPub] = useState(false);
     const titleRef = useRef(null);
     const descRef = useRef(null);
@@ -30,7 +32,7 @@ function CreateCourse() {
             url: `${baseUrl}/admin/courses`,
             method:"POST",
             headers: {
-                Authorization: state.toString(),
+                Authorization: (localStorage.getItem("token")).toString(),
                 "Content-type": "application/json"
             },
             data: {
@@ -41,15 +43,24 @@ function CreateCourse() {
                 published: published
             }
         }).then(response => {
+            setPub(false);
+            setLocalCourses(prev => [...prev, {
+                title: titleRef.current.value,
+                description: descRef.current.value,
+                price: price.current.value,
+                imageLink: imageLink.current.value,
+                published: published
+            }])
             titleRef.current.value = '';
             descRef.current.value = '';
             price.current.value = '';
             imageLink.current.value = '';
-            setPub(false);
             toast.success(response.data.message);
+            navigate("/courses");
         }).catch(err => {
+            console.log(err)
             if(err) {
-                toast.error(err);
+                toast.error(err.message);
             }
         })
     }

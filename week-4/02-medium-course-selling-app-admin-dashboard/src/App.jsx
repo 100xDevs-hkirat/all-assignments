@@ -20,18 +20,18 @@ function App() {
         <Toaster />    
         <Router>
             <Routes>
-                <Route path="/" element={<Landing />} />
                 <Route
                     element={<RestrictedRoute />}
                 >
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                 </Route>
-                <Route path="/about" element={<CreateCourse />} />
                 <Route
                     element={<ProtectedRoute />}
                 >
+                    <Route path="/" element={<Landing />} />
                     <Route path="/courses" element={<ShowCourses />} />
+                    <Route path="/about" element={<CreateCourse />} />
                 </Route>
                 <Route path="*" element={<NoMatch />} />
             </Routes>

@@ -1,13 +1,8 @@
 import axios from 'axios';
 import { atom, selector } from 'recoil'
 import { useLocalStorage } from '../assets/useLocalStorage';
+import { baseUrl } from '../components/Register';
 
-
-
-export const getToken = atom({
-    key: "getToken",
-    default: ""
-})
 
 export const user = atom({
     key: "user",
@@ -19,6 +14,7 @@ export const loading = atom({
     default: false
 });
 
+
 export const coursesList = atom({
     key: "coursesList",
     default: selector({
@@ -29,11 +25,18 @@ export const coursesList = atom({
                 baseURL: baseUrl,
                 method: "GET",
                 headers: {
-                    Authorization: state,
+                    Authorization: localStorage.getItem("token"),
                     "Content-type": "application/json"
                 },
             });
+            
             return response.data.courses;
         }
     })
+})
+
+
+export const localCourses = atom({
+    key: "localCourses",
+    default: coursesList
 })

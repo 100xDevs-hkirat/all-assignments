@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { getToken, loading, user } from "../recoil/atom";
+import { loading, user } from "../recoil/atom";
 import axios from "axios";
 import { useLocalStorage } from "../assets/useLocalStorage";
 import { Toaster, toast } from 'react-hot-toast'
@@ -10,15 +10,20 @@ export const baseUrl = `http://localhost:3000`;
 
 /// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
-    const [email, setEmail] = React.useState("");
     const [client, setClient] = useRecoilState(user);
     const [loader, setLoader] = useRecoilState(loading);
-    const [state, setState] = useLocalStorage("token", "");
-    const setToken = useSetRecoilState(getToken);
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
     const emailRef = useRef(null);
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if(token || Object.keys(client).length) {
+            toast.success("Clearing Client Data");
+            localStorage.clear();
+        }
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,10 +43,10 @@ function Register() {
             usernameRef.current.value = '';
             passwordRef.current.value = '';
             emailRef.current.value = '';
-            setState(response.data.token);
-            setToken(response.data.token);
+            localStorage.setItem("token", response.data.token);
+            // setToken(response.data.token);
             toast.success(response.data.message);
-            navigate("/about");
+            navigate("/");
             setLoader(false);
         }).catch(err => {
             if (err) {

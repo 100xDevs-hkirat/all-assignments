@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import { user } from '../recoil/atom'
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
 const RestrictedRoute = () => {
     const client = useRecoilValue(user);
+    
+
     return (
         <>
-            {Object.keys(client).length ? <Navigate to={"/courses"} /> : <Outlet />}
+            {Object.keys(client).length ? <Navigate to={"/"} /> : <Outlet />}
         </>
     )
 }

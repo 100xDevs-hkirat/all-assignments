@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { getToken, loading, user } from "../recoil/atom";
+import { loading, user } from "../recoil/atom";
 import { baseUrl } from "./Register";
 import axios from "axios";
 import { useLocalStorage } from "../assets/useLocalStorage";
@@ -10,13 +10,20 @@ import { Toaster, toast } from "react-hot-toast";
 /// File is incomplete. You need to add input boxes to take input for users to login.
 function Login() {
     const [loader, setloader] = useRecoilState(loading);
-    const setClient = useSetRecoilState(user);
-    const [state, setState] = useLocalStorage("token", null);
-    const setToken = useSetRecoilState(getToken);
+    const [client, setClient] = useRecoilState(user);
     const navigate = useNavigate();
 
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
+
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if(token || Object.keys(client).length) {
+            toast.success("Clearing Client Data");
+            localStorage.clear();
+        }
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,11 +43,11 @@ function Login() {
             });
             usernameRef.current.value = "";
             passwordRef.current.value = "";
-            setState(response.data.token);
-            setToken(response.data.token)
+            localStorage.setItem("token", response.data.token);
+            // setToken(response.data.token)
             toast.success(response.data.message);
             setloader(false);
-            navigate("/about")
+            navigate("/")
             return;
 
         }).catch(err => {

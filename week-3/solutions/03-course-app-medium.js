@@ -28,7 +28,10 @@ const SECRET = 'my-secret-key';
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
-    const token = authHeader.split(' ')[1];
+    let token = authHeader;
+    if(authHeader.startsWith("Bearer")) {
+      token = authHeader.split(' ')[1];
+    }
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
         return res.sendStatus(403);
