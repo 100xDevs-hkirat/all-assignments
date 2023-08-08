@@ -43,18 +43,19 @@ function CreateCourse() {
                 published: published
             }
         }).then(response => {
-            setPub(false);
             setLocalCourses(prev => [...prev, {
                 title: titleRef.current.value,
                 description: descRef.current.value,
                 price: price.current.value,
                 imageLink: imageLink.current.value,
-                published: published
+                published: published,
+                id: response.data.courseId
             }])
             titleRef.current.value = '';
             descRef.current.value = '';
             price.current.value = '';
             imageLink.current.value = '';
+            setPub(false);
             toast.success(response.data.message);
             navigate("/courses");
         }).catch(err => {

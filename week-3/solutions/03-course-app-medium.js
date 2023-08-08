@@ -73,13 +73,14 @@ app.post('/admin/login', (req, res) => {
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {
   const course = req.body;
-  course.id = COURSES.length + 1;
+  course.id = Math.floor(Math.random()*200 + 1);
   COURSES.push(course);
   fs.writeFileSync('courses.json', JSON.stringify(COURSES));
   res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
 app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
+  console.log(req.params)
   const course = COURSES.find(c => c.id === parseInt(req.params.courseId));
   if (course) {
     Object.assign(course, req.body);
@@ -93,6 +94,26 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
 app.get('/admin/courses', authenticateJwt, (req, res) => {
   res.json({ courses: COURSES });
 });
+
+
+app.delete("/admin/courses/:courseId", authenticateJwt, (req, res) => {
+  fs.readFile("courses.json", "utf-8", (err, data) => {
+    if(err) throw err;
+    COURSES = JSON.parse(data);
+    let FILTEREDCOURSES = COURSES.filter(course => course.id != req.params.courseId);
+    if(FILTEREDCOURSES.length == COURSES) {
+      return res.status(404).json({message: "Course not found"});
+    }
+    COURSES = FILTEREDCOURSES;
+    fs.writeFile("courses.json", JSON.stringify(COURSES), (err) => {
+      if(err) {
+        return res.status(500).json({message: "Internal Server Error"});
+      }
+      return res.status(200).json({message: "Course Deleted"});
+    })
+  })
+})
+
 
 // User routes
 app.post('/users/signup', (req, res) => {
@@ -119,6 +140,7 @@ app.post('/users/login', (req, res) => {
     res.status(403).json({ message: 'Invalid username or password' });
   }
 });
+
 
 app.get('/users/courses', authenticateJwt, (req, res) => {
   res.json({ courses: COURSES });

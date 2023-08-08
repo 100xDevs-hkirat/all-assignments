@@ -20,17 +20,21 @@ export const coursesList = atom({
     default: selector({
         key: "getCourses",
         get: async ({ get }) => {
-            const response = await axios({
-                url: "/admin/courses",
-                baseURL: baseUrl,
-                method: "GET",
-                headers: {
-                    Authorization: localStorage.getItem("token"),
-                    "Content-type": "application/json"
-                },
-            });
-            
-            return response.data.courses;
+            try {
+                const response = await axios({
+                    url: "/admin/courses",
+                    baseURL: baseUrl,
+                    method: "GET",
+                    headers: {
+                        Authorization: localStorage.getItem("token"),
+                        "Content-type": "application/json"
+                    },
+                });
+                    
+                return response.data.courses;
+            } catch (error) {
+                localStorage.clear();
+            }
         }
     })
 })
