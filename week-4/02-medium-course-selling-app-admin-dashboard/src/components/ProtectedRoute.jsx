@@ -7,7 +7,7 @@ const ProtectedRoute = () => {
 
     const client = useRecoilValue(user);
     return (<>
-        {Object.keys(client).length ? <Outlet /> : <Navigate to={"/login"} /> }
+        {localStorage.getItem("token") ? <Outlet /> : <Navigate to={"/login"} /> }
     </>)
 
 }

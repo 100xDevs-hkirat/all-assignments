@@ -6,7 +6,7 @@ import axios from 'axios';
 import { baseUrl } from './Register';
 import { toast } from 'react-hot-toast';
 
-const Course = ({ course }) => {
+const Course = ({ course, updateDel=true }) => {
 
     const [courses, handleCourses] = useRecoilState(localCourses);
     const [upadate, setUpdate] = useState(false);
@@ -72,6 +72,11 @@ const Course = ({ course }) => {
             if (err) {
                 toast.error(err.message);
                 setLoader(false);
+                if(err.response.status == 403) {
+                    toast.error("Please Log in");
+                    localStorage.clear();
+                    navigate("/")
+                }
             }
         })
     }
@@ -98,6 +103,11 @@ const Course = ({ course }) => {
             if(err) {
                 toast.error(err.message);
                 setLoader(false);
+                if(err.response.status == 403) {
+                    toast.error("Please Log in");
+                    localStorage.clear();
+                    navigate("/")
+                }
             }
         })
     }
@@ -207,7 +217,7 @@ const Course = ({ course }) => {
                         <p className={`text-sm ${course.published ? 'text-green-600' : 'text-red-600'} flex text-center`}>
                             {course.published ? 'Published' : 'Not Published'}
                         </p>
-                        <div className="flex flex-row gap-x-3">
+                        {updateDel && <div className="flex flex-row gap-x-3">
 
                             <button
                                 type="button"
@@ -223,7 +233,7 @@ const Course = ({ course }) => {
                             >
                                 Delete
                             </button>
-                        </div>
+                        </div>}
                     </div>
                 </div>
 

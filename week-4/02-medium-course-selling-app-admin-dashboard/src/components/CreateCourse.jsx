@@ -62,6 +62,11 @@ function CreateCourse() {
             console.log(err)
             if(err) {
                 toast.error(err.message);
+                if(err.response.status == 403) {
+                    toast.error("Please Log in");
+                    localStorage.clear();
+                    navigate("/")
+                }
             }
         })
     }

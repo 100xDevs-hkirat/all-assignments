@@ -23,7 +23,7 @@ function Login() {
             toast.success("Clearing Client Data");
             localStorage.clear();
         }
-    }, [])
+    }, [token])
 
     const handleSubmit = (e) => {
         e.preventDefault();
