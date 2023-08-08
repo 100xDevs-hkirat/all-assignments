@@ -12,6 +12,7 @@ import RestrictedRoute from './components/RestrictedRoute';
 import { Toaster } from 'react-hot-toast';
 import Nav from './components/Nav';
 import { useEffect } from 'react';
+import CoursePage from './components/CoursePage';
 // This file shows how you can do routing in React.
 // Try going to /login, /register, /about, /courses on the website and see how the html changes
 // based on the route.
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/" element={<Landing />} />
                     <Route path="/courses" element={<ShowCourses />} />
                     <Route path="/about" element={<CreateCourse />} />
+                    <Route path='/courses/:slug' element={<CoursePage />} />
                 </Route>
                 <Route path="*" element={<NoMatch />} />
             </Routes>

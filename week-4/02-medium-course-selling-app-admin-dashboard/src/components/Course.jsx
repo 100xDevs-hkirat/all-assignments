@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { loading, localCourses } from '../recoil/atom'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseUrl } from './Register';
 import { toast } from 'react-hot-toast';
 
-const Course = ({ course, updateDel=true }) => {
+const Course = ({ course, updateDel = true }) => {
 
-    const [courses, handleCourses] = useRecoilState(localCourses);
     const [upadate, setUpdate] = useState(false);
     const [loader, setLoader] = useRecoilState(loading);
     const navigate = useNavigate();
@@ -72,7 +71,7 @@ const Course = ({ course, updateDel=true }) => {
             if (err) {
                 toast.error(err.message);
                 setLoader(false);
-                if(err.response.status == 403) {
+                if (err.response.status == 403) {
                     toast.error("Please Log in");
                     localStorage.clear();
                     navigate("/")
@@ -84,7 +83,7 @@ const Course = ({ course, updateDel=true }) => {
     const handleDelete = () => {
         setLoader(true);
         axios({
-            method:"DELETE",
+            method: "DELETE",
             url: `/admin/courses/${course.id}`,
             baseURL: baseUrl,
             headers: {
@@ -100,10 +99,10 @@ const Course = ({ course, updateDel=true }) => {
             setLoader(false);
         }).catch(err => {
             console.log(err);
-            if(err) {
+            if (err) {
                 toast.error(err.message);
                 setLoader(false);
-                if(err.response.status == 403) {
+                if (err.response.status == 403) {
                     toast.error("Please Log in");
                     localStorage.clear();
                     navigate("/")
@@ -208,11 +207,13 @@ const Course = ({ course, updateDel=true }) => {
 
 
             <div>
-                <div className="bg-white rounded-xl shadow-md p-6 w-[400px] hover:shadow-2xl transition-all cursor-pointer">
-                    <img src={course.imageUrl} alt={course.title} className="w-full h-auto mb-4 rounded-lg" />
-                    <h2 className="text-lg font-semibold mb-2">{course.title}</h2>
-                    <p className="text-gray-600 mb-2">{course.description}</p>
-                    <p className="text-green-600 font-semibold mb-2">Price: ${course.price}</p>
+                <div className="bg-white rounded-xl shadow-md p-6 w-[400px] z-0 hover:shadow-2xl transition-all cursor-pointer">
+                    <Link to={`/courses/${course.id}`}>
+                        <img src={course.imageUrl} alt={course.title} className="w-full h-auto mb-4 rounded-lg" />
+                        <h2 className="text-lg font-semibold mb-2">{course.title}</h2>
+                        <p className="text-gray-600 mb-2">{course.description}</p>
+                        <p className="text-green-600 font-semibold mb-2">Price: ${course.price}</p>
+                    </Link>
                     <div className="flex flex-row gap-x-5 justify-between items-center">
                         <p className={`text-sm ${course.published ? 'text-green-600' : 'text-red-600'} flex text-center`}>
                             {course.published ? 'Published' : 'Not Published'}
@@ -222,14 +223,20 @@ const Course = ({ course, updateDel=true }) => {
                             <button
                                 type="button"
                                 className="w-fit px-5 text-sm bg-blue-500 text-white rounded-lg py-2 font-medium hover:bg-blue-600 transition-all"
-                                onClick={handlePut}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePut();
+                                }}
                             >
                                 Update
                             </button>
                             <button
                                 type="button"
                                 className="w-fit px-5 text-sm bg-red-600 text-white rounded-lg py-2 font-medium hover:bg-red-500 transition-all"
-                                onClick={handleDelete}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete();
+                                }}
                             >
                                 Delete
                             </button>
