@@ -9,7 +9,6 @@ const Card = ({ course }) => {
 
     const navigate = useNavigate();
 
-
     return (
         <>
 
