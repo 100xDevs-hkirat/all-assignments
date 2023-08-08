@@ -41,7 +41,7 @@ const Admin = mongoose.model("Admin", adminSchema);
 const Course = mongoose.model("Course", courseSchema);
 
 // connect to mongoDB
-mongoose.connect(DB_LINK, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(DB_LINK, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
@@ -108,100 +108,106 @@ const userAuthentication = (req, res, next) => {
 };
 
 // Admin routes
-app.post("/admin/signup",async (req, res) => {
-  const { username, password } =  req.body;
+app.post("/admin/signup", async (req, res) => {
+  const { username, password } = req.body;
   const admin = await Admin.findOne({ username });
   if (admin) {
     res.status(403).json({ message: "Admin already exists" });
   } else {
     const newAdmin = new Admin({ username, password });
     await newAdmin.save();
-    const token = jwt.sign({ username, password }, secretKey, { expiresIn: '1h'})
+    const token = jwt.sign({ username, password }, secretKey, {
+      expiresIn: "1h",
+    });
     res.json({ message: "Admin signup successful", token });
   }
 });
 
-app.post("/admin/login", adminAuthentication, async(req, res) => {
+app.post("/admin/login", async (req, res) => {
   // logic to log in admin
   const { username, password } = req.headers;
   const admin = await Admin.findOne({ username, password });
-
   if (admin) {
-    const token = jwt.sign({ username, role: 'admin'}. secretKey, {expiresIn: '1hr'});
+    const token = jwt.sign({ username, role: "admin" }, secretKey, {
+      expiresIn: "1hr",
+    });
     res.json({ message: "Admin logged in successfully", token });
   } else {
     res.status(403).send({ message: "Admin login failed" });
   }
 });
 
-app.post("/admin/courses", authenticateJwt, (req, res) => {
-  const course = req.body;
-  course.id = Date.now(); // use timestamp as course ID
-  COURSES.push(course);
+app.post("/admin/courses", authenticateJwt, async (req, res) => {
+  const course = new Course(req.body);
+  await course.save();
   res.json({ message: "Course created successfully", courseId: course.id });
 });
 
-app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
+app.put("/admin/courses/:courseId", authenticateJwt, async (req, res) => {
   // logic to edit a course
-  const courseId = parseInt(req.params.courseId);
-  const course = COURSES.find((c) => c.id === courseId);
+  const course = await Course.findByIdAndUpdate(req.params.courseId, req.body, {
+    new: true,
+  });
   if (course) {
-    Object.assign(course, req.body);
     res.json({ message: " Course updated succesfully" });
   } else {
     res.status(400).json({ message: "Course not found" });
   }
 });
 
-app.get("/admin/courses", authenticateJwt, (req, res) => {
+app.get("/admin/courses", authenticateJwt, async(req, res) => {
   // logic to get all courses
-  res.json({ courses: COURSES });
+  const courses = await Course.find({});
+  res.json({ courses });
 });
 
 // User routes
-app.post("/users/signup", (req, res) => {
+app.post("/users/signup", async (req, res) => {
   // logic to sign up user
-  const user = { ...req.body, purchasedCourses: [] };
-  const existingUser = USERS.find((a) => a.username === user.username);
-  if (existingUser) {
+  const { username, password } = req.headers;
+  const user = await Course.findOne({ username, password });
+  if (user) {
     res.json({ message: "User already exists" });
   } else {
-    USERS.push(user);
-    const token = generateToken(user);
-    res.json({ message: "User created successfull", token });
+    const newUser = new User({ username, password });
+    await newUser.save();
+    const token = jwt.sign({ username, role: "user" }, secretKey, {
+      expiresIn: "1h",
+    });
+    res.json({ message: "User logged in successfully", token });
   }
 });
 
-app.post("/users/login", (req, res) => {
+app.post("/users/login", async (req, res) => {
   // logic to login user
   const { username, password } = req.headers;
-  const user = USERS.find(
-    (u) => u.username === username && u.password === password
-  );
+  const user = await User.findOne({ username });
   if (user) {
-    const token = generateToken(user);
+    const token = jwt.sign({ username, role: "user" }, secretKey, {
+      expiresIn: "1h",
+    });
     res.json({ message: "User logged in succesfully", token });
   } else {
-    res.status(403).json({ message: "User authentication failed" });
+    res.status(403).json({ message: "User authentication failed", token });
   }
 });
 
-app.get("/users/courses", authenticateJwt, (req, res) => {
+app.get("/users/courses", authenticateJwt, async(req, res) => {
   // logic to list all courses
-  res.json({ courses: COURSES });
+  const courses = await Course.find({ published: true });
+  res.json({ courses });
 });
 
-app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
+app.post("/users/courses/:courseId", authenticateJwt, async(req, res) => {
   // logic to purchase a course
-  const courseId = parseInt(req.params.courseId);
-  const course = COURSES.find((c) => c.id == courseId);
+  const course = await Course.findById(req.params.courseId);
   if (course) {
-    const user = USERS.find((u) => u.username === req.user.user);
+    // console.log(User);
+    const user = await User.findOne({ username: req.headers.username });
+    // console.log(req.headers);
     if (user) {
-      if (!user.purchasedCourses) {
-        user.purchasedCourses = [];
-      }
-      let purchasedCourses = user.purchasedCourses.push(course);
+      user.purchasedCourses.push(course)
+      await user.save();
       res.json({ message: "Course purchased successfully" });
     } else {
       res.status(404).json({ message: "User not found" });
@@ -211,13 +217,13 @@ app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
   }
 });
 
-app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
+app.get("/users/purchasedCourses", authenticateJwt, async(req, res) => {
   // logic to view purchased courses
-  const user = USERS.find((u) => u.username === req.user.user);
-  if (user && user.purchasedCourses) {
-    res.json({ purchasedCourses: user.purchasedCourses });
+  const user = await User.findOne({ username: req.user.username }).populate('purchasedCourses')
+  if (user) {
+    res.json({ purchasedCourses: user.purchasedCourses || []});
   } else {
-    res.status(404).json({ message: " No courses purchased" });
+    res.status(403).json({ message: "No courses purchased" });
   }
 });
 
