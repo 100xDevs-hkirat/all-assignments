@@ -1,12 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { baseUrl } from '../recoil.js/atom';
+import { allCourses, baseUrl, pCourses } from '../recoil.js/atom';
 import { toast } from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Card from './Card';
+import { useRecoilState, useRecoilValueLoadable } from 'recoil';
 
 const PurchasedCourse = () => {
-  const [courses, setCourses] = useState([]);
-  
+  const navigate = useNavigate();
+  const co = useRecoilValueLoadable(allCourses)
+  const [courses, setCourses] = useRecoilState(pCourses);
+    
   useEffect(() => {
     axios({
       url: "/users/purchasedCourses",
@@ -20,7 +24,13 @@ const PurchasedCourse = () => {
       setCourses(response.data.purchasedCourses);
     }).catch(err => {
       if(err) {
-        toast.error(err.message);
+        if(err.response.status == 403) {
+          toast.error("Auth Token Expired!");
+          sessionStorage.clear();
+          navigate("/login");
+        } else {
+          toast.error(err.message);
+        }
       }
     })
   }, []);

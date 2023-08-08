@@ -34,7 +34,7 @@ function Login() {
             passwordRef.current.value = "";
             sessionStorage.setItem("userToken", response.data.token);
             toast.success(response.data.message);
-            navigate("/")
+            navigate("/purchase")
             return;
 
         }).catch(err => {

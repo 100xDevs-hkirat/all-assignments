@@ -27,7 +27,7 @@ function App() {
           >
             <Route path='/' element={<LandingPage />} />
             <Route path='/courses' element={<Courses />} />
-            <Route path='/courses/:id' element={<Course />} />
+            <Route path='/courses/:slug' element={<Course />} />
             <Route path='/purchase' element={<PurchasedCourse />} />
           </Route>
           <Route

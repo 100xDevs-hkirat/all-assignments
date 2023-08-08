@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
 import { useRecoilState } from 'recoil';
 
@@ -14,9 +15,9 @@ const Nav = () => {
     }, [state, sessionStorage.getItem("userToken")]);
     return (
         <>
-            <header className="bg-white shadow-md py-4">
-                <div className="container mx-auto px-4">
-                    <nav className="flex items-center justify-between">
+            <header className="bg-white shadow-md py-4 sticky z-50 top-0 w-full  opacity-95" >
+                <div className="container mx-auto px-4 " >
+                    <nav className="flex items-center justify-between ">
                         <Link to={"/"}><div className="text-lg font-semibold cursor-pointer">Course App</div></Link>
                         <ul className="flex space-x-8">
                                 <Link to={"/"}><li className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Home</li></Link>
@@ -27,6 +28,7 @@ const Nav = () => {
                                 {state && <li onClick={(e) => {
                                     sessionStorage.clear();
                                     setState(false);
+                                    toast.success("Logged Out")
                                     navigate("/login")
                                 }} className="hover:text-blue-500 cursor-pointer transition-all hover:scale-125 active:scale-95">Logout</li>}
                         </ul>

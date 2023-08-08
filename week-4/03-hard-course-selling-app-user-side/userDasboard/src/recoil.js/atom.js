@@ -33,3 +33,8 @@ export const localCourse = atom({
     key: "localCourse",
     default: allCourses
 });
+
+export const pCourses = atom({
+    key: "pCourses",
+    default: []
+})

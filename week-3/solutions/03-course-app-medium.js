@@ -158,7 +158,7 @@ app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
       fs.writeFileSync('users.json', JSON.stringify(USERS));
       res.json({ message: 'Course purchased successfully' });
     } else {
-      res.status(403).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
     }
   } else {
     res.status(404).json({ message: 'Course not found' });
