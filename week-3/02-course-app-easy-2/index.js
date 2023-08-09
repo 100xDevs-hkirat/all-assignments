@@ -1,12 +1,15 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const cors = require("cors");
+
 const app = express();
 const PORT = 3000;
 require("dotenv").config();
 
 const DB_LINK = process.env.DB_LINK;
 
+app.use(cors());
 app.use(express.json());
 
 let ADMINS = [];
