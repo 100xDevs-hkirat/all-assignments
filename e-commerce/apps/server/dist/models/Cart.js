@@ -22,13 +22,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const ItemsController = __importStar(require("../controllers/items"));
-const auth_1 = __importDefault(require("../middlewares/auth"));
-const router = express_1.default.Router();
-router.get('/', auth_1.default, ItemsController.getAll);
-exports.default = router;
+const mongoose_1 = __importStar(require("mongoose"));
+const cartSchema = new mongoose_1.Schema({
+    user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    items: [
+        {
+            product: { type: mongoose_1.Schema.Types.ObjectId, ref: "Product", required: true },
+            quantity: { type: Number, required: true, default: 1 },
+        },
+    ],
+});
+const Cart = mongoose_1.default.model("Cart", cartSchema);
+exports.default = Cart;

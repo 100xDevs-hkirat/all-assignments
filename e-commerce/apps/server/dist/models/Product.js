@@ -22,13 +22,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const ItemsController = __importStar(require("../controllers/items"));
-const auth_1 = __importDefault(require("../middlewares/auth"));
-const router = express_1.default.Router();
-router.get('/', auth_1.default, ItemsController.getAll);
-exports.default = router;
+const mongoose_1 = __importStar(require("mongoose"));
+const productSchema = new mongoose_1.Schema({
+    name: { type: String, required: true },
+    description: { type: String, requried: true },
+    price: { type: Number, required: true },
+    img: { type: String, required: true },
+});
+const Product = mongoose_1.default.model("Product", productSchema);
+exports.default = Product;

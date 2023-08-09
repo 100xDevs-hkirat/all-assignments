@@ -10,17 +10,20 @@ if (!JWT_SECRET) {
     process.exit(1);
 }
 const auth = (req, res, next) => {
-    const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.split(' ')[1];
+    // console.log(token);
     if (!token) {
         return res.status(401).json({ message: 'No token, authorization denied' });
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
-        req.username = decoded.user;
+        // console.log(decoded);
+        req.username = decoded.username;
+        // console.log((req as any).username, decoded.user);
         next();
     }
     catch (e) {
-        console.log(e);
         res.status(401).json({ message: 'Token is not valid' });
     }
 };

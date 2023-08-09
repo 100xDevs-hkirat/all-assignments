@@ -35,7 +35,7 @@ const login = (req, res) => {
         }
         const token = (0, auth_1.genToken)(username);
         console.log({ token });
-        res.status(200).json(token);
+        res.status(200).json({ token });
     }
     catch (e) {
         console.error("Error during login:", e);
@@ -43,3 +43,16 @@ const login = (req, res) => {
     }
 };
 exports.login = login;
+// export const me = async (req: Request, res: Response) => {
+//   const { username, password } = req.body;
+//   if(!username || !password) {
+//     res.status(401).json({ message: "Missing username or password" });
+//     return;
+//   }
+//   try {
+//     const user = await findOne()
+//   } catch(e) {
+//     console.error("Error /me:", e);
+//     res.sendStatus(500);
+//   }
+// }
