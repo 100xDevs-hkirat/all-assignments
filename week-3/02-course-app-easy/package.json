@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "experss": "^0.0.1-security",
+    "express": "^4.18.2"
+  }
 }

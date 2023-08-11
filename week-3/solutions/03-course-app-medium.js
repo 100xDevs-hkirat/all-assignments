@@ -20,7 +20,7 @@ try {
     COURSES = [];
 }
 console.log(ADMINS);
-
+ 
 const SECRET = 'my-secret-key';
 
 const authenticateJwt = (req, res, next) => {

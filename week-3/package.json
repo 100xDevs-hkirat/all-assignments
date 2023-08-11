@@ -1,7 +1,17 @@
 {
   "dependencies": {
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.3.1"
-  }
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.2"
+  },
+  "name": "week-3",
+  "description": "This week we wrapped up most of backend. \r We'll also be posting about DBs and auth in a video so the assignment has questions from that as well. \r Feel free to do them right now or after the video is posted.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
