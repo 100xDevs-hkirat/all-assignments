@@ -1,37 +1,89 @@
 const express = require('express');
 const app = express();
+const jwt= require('jsonwebtoken');
 
 app.use(express.json());
+const secretA= 'papis3cr3tADMIN';
+const secretU= 'papis3cr3tUSER';
 
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
-const adminAuth= (req, res, next) =>{
-  const {username, password}= req.headers;
+const generateJwtAdmin = (input)=>{
+  const payload= {username: input.username}
+  return jwt.sign(payload, secretA, {expiresIn: '1h'});
+}
+const generateJwtUser = (input)=>{
+  const payload= {username: input.username}
+  return jwt.sign(payload, secretU, {expiresIn: '1h'});
+  // console.log(token);
+}
 
-  const admin= ADMINS.find(a=> a.username=== username && a.password=== password)
+const authenticateJwtAdmin = ()=> {
+  const authHeader= req.headers.authorization;
 
-  if(admin){
-    next();
+  if(authHeader){
+    const token = authHeader.split(' ')[i];
+
+    jwt.verify(token, secretA, (err, user)=>{
+      if(err){
+        return res.sendStatus(403);
+      }
+
+      req.user= user;
+      next();
+    })
   }else{
-    res.status(403).json({message: 'Admin auth failed'});
+    res.sendStatus(401);
   }
 }
 
-const userAuth= (req, res, next) =>{
-  const{username, password}= req.headers;
 
-  const user= USERS.find(u => u.username=== username && u.password=== password);
+const authenticateJwtUser = ()=> {
+  const authHeader= req.headers.authorization;
 
-  if(user){
-    req.user= user;
-    next();
+  if(authHeader){
+    const token = authHeader.split(' ')[i];
+
+    jwt.verify(token, secretU, (err, user)=>{
+      if(err){
+        return res.sendStatus(403);
+      }
+
+      req.user= user;
+      next();
+    })
   }else{
-    res.status(403).json({message: 'User auth failed'});
+    res.sendStatus(401);
   }
-
 }
+
+// const adminAuth= (req, res, next) =>{
+//   const {username, password}= req.headers;
+
+//   const admin= ADMINS.find(a=> a.username=== username && a.password=== password)
+
+//   if(admin){
+//     next();
+//   }else{
+//     res.status(403).json({message: 'Admin auth failed'});
+//   }
+// }
+
+// const userAuth= (req, res, next) =>{
+//   const{username, password}= req.headers;
+
+//   const user= USERS.find(u => u.username=== username && u.password=== password);
+
+//   if(user){
+//     req.user= user;
+//     next();
+//   }else{
+//     res.status(403).json({message: 'User auth failed'});
+//   }
+
+// }
 
 // Admin routes
 app.post('/admin/signup', (req, res) => {
@@ -43,16 +95,25 @@ app.post('/admin/signup', (req, res) => {
     res.status(403).json({message: 'Admin already exists'});
   }else{
     ADMINS.push(admin);
-    res.json({message: 'Admin created sucksexfully'})
+    const token= generateJwtAdmin(admin);
+    res.json({message: 'Admin created sucksexfullly', token})
   }
 });
 
-app.post('/admin/login',adminAuth, (req, res) => {
+app.post('/admin/login', (req, res) => {
   // logic to log in admin
-  res.json({message: 'Logged in sucksexfully'})
+  const {username, password}= req.headers;
+  const admin= ADMINS.find(a => a.username=== username && a.password === password);
+
+  if(admin){
+    const token= generateJwtAdmin(admin);
+    res.json({message: 'Logged in sucksexfully' , token})
+  }else{
+    res.status(403).json({message: 'Admin auth failed'})
+  }
 });
 
-app.post('/admin/courses',adminAuth, (req, res) => {
+app.post('/admin/courses',authenticateJwtAdmin, (req, res) => {
   // logic to create a course
   const course= req.body;
 
@@ -62,9 +123,9 @@ app.post('/admin/courses',adminAuth, (req, res) => {
   res.json({message: 'Course added', courseId: course.id});
 });
 
-app.put('/admin/courses/:courseId',adminAuth, (req, res) => {
+app.put('/admin/courses/:courseId',authenticateJwtAdmin, (req, res) => {
   // logic to edit a course
-  const courseId= parseInt(req,params.courseId);
+  const courseId= parseInt(req.params.courseId);
   const course= COURSES.find(c=> c.id=== courseId);
   if(course){
     Object.assign(course, req.body);
@@ -74,7 +135,7 @@ app.put('/admin/courses/:courseId',adminAuth, (req, res) => {
   }
 });
 
-app.get('/admin/courses',adminAuth, (req, res) => {
+app.get('/admin/courses',authenticateJwtAdmin, (req, res) => {
   // logic to get all courses
   res.json({courses: COURSES});
 });
@@ -82,47 +143,63 @@ app.get('/admin/courses',adminAuth, (req, res) => {
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
-  const user= {...req.body, purchasedCourses: []};
-
-  USERS.push(user);
-  res.json({message: 'User created sucksexfully'});
+  const user = req.body;
+  const existingUser = USERS.find(u => u.username === user.username);
+  if (existingUser) {
+    res.status(403).json({ message: 'User already exists' });
+  } else {
+    USERS.push(user);
+    const token = generateJwtUser(user);
+    // console.log(token);
+    res.json({ message: 'User created successfully', token });
+  }
 });
 
-app.post('/users/login',userAuth, (req, res) => {
+app.post('/users/login', (req, res) => {
   // logic to log in user
-  res.json({message: 'logged in'})
+  const { username, password } = req.headers;
+  const user = USERS.find(u => u.username === username && u.password === password);
+  if (user) {
+    const token = generateJwtUser(user);
+    res.json({ message: 'Logged in successfully', token });
+  } else {
+    res.status(403).json({ message: 'User authentication failed' });
+  }
 });
 
-app.get('/users/courses',userAuth, (req, res) => {
+app.get('/users/courses',authenticateJwtUser, (req, res) => {
   // logic to list all courses
-  const filteredCourses= COURSES.filter(c => c.published);
-  res.json({courses: filteredCourses});
+  res.json({courses: COURSES});
 });
 
-app.post('/users/courses/:courseId',userAuth, (req, res) => {
+app.post('/users/courses/:courseId',authenticateJwtUser, (req, res) => {
   // logic to purchase a course
-  const courseId= parseInt(req.params.courseId);
-  const course= COURSES.find(c=> c.id=== courseId);
-
-  if(course()){
-    req.user.purchasedCourses.push(course);
-    res.json({message: 'purchased successfully'});
-  }else{
-    res.sendStatus(403).json({message: 'course not found'})
+  const courseId = parseInt(req.params.courseId);
+  const course = COURSES.find(c => c.id === courseId);
+  if (course) {
+    const user = USERS.find(u => u.username === req.user.username);
+    if (user) {
+      if (!user.purchasedCourses) {
+        user.purchasedCourses = [];
+      }
+      user.purchasedCourses.push(course);
+      res.json({ message: 'Course purchased successfully' });
+    } else {
+      res.status(403).json({ message: 'User not found' });
+    }
+  } else {
+    res.status(404).json({ message: 'Course not found' });
   }
 });
 
-app.get('/users/purchasedCourses',userAuth, (req, res) => {
+app.get('/users/purchasedCourses',authenticateJwtUser, (req, res) => {
   // logic to view purchased courses
-  var purchasedCourseIds = req.user.purchasedCourses; [1, 4];
-  var purchasedCourses = [];
-  for (let i = 0; i<COURSES.length; i++) {
-    if (purchasedCourseIds.indexOf(COURSES[i].id) !== -1) {
-      purchasedCourses.push(COURSES[i]);
-    }
+  const user = USERS.find(u => u.username === req.user.username);
+  if (user && user.purchasedCourses) {
+    res.json({ purchasedCourses: user.purchasedCourses });
+  } else {
+    res.status(404).json({ message: 'No courses purchased' });
   }
-
-  res.json({ purchasedCourses });
 });
 
 app.listen(3000, () => {
