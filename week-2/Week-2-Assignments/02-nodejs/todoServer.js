@@ -41,8 +41,9 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const path = require('path');
 const app = express();
+const cors = require('cors');
 
 function findIndex(arr,id){
     for(var i of arr){
@@ -62,6 +63,7 @@ function deleteItemIndex(arr,id){
 }
 
 app.use(bodyParser.json());
+app.use(cors());
 
 var todo = []
 
@@ -112,13 +114,19 @@ app.put('/todos/:id',(req,res)=>{
   }
 })
 
+app.get('/',(req,res)=>{
+  res.sendFile(path.join(__dirname,'index.html'))
+})
+
+
+
 app.use('*',(req,res)=>{
   res.status(404).send('Route not defined')
 })
 
 
-// app.listen(3000,()=>{
-//   console.log(`Listening at http://localhost:3000`)
-// })
+app.listen(3000,()=>{
+  console.log(`Listening at http://localhost:3000`)
+})
 
 module.exports = app;
