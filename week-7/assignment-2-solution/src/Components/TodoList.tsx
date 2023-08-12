@@ -1,12 +1,27 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authState } from '../store/authState.js';
 import {useRecoilValue} from "recoil";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-const TodoList = () => {
-    const [todos, setTodos] = useState([]);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+export type TodoType = {
+    title: string,
+    description: string,
+    done: boolean,
+    userId: string,
+    _id: string
+}
+
+export type TodoRequest = {
+    title: string,
+    description: string
+}
+
+const TodoList: React.FC = () => {
+    const [todos, setTodos] = useState<TodoType[]>([]);
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
     const authStateValue = useRecoilValue(authState);
+    const navigate: NavigateFunction = useNavigate()
 
     useEffect(() => {
         const getTodos = async () => {
@@ -18,19 +33,20 @@ const TodoList = () => {
             setTodos(data);
         };
         getTodos();
-    }, [authState.token]);
+    }, [authStateValue.token]);
 
     const addTodo = async () => {
+        const body: TodoRequest = { title, description };
         const response = await fetch('http://localhost:3000/todo/todos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem("token")}` },
-            body: JSON.stringify({ title, description })
+            body: JSON.stringify(body)
         });
         const data = await response.json();
         setTodos([...todos, data]);
     };
 
-    const markDone = async (id) => {
+    const markDone = async (id: string) => {
         const response = await fetch(`http://localhost:3000/todo/todos/${id}/done`, {
             method: 'PATCH',
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -46,7 +62,7 @@ const TodoList = () => {
                 <div style={{marginTop: 25, marginLeft: 20}}>
                     <button onClick={() => {
                         localStorage.removeItem("token");
-                        window.location = "/login";
+                        navigate("/login");
                     }}>Logout</button>
                 </div>
             </div>
@@ -54,7 +70,7 @@ const TodoList = () => {
             <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Title' />
             <input type='text' value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Description' />
             <button onClick={addTodo}>Add Todo</button>
-            {todos.map((todo) => (
+            {todos.map((todo: TodoType) => (
                 <div key={todo._id}>
                     <h3>{todo.title}</h3>
                     <p>{todo.description}</p>
