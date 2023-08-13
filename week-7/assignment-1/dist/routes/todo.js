@@ -8,18 +8,25 @@ const index_1 = require("../middleware/index");
 const db_1 = require("../db");
 const router = express_1.default.Router();
 router.post('/todos', index_1.authenticateJwt, (req, res) => {
-    const todo = req.body;
-    const { title, description } = todo;
-    const done = false;
-    const userId = req.headers.userId;
-    const newTodo = new db_1.Todo({ title, description, done, userId });
-    newTodo.save()
-        .then((savedTodo) => {
-        res.status(201).json(savedTodo);
-    })
-        .catch((err) => {
-        res.status(500).json({ error: 'Failed to create a new todo' });
-    });
+    try {
+        const todo = db_1.TodoValid.parse(req.body);
+        console.log("Todo Data Validated.");
+        const { title, description } = todo;
+        const done = false;
+        const { userId } = req.headers;
+        const newTodo = new db_1.Todo({ title, description, done, userId });
+        newTodo.save()
+            .then((savedTodo) => {
+            res.status(201).json(savedTodo);
+        })
+            .catch((err) => {
+            res.status(500).json({ error: 'Failed to create a new todo' });
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: `Request Data validation error ` });
+    }
 });
 router.get('/todos', index_1.authenticateJwt, (req, res) => {
     const userId = req.headers.userId;

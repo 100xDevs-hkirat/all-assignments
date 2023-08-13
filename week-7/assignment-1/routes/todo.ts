@@ -1,27 +1,36 @@
 import express, { Request, Response } from 'express'
 import { authenticateJwt, SECRET } from "../middleware/index";
-import { Todo, TodoInterface } from "../db";
+import { Todo, TodoValid } from "../db";
 const router = express.Router();
+import { z } from 'zod';
 
-router.post('/todos', authenticateJwt, (req: Request, res: Response) => {
-  const todo: TodoInterface = req.body;
-  const { title, description } = todo;
-  const done: boolean = false;
-  const userId = req.headers.userId;
 
-  const newTodo = new Todo({ title, description, done, userId });
 
-  newTodo.save()
-    .then((savedTodo) => {
-      res.status(201).json(savedTodo);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: 'Failed to create a new todo' });
-    });
+router.post('/todos', authenticateJwt, (req, res) => {
+  try {
+    const todo = TodoValid.parse(req.body);
+    console.log("Todo Data Validated.");
+    const { title, description } = todo;
+    const done: boolean = false;
+    const { userId } = req.headers;
+
+    const newTodo = new Todo({ title, description, done, userId });
+
+    newTodo.save()
+      .then((savedTodo) => {
+        res.status(201).json(savedTodo);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: 'Failed to create a new todo' });
+      });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: `Request Data validation error ` });
+  }
 });
 
 
-router.get('/todos', authenticateJwt, (req: Request, res: Response) => {
+router.get('/todos', authenticateJwt, (req, res) => {
   const userId = req.headers.userId;
 
   Todo.find({ userId })
@@ -33,7 +42,7 @@ router.get('/todos', authenticateJwt, (req: Request, res: Response) => {
     });
 });
 
-router.patch('/todos/:todoId/done', authenticateJwt, (req: Request, res: Response) => {
+router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
   const { todoId } = req.params;
   const userId = req.headers.userId;
 
