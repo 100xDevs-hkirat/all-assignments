@@ -17,6 +17,63 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+
+  add(num) {
+    this.result += num;
+  }
+
+  subtract(num) {
+    this.result -= num;
+  }
+
+  multiply(num) {
+    this.result *= num;
+  }
+
+  divide(num) {
+    this.result /= num;
+  }
+
+  clear() {
+    this.result = 0;
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  calculate(expression) {
+    expression = expression.replace(/\s+/g, ' ');
+
+    const tokens = expression.split(' ');
+
+    for (let token of tokens) {
+      if (isNaN(token)) {
+        throw new Error('Invalid expression');
+      }
+    }
+
+    // Calculate result
+    tokens.forEach(token => {
+      if (token === '+') {
+        this.add(nextToken);
+      } else if (token === '-') {
+        this.subtract(nextToken);
+      } else if (token === '*') {
+        this.multiply(nextToken);
+      } else if (token === '/') {
+        this.divide(nextToken);
+      }
+      const nextIndex = tokens.indexOf(token) + 1;
+      const nextToken = tokens[nextIndex];
+    });
+    
+    return this.result;
+  }
+}
 
 module.exports = Calculator;
