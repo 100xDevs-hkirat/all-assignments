@@ -57,7 +57,7 @@ var todos = [
 ];
 
 // importing todos in json file with some logic :)
-const addingTodos = () => {
+const updateJsonData = () => {
   fs.readFile('./todosDb.json', 'utf8', (err, data)=> {
     if(err) console.log('erorrrrrr');
     if(data.length > 1) {
@@ -65,6 +65,7 @@ const addingTodos = () => {
       for(let todo of parsedData) {
         if(todos.some(t=>t.id !== todo.id)) {
           let jsonData = JSON.stringify(todos);
+          
           fs.writeFile('./todosDb.json', jsonData, 'utf8', (err) => {
             if(err) console.error('error while adding todos in json file');
             console.log(jsonData);
@@ -85,7 +86,7 @@ const addingTodos = () => {
   })
 }
 
-addingTodos();
+updateJsonData();
 
 app.get('/todos', (req,res)=> {
   fs.readFile('./todosDb.json', 'utf8', (err, data)=> {
@@ -122,11 +123,46 @@ app.post('/todos', (req,res)=> {
 
   if(!todoExists) {
     todos.push(req.body);
-    addingTodos();
+    updateJsonData();
     let msg = req.body.title+'added to the json file !';
     res.send(msg);
   } else {
     res.status(404).send('error');
+  }
+})
+
+app.put('/todos/:id', (req,res)=> {
+  const todoExists = todos.some(todo => todo.id == req.params.id);
+  if(todoExists) {
+    for(let todo of todos) {
+      if(todo.id == req.params.id) {
+        todo.title = req.body.title;
+        todo.description = req.body.description;
+        updateJsonData();
+        let msg = "todo : "+ todo.title + "is updated succesfully !";
+        res.send(msg);
+        break;
+      }
+    }
+  } else {
+    res.status(404).send('todo not found !');
+  }
+})
+
+app.delete('/todos/:id', (req,res)=> {
+  const todoExists = todos.some(todo => todo.id == req.params.id);
+  if(todoExists) {
+    for(let todo of todos) {
+      if(todo.id == req.params.id) {
+        todos = todos.filter(t => t.id != req.params.id);
+        updateJsonData();
+        let msg = "todo : "+ todo.title + " is Deleted succesfully !";
+        res.send(msg);
+        break;
+      }
+    }
+  } else {
+    res.status(404).send('todo not found !');
   }
 })
 
