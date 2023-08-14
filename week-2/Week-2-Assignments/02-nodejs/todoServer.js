@@ -41,9 +41,97 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const fs = require('fs');
+const {v1 : uuid} = require('uuid')
 const app = express();
 
 app.use(bodyParser.json());
+
+var todos = [
+  {id:1,title:'phone', description: 'get an Apple Iphone',},
+  {id:2,title:'groceries', description: 'buy milk and bread'},
+  {id:3,title:'laundry', description: 'do the laundry'},
+  {id:4,title:'homework', description: 'complete math homework'},
+  {id:5,title:'gym', description: 'go to the gym'},
+  {id:6,title:'dinner', description: 'cook dinner'}
+];
+
+// importing todos in json file with some logic :)
+const addingTodos = () => {
+  fs.readFile('./todosDb.json', 'utf8', (err, data)=> {
+    if(err) console.log('erorrrrrr');
+    if(data.length > 1) {
+      let parsedData = JSON.parse(data);
+      for(let todo of parsedData) {
+        if(todos.some(t=>t.id !== todo.id)) {
+          let jsonData = JSON.stringify(todos);
+          fs.writeFile('./todosDb.json', jsonData, 'utf8', (err) => {
+            if(err) console.error('error while adding todos in json file');
+            console.log(jsonData);
+            console.log('succesfully overwriten !');
+          })
+          break;
+        }else {
+          return ;
+        }
+      }
+    }else {
+      let jsonData = JSON.stringify(todos);
+      fs.writeFile('./todosDb.json', jsonData, 'utf-8', (err) => {
+        if(err) console.error('error while adding todos in json file');
+        console.log('succesfully written !');
+      })
+    }
+  })
+}
+
+addingTodos();
+
+app.get('/todos', (req,res)=> {
+  fs.readFile('./todosDb.json', 'utf8', (err, data)=> {
+    if(err) res.status(404).send('data not found !');
+    let parsedData = JSON.parse(data);
+      res.send(parsedData);
+  });
+});
+
+app.get('/todos/:id', (req,res)=> {
+  fs.readFile('./todosDb.json', 'utf8', (err, data)=> {
+    if(err) res.status(404).send('data not found !');
+    let parsedData = JSON.parse(data);
+    let todoFound = new Map();
+    let temp = 0;
+    for(let todo of parsedData) {
+      if(todo.id == req.params.id) {
+        temp = todo.id;
+        todoFound.set(todo.id, todo);
+        break;
+      }
+    }
+    console.log(temp);
+    if(todoFound.size > 0) {
+      res.send(todoFound.get(temp));
+    }else {
+      res.status(404).send('TODO NOT FOUND !!!');
+    }
+  });
+});
+
+app.post('/todos', (req,res)=> {
+  const todoExists = todos.some(todo => todo.id === req.body.id && todo.title === req.body.title && todo.description === req.body.description);
+
+  if(!todoExists) {
+    todos.push(req.body);
+    addingTodos();
+    let msg = req.body.title+'added to the json file !';
+    res.send(msg);
+  } else {
+    res.status(404).send('error');
+  }
+})
+
+app.listen(5000, ()=> {
+  console.log('sun raha hoon maiiiiiiiiii !!!!');
+})
 
 module.exports = app;
