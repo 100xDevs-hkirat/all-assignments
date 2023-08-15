@@ -39,11 +39,83 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
+const express = require("express");
+const bodyParser = require("body-parser");
+const PORT = 3000;
 const app = express();
 
 app.use(bodyParser.json());
+
+const todos = [];
+
+let idCounter = 0;
+function generateRandomId() {
+  idCounter++;
+  return idCounter;
+}
+
+app.get("/todos", (req, res) => {
+  res.status(200).json(todos);
+});
+
+app.get("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  const todo = todos.find((item) => item.id === todoId);
+  if (todo) {
+    res.status(200).json(todo);
+  } else {
+    res.status(404).send("Not Found");
+  }
+});
+
+app.post("/todos", (req, res) => {
+  const todo = req.body;
+  if (todo && todo.title && todo.description) {
+    const id = generateRandomId();
+
+    todos.push({
+      id: id,
+      title: todo.title,
+      description: todo.description,
+    });
+
+    res.status(201).json({ id: id });
+  } else {
+    res.status(400).send("Bad Request");
+  }
+});
+
+app.put("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  const updatedTodo = req.body;
+  const todoIndex = todos.findIndex((item) => item.id === todoId);
+
+  if (todoIndex !== -1 && updatedTodo.title && updatedTodo.description) {
+    todos[todoIndex] = {
+      id: todoId,
+      title: updatedTodo.title,
+      description: updatedTodo.description,
+    };
+    res.status(200).send("OK");
+  } else {
+    res.status(404).send("Not Found");
+  }
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const todoId = parseInt(req.params.id);
+  const todoIndex = todos.findIndex((item) => item.id === todoId);
+
+  if (todoIndex !== -1) {
+    todos.splice(todoIndex, 1);
+    res.status(200).send("OK");
+  } else {
+    res.status(404).send("Not Found");
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port: ${PORT}`);
+});
 
 module.exports = app;
