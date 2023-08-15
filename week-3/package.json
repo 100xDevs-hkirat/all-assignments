@@ -1,6 +1,19 @@
 {
+<<<<<<< HEAD
+  "name": "week-3",
+  "version": "1.0.0",
+  "description": "This week we wrapped up most of backend. \r We'll also be posting about DBs and auth in a video so the assignment has questions from that as well. \r Feel free to do them right now or after the video is posted.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+=======
   "dependencies": {
     "express": "^4.18.2",
+>>>>>>> source/main
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1"
   }
