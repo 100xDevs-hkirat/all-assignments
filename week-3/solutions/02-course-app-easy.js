@@ -119,6 +119,11 @@ app.get('/users/purchasedCourses', userAuthentication, (req, res) => {
   res.json({ purchasedCourses });
 });
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+// Below app.listen should be commented while running the tests
+// Uncomment below to start server and test with postman
+
+// app.listen(3000, () => {
+//   console.log('Server is listening on port 3000');
+// });
+
+module.exports = app
