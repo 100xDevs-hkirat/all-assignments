@@ -4,10 +4,42 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Todo App</title>
   </head>
   <body>
+    <h1>Todo List</h1>
+    <div class="form-container">
+      <label for="title">Todo Title</label>
+      <input type="text" id="title" />
+
+      <label for="description">Todo Description</label>
+      <input type="text" id="description" />
+
+      <button onclick="onPress()">Send Todo</button>
+    </div>
+
+    <div id="mainArea">
+      <!-- Todo items will be dynamically added here -->
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+
+<script>
+  function onPress() {
+    var title = document.getElementById("title").value;
+    var description = document.getElementById("description").value;
+    fetch("http://localhost:3000/todos", {
+      method: "POST",
+      body: JSON.stringify({
+        title: title,
+        description: description,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+</script>

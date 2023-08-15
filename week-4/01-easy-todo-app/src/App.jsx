@@ -1,27 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+
+function useTodos() {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/todos');
+        const data = await response.json();
+        setTodos(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTodos();
+
+   
+    setInterval(fetchTodos, 1000);
+
+ 
+  }, []);
+
+  const deleteTodo = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/todos/${id}`, { method: 'DELETE' });
+      setTodos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { todos, deleteTodo };
+}
 
 function App() {
-  const [todos, setTodos] = useState([])
-    // fetch all todos from server
+  const { todos, deleteTodo } = useTodos();
 
   return (
-    <>
-      <div>
-        <h1>Easy Todo App</h1>
-        <input type="text" />
-      </div>
-    </>
-  )
-}
-
-function Todo(props) {
-    // Add a delete button here so user can delete a TODO.
-    return <div>
-        {props.title}
+    <div id="mainArea">
+      {todos.map((todo) => (
+        <Todo key={todo.id} {...todo} deleteTodo={deleteTodo} />
+      ))}
     </div>
+  );
 }
 
-export default App
+function Todo({ id, title, description, deleteTodo }) {
+  const handleDelete = () => {
+    deleteTodo(id);
+  };
+
+  return (
+    <div>
+      <span>{title}</span>
+      <span> </span>
+      <span>{description}</span>
+      <span> </span>
+      <button onClick={handleDelete}>Delete</button>
+    </div>
+  );
+}
+
+export default App;
