@@ -80,7 +80,7 @@ const authenticateJwt = (req, res, next) => {
       }
     });
   } else {
-    res.sendStatus(404);
+    res.sendStatus(401);
   }
 };
 
@@ -111,6 +111,12 @@ const userAuthentication = (req, res, next) => {
 };
 
 // Admin routes
+app.get("/admin/me", authenticateJwt, (req, res) => {
+  res.json({
+    username: req.user.username,
+  });
+});
+
 app.post("/admin/signup", async (req, res) => {
   const { username, password } = req.body;
   const admin = await Admin.findOne({ username });
@@ -158,7 +164,7 @@ app.put("/admin/courses/:courseId", authenticateJwt, async (req, res) => {
   }
 });
 
-app.get("/admin/courses", authenticateJwt, async(req, res) => {
+app.get("/admin/courses", authenticateJwt, async (req, res) => {
   // logic to get all courses
   const courses = await Course.find({});
   res.json({ courses });
@@ -195,13 +201,13 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-app.get("/users/courses", authenticateJwt, async(req, res) => {
+app.get("/users/courses", authenticateJwt, async (req, res) => {
   // logic to list all courses
   const courses = await Course.find({ published: true });
   res.json({ courses });
 });
 
-app.post("/users/courses/:courseId", authenticateJwt, async(req, res) => {
+app.post("/users/courses/:courseId", authenticateJwt, async (req, res) => {
   // logic to purchase a course
   const course = await Course.findById(req.params.courseId);
   if (course) {
@@ -209,7 +215,7 @@ app.post("/users/courses/:courseId", authenticateJwt, async(req, res) => {
     const user = await User.findOne({ username: req.headers.username });
     // console.log(req.headers);
     if (user) {
-      user.purchasedCourses.push(course)
+      user.purchasedCourses.push(course);
       await user.save();
       res.json({ message: "Course purchased successfully" });
     } else {
@@ -220,11 +226,13 @@ app.post("/users/courses/:courseId", authenticateJwt, async(req, res) => {
   }
 });
 
-app.get("/users/purchasedCourses", authenticateJwt, async(req, res) => {
+app.get("/users/purchasedCourses", authenticateJwt, async (req, res) => {
   // logic to view purchased courses
-  const user = await User.findOne({ username: req.user.username }).populate('purchasedCourses')
+  const user = await User.findOne({ username: req.user.username }).populate(
+    "purchasedCourses"
+  );
   if (user) {
-    res.json({ purchasedCourses: user.purchasedCourses || []});
+    res.json({ purchasedCourses: user.purchasedCourses || [] });
   } else {
     res.status(403).json({ message: "No courses purchased" });
   }
