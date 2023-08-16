@@ -29,9 +29,49 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
-const PORT = 3000;
+const express = require('express');
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+const credentials = [];
+
+app.use((req, res, next) => {
+  const email = req.body.email ?? req.headers.email;
+  const password = req.body.password ?? req.headers.password;
+  const index = credentials.findIndex((user) => user.email === email);
+  res.locals.index = index;
+  res.locals.authorised =
+    index >= 0 && credentials[index].password === password;
+  next();
+});
+
+app.post('/signup', (req, res) => {
+  const index = res.locals.index;
+  if (index >= 0) return res.status(400).send('Bad Request');
+  credentials.push({
+    id: uuidv4(),
+    ...req.body,
+  });
+  res.status(201).send('Signup successful');
+});
+
+app.post('/login', (req, res) => {
+  const authorised = res.locals.authorised;
+  console.log(authorised);
+  if (!authorised) return res.status(401).send('Unauthorized');
+  const index = res.locals.index;
+  const { id, password, ...user } = credentials[index];
+  res.json(user);
+});
+
+app.get('/data', (req, res) => {
+  const authorised = res.locals.authorised;
+  if (!authorised) return res.status(401).send('Unauthorized');
+  const data = {};
+  data.users = credentials.map(({ id, password, ...rest }) => rest);
+  res.send(JSON.stringify(data));
+});
 
 module.exports = app;

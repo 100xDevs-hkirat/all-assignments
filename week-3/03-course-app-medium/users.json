@@ -1,0 +1,22 @@
+[
+  {
+    "username": "raman@gmail.com",
+    "password": "123456",
+    "purchaseCourses": [1688130941141]
+  },
+  {
+    "username": "raman1@gmail.com",
+    "password": "123456",
+    "purchaseCourses": []
+  },
+  {
+    "username": "raman2@gmail.com",
+    "password": "123456",
+    "purchaseCourses": []
+  },
+  {
+    "username": "raman4@gmail.com",
+    "password": "123456",
+    "purchaseCourses": []
+  }
+]
