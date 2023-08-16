@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Todos</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Add Todos to the Json File :)</h1>
+    <script>
+   function requestData() {
+    fetch("http://localhost:5000/todos")
+        .then(response => response.text())
+        .then(data => {
+            console.log("data : ",data);
+            // document.getElementById("response").textContent = data;
+        })
+        .catch(error => console.error(error));
+}
+requestData();
+    </script>
+</body>
+</html>

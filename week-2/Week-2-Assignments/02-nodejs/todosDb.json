@@ -1,9 +1,1 @@
-[
-  { "id": 1, "title": "phone", "description": "get an Apple Iphone" },
-  { "id": 2, "title": "groceries", "description": "buy milk and bread" },
-  { "id": 3, "title": "laundry", "description": "do the laundry" },
-  { "id": 4, "title": "homework", "description": "complete math homework" },
-  { "id": 5, "title": "gym", "description": "go to the gym" },
-  { "id": 6, "title": "dinner", "description": "cook dinner" },
-  { "title": "oneplus", "description": "get an oneplus phone" }
-]
+[{"id":1,"title":"phone","description":"get an Apple Iphone"},{"id":2,"title":"groceries","description":"buy milk and bread"},{"id":3,"title":"laundry","description":"do the laundry"},{"id":4,"title":"homework","description":"complete math homework"},{"id":6,"title":"dinner","description":"cook dinner"}]
