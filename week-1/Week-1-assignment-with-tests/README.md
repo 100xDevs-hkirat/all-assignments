@@ -1,3 +1,4 @@
+bruh
 ### FullStack Development Course Assignments (Week 1)
 
 - The project contains easy, medium and hard assigments for week 1.
