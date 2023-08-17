@@ -11,7 +11,7 @@ const router = express_1.default.Router();
 const titleSchema = zod_1.z
     .string()
     .min(5, "Title length cannot be less than 5 characters")
-    .regex(/^[a-zA-Z0-9]+$/, "Title must contain only letters or numbers");
+    .regex(/^[a-zA-Z0-9\s]+$/, "Title must contain only letters or numbers");
 const descriptionSchema = zod_1.z
     .string()
     .min(5, "Description length cannot be less than 10 characters")
