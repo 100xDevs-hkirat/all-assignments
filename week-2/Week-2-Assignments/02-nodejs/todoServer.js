@@ -114,6 +114,10 @@ app.delete("/todos/:id", (req, res) => {
   }
 });
 
+app.use((req, res) => {
+  return res.status(404).send("Not Found");
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
 });
