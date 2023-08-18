@@ -39,8 +39,6 @@ app.post('/admin/signup', (req, res) => {
 
   const { username, password } = req.body
 
-  const jwtToken = generateToken({ user: { username, password } })
-
   if (!username || !password) {
     return res.status(400).send('Username and password are required')
   }
@@ -57,6 +55,7 @@ app.post('/admin/signup', (req, res) => {
     username,
     password,
   })
+  const jwtToken = generateToken({ user: { username, password } })
 
   return res
     .status(201)
