@@ -29,9 +29,78 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
+
 const express = require("express")
+const bodyParser = require('body-parser')
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+var userArr = [];
+var count = 0;
+
+const middleware1 = (req, res, next) => {
+  const username = req.body.username;
+  if(userArr.some(user=> user.username === username)){
+    res.status(400).json({error:"Username already exist"})
+  }
+  else{
+    next();
+  }
+}
+
+// app.use(middleware1);
+
+app.post("/signup",middleware1,(req,res)=>{
+  const username = req.body.username;
+  const password = req.body.password;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  var answerObject = {
+    id: count,
+    username: username,
+    password: password,
+    firstName: firstName,
+    lastName: lastName
+  }
+  userArr.push(answerObject);
+  res.send(answerObject);
+  count++;
+  console.log(userArr);
+})
+
+app.post('/login',(req,res)=>{
+  const username = req.body.username;
+  const password = req.body.password;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+
+  
+  const userPresent = userArr.find(user => user.username === username && user.password === password);
+
+  if(!userPresent){
+    return res.status(401).json({message:"User not found bro"})
+  }
+
+  if(userPresent){
+    return res.status(200).json({username: username,
+    password:password,
+  firstName:firstName,
+lastName:lastName})
+  }
+})
+
+app.get("/userdata",(req,res)=>{
+  res.send(userArr);
+})
+
+app.get("/users", (req,res)=>{
+  res.send(userArr);
+})
+
+app.listen(PORT, ()=>{
+  console.log("App is listening on port " + PORT);
+})
 
 module.exports = app;
+
+// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
