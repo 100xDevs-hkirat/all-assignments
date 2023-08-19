@@ -42,7 +42,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const {v1 : uuid} = require('uuid')
+const {v1 : uuid} = require('uuid');
+const path = require('path');
 const app = express();
 
 app.use(bodyParser.json());
@@ -199,7 +200,11 @@ app.delete('/todos/:id', (req,res)=> {
   })
 })
 
-app.listen(5000, ()=> {
+app.get('/', (req,res)=> {
+  res.sendFile(path.join(__dirname, "./todos.html"));
+})
+
+app.listen(3000, ()=> {
   console.log('sun raha hoon maiiiiiiiiii !!!!');
 })
 
