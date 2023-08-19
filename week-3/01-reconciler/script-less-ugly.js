@@ -56,8 +56,9 @@ function createDomElements(data) {
   console.log(deleted);
 }
 
+let Window = window;
 
-window.setInterval(() => {
+Window.setInterval(() => {
   let todos = [];
   for (let i = 0; i<Math.floor(Math.random() * 100); i++) {
     todos.push({
