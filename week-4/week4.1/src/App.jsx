@@ -1,41 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import './App.css'
+import './App.css' 
 import Todo from './components/Todo'
 
 function App() {
 
-  const [title,setTitle] = useState('');
-  const [description,setDescription] = useState('');
+
   const [todos,setTodos]= useState([]);
 
-  let handleTitle = (e) =>{
-    setTitle(e.target.value);
-  }
 
-  let handleDescription = (e) =>{
-    setDescription(e.target.value);
-  }
 
-  let handleOnClick = (e) => {
-    const newTodo = {
-      id: todos.length+1, // Using a timestamp as a unique ID
-      title,
-      description,
-    };
-    setTodos([...todos, newTodo]);
-    setTitle('');
-    setDescription('');
-  };
+  useEffect(()=>{
+    fetch("http://localhost:3000/todos",{
+      method:"GET"
+    }).then((resp)=>{
+      resp.json().then((data)=>{
+        console.log(data)
+        setTodos(data)
+      })
+  })
+  },[])
   
   return (
     <>
         <div>
           Title
-          <input type="text" name="title" id="" onChange={handleTitle}/>
+          <input type="text" name="title" id="" />
           Description
-          <input type="text" name="description" id="" onChange={handleDescription}/>
-          <button onClick={handleOnClick}>Add Todo</button>
+          <input type="text" name="description" id="" />
+          <button >Add Todo</button>
         </div>
         
 
