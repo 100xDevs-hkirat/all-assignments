@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -7,6 +8,7 @@ const DB_URL = 'mongodb://localhost:27017/course'
 const SECRET_KEY = 'test123'
 
 app.use(express.json())
+app.use(cors())
 
 // Define mongoose schemas
 const userSchema = new mongoose.Schema({
@@ -75,7 +77,9 @@ app.post('/admin/signup', async (req, res) => {
   const { username, password } = req.body
 
   if (!username || !password) {
-    return res.status(400).send('Username and password are required')
+    return res
+      .status(400)
+      .json({ message: 'Username and password are required' })
   }
   const isAlreadyExists = await Admin.findOne({ username })
   if (isAlreadyExists) {
@@ -99,7 +103,9 @@ app.post('/admin/login', async (req, res) => {
   const { username, password } = req.headers
 
   if (!username || !password) {
-    return res.status(400).send('Username and password are required')
+    return res
+      .status(400)
+      .json({ message: 'Username and password are required' })
   }
 
   const user = await Admin.findOne({ username })
@@ -110,7 +116,7 @@ app.post('/admin/login', async (req, res) => {
       .status(200)
       .json({ message: 'Logged in successfully', token: jwtToken })
   } else {
-    return res.status(400).json({ message: 'Invalid username or password' })
+    return res.status(400).json({ message: 'User does not exists' })
   }
 })
 
@@ -147,7 +153,7 @@ app.put('/admin/courses/:courseId', verifyJwt, async (req, res) => {
   if (course) {
     await Course.findOneAndUpdate(
       {
-        courseId,
+        _id: courseId,
       },
       {
         ...req.body,
@@ -175,7 +181,9 @@ app.post('/users/signup', async (req, res) => {
   const { username, password } = req.body
 
   if (!username || !password) {
-    return res.status(400).send('Username and password are required')
+    return res
+      .status(400)
+      .json({ message: 'Username and password are required' })
   }
 
   const isAlreadyExists = await User.findOne({
@@ -183,7 +191,7 @@ app.post('/users/signup', async (req, res) => {
   })
 
   if (isAlreadyExists) {
-    return res.status(400).send('User already exists')
+    return res.status(400).json({ message: 'User already exists' })
   }
 
   const jwtToken = generateToken({ user: { username, password } })
@@ -205,7 +213,9 @@ app.post('/users/login', async (req, res) => {
   const { username, password } = req.headers
 
   if (!username || !password) {
-    return res.status(400).send('Username and password are required')
+    return res
+      .status(400)
+      .json({ message: 'Username and password are required' })
   }
 
   const user = await User.findOne({ username })
@@ -216,7 +226,7 @@ app.post('/users/login', async (req, res) => {
       .status(200)
       .json({ message: 'Logged in successfully', token: jwtToken })
   } else {
-    return res.status(400).json({ message: 'Invalid username or password' })
+    return res.status(400).json({ message: 'User does not exists' })
   }
 })
 
@@ -238,6 +248,9 @@ app.post('/users/courses/:courseId', verifyJwt, async (req, res) => {
       const user = await User.findOne({ username: req.user.username })
 
       if (user) {
+        if (user.purchasedCourses.includes(course._id)) {
+          return res.status(400).json({ message: 'Course Already Purchased' })
+        }
         user.purchasedCourses.push(course)
         await user.save()
       } else {

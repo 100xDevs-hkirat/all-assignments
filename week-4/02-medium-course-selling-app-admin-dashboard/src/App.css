@@ -1,0 +1,27 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  text-decoration: none;
+  margin-right: 2px;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  color: white;
+  font-size: 2rem;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+.link {
+  text-decoration: none;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+#purchase {
+  width: max-content;
+  position: absolute;
+  top: 0;
+  right: -10%;
+}
