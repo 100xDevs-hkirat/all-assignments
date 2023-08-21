@@ -39,62 +39,67 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
-const app = express();
+const app = express()
+app.use(cors())
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
-let todos = [];
+let todos = []
 
 app.get('/todos', (req, res) => {
-  res.json(todos);
-});
+  res.json(todos)
+})
 
 app.get('/todos/:id', (req, res) => {
-  const todo = todos.find(t => t.id === parseInt(req.params.id));
+  const todo = todos.find(t => t.id === parseInt(req.params.id))
   if (!todo) {
-    res.status(404).send();
+    res.status(404).send()
   } else {
-    res.json(todo);
+    res.json(todo)
   }
-});
+})
 
 app.post('/todos', (req, res) => {
   const newTodo = {
     id: Math.floor(Math.random() * 1000000), // unique random id
     title: req.body.title,
-    description: req.body.description
-  };
-  todos.push(newTodo);
-  res.status(201).json(newTodo);
-});
+    description: req.body.description,
+  }
+  todos.push(newTodo)
+  res.status(201).json(newTodo)
+})
 
 app.put('/todos/:id', (req, res) => {
-  const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+  const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id))
   if (todoIndex === -1) {
-    res.status(404).send();
+    res.status(404).send()
   } else {
-    todos[todoIndex].title = req.body.title;
-    todos[todoIndex].description = req.body.description;
-    res.json(todos[todoIndex]);
+    todos[todoIndex].title = req.body.title
+    todos[todoIndex].description = req.body.description
+    res.json(todos[todoIndex])
   }
-});
+})
 
 app.delete('/todos/:id', (req, res) => {
-  const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+  const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id))
   if (todoIndex === -1) {
-    res.status(404).send();
+    res.status(404).send()
   } else {
-    todos.splice(todoIndex, 1);
-    res.status(200).send();
+    todos.splice(todoIndex, 1)
+    res.status(200).send()
   }
-});
+})
 
 // for all other routes, return 404
 app.use((req, res, next) => {
-  res.status(404).send();
-});
+  res.status(404).send()
+})
+app.listen(3000, (req, res, next) => {
+  console.log('Server started on port 3000')
+})
 
-module.exports = app;
+module.exports = app
