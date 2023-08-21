@@ -7,7 +7,24 @@
 */
 
 function isPalindrome(str) {
+
+  var str = str.toLowerCase().trim();
+  var s = "";
+  for(var i=0; i<str.length; i++){
+
+    if(str[i] >= "a" && str[i] <= "z" && str[i] != " ")
+      s = s + str[i];
+  }
+
+  for(var i=0; i<s.length/2; i++){
+    if(s.charAt(i) != s.charAt(s.length - 1- i))
+      return false;
+  }
+
   return true;
 }
+
+console.log(isPalindrome("hello"));
+// rac ecar
 
 module.exports = isPalindrome;
