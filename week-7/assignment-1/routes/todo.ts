@@ -5,9 +5,13 @@ import { z } from 'zod';
 const router = express.Router();
 
 const todoSchema = z.object({
-  title: z.string().nonempty(),
-  description: z.string().nonempty()
-});
+    title: z.string().min(3).max(50),
+    description: z.string().min(8).max(150),
+    done: z.boolean().optional(),
+    userId: z.string().optional()
+  }).strict();
+
+  type todo = z.infer<typeof todoSchema>;
 
 router.post('/todos', authenticateJwt, (req, res) => {
     const result = todoSchema.safeParse(req.body);
