@@ -1,7 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const cors = require('cors');
 const app = express();
+app.use(cors())
 
 app.use(express.json());
 
@@ -42,6 +44,7 @@ const authenticateJwt = (req, res, next) => {
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
+  console.log(username, password);
   const admin = ADMINS.find(a => a.username === username);
   console.log("admin signup");
   if (admin) {
@@ -56,15 +59,22 @@ app.post('/admin/signup', (req, res) => {
 });
 
 app.post('/admin/login', (req, res) => {
-  const { username, password } = req.headers;
+  const { username, password } = req.body;
+  console.log(username, password);
   const admin = ADMINS.find(a => a.username === username && a.password === password);
+  console.log(admin, ' -> found!')
   if (admin) {
     const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
-    res.json({ message: 'Logged in successfully', token });
+    res.json({ message: 'Logged in successfully', username: username, token });
   } else {
     res.status(403).json({ message: 'Invalid username or password' });
   }
 });
+
+app.get('/admin/me', authenticateJwt, (req, res) => {
+  res.json({ message: 'Logged successfully, show email in appbar', username: req.user.username });
+});
+
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {
   const course = req.body;
@@ -79,7 +89,7 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
   if (course) {
     Object.assign(course, req.body);
     fs.writeFileSync('courses.json', JSON.stringify(COURSES));
-    res.json({ message: 'Course updated successfully' });
+    res.json({ message: 'Course updated successfully', id: course.id });
   } else {
     res.status(404).json({ message: 'Course not found' });
   }
