@@ -16,8 +16,29 @@ const secretEncryption = "MyLittleSecret";
 
 // AdminJWT authentication Function
 const generateAdminJWT = (admin) => {
-  const payload = {username: admin.username};
-  return jwt.sign(username, secretEncryption, { expiresIn: '1h'});
+  const payload = { username: admin.username };
+  return jwt.sign(payload, secretEncryption, { expiresIn: '1h'});
+}
+
+console.log(generateAdminJWT);
+
+// adminAuthenticateJWT
+const authenticateAdminJWT = (req,res, next) => {
+  const auth = req.headers.authorization;
+  if (auth) {
+    const encryptedData = auth.split(' ')[1];
+    jwt.verify(encryptedData, secretEncryption, (err, decrypt) => {
+      if (err){
+        console.log(err);
+      }else {
+        console.log("decryptedData : ", decrypt)
+        req.user = decrypt;
+        next();
+      }
+    });
+  } else {
+    res.status(403).send('first register the admin before decrypted the admin auth token !');     
+  }
 }
 
 //Admin Authentication MiddlesWare
@@ -60,11 +81,12 @@ app.post('/admin/signup', (req, res) => {
     ADMINS.push({
       username, password
     })
-    res.json({message: " Admin Registered Succesfully !", token});
+    res.json({ message: " Admin Registered Succesfully !", token });
+    req.headers.authorization = token;
   }
 });
 
-app.post('/admin/login', adminMiddleware, (req, res) => {
+app.post('/admin/login', (req, res) => {
   // logic to log in admin
   const token = generateAdminJWT(req.body);
     res.json({
@@ -74,7 +96,7 @@ app.post('/admin/login', adminMiddleware, (req, res) => {
     })
 });
 
-app.post('/admin/courses', adminMiddleware, (req, res) => {
+app.post('/admin/courses', authenticateAdminJWT, (req, res) => {
   // logic to create a course
   // const { title, description, price, imageLink, published } = req.body;
   let courseExists = COURSES.find((course) => course.title == req.body.title);
@@ -136,7 +158,7 @@ app.get('/users/courses', userMiddleware, (req, res) => {
   req.json({course: COURSES.filter(course=>course.published)});
 });
 
-app.post('/users/courses/:courseId', userAuthentication, (req, res) => {
+app.post('/users/courses/:courseId', (req, res) => {
   const courseId = Number(req.params.courseId);
   const course = COURSES.find(c => c.id === courseId && c.published);
   if (course) {

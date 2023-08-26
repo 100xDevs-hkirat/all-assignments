@@ -11,7 +11,7 @@ const SECRET = 'SECr3t';  // This should be in an environment variable in a real
 const userSchema = new mongoose.Schema({
   username: {type: String},
   password: String,
-  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]
+  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }] 
 });
 
 const adminSchema = new mongoose.Schema({
@@ -35,7 +35,7 @@ const Course = mongoose.model('Course', courseSchema);
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(' ')[1]
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
         return res.sendStatus(403);
