@@ -1,8 +1,12 @@
 const express = require('express');
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const cors = require("cors")
+
 const app = express();
 
+
+app.use(cors())
 app.use(express.json());
 
 const SECRET = 'hduiheyhyugbfihuhfiuhighuasuhiuahd8uhhioihos'
@@ -105,7 +109,7 @@ app.post('/admin/signup', async (req, res) => {
       const obj = { username: username, password: password };
       const newAdmin = new Admin(obj);
       newAdmin.save();
-      const token = jwt.sign({ username: username, role: 'admin' }, SECRET, { expiresIn: 600 });
+      const token = jwt.sign({ username: username, role: 'admin' }, SECRET, { expiresIn: 3600 });
       res.json({ message: 'Admin created successfully', token: token });
     }
   } catch (error) {
@@ -125,7 +129,7 @@ app.post('/admin/login', async (req, res) => {
       const token = jwt.sign({ username: username, role: 'admin' }, SECRET, { expiresIn: 600 });
       res.json({ message: 'Logged in successfully', token: token });
     } else {
-      res.status(403).json({ message: 'Invalid username or password' });
+      res.status(401).json({ message: 'Invalid username or password' });
     }
   } catch (error) {
     console.log(error)
@@ -179,11 +183,36 @@ app.put('/admin/courses/:courseId', isAuthenticate, async (req, res) => {
     
 });
 
+app.get('/admin/me', isAuthenticate, async (req, res) => {
+  // logic to get all courses
+  try {
+    
+    res.json({user : req.user.username})
+  } catch (error) {
+    console.log(error)
+    res.status(500)
+  }
+});
+
 app.get('/admin/courses', isAuthenticate, async (req, res) => {
   // logic to get all courses
   try {
     const allCourses = await Course.find({})
     res.json({courses : allCourses})
+  } catch (error) {
+    console.log(error)
+    res.status(500)
+  }
+});
+
+app.get('/admin/course/:courseId', isAuthenticate, async (req, res) => {
+  // logic to get all courses
+
+  let courseId = req.params.courseId;
+
+  try {
+    const course = await Course.findById(courseId).exec()
+    res.json({course : course})
   } catch (error) {
     console.log(error)
     res.status(500)
