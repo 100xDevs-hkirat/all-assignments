@@ -1,0 +1,41 @@
+body{
+    margin: 0;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
+}
+
+.nav-color {
+    background-image: linear-gradient(to right, #8360c3, #2ebf91);
+}
+
+.course-component{
+  /* border: #f601c9 1px solid; */
+  /* padding: 5px; */
+  margin: 25px 10px;
+  position: relative;
+  /* display: flex;
+  height: 450px; */
+  /* align-items: flex-start; */
+}
+
+.course-state{
+  /* border: #1500ff 1px solid; */
+  width: 90px;
+  /* display: flex;
+  justify-content: flex-end;
+  align-items: flex-start; */
+  position: absolute;
+  top: 10px;
+  left: 220px;
+  background-color: green; /* Optional styling for the state box */
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  z-index: 1;
+}
+
+.course-card{
+  /* border: #fa0000 2px solid; */
+  width: 345px ; 
+  flex: 1;
+  background-color: #f7f9fa;
+}
