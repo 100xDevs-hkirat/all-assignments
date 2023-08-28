@@ -3,6 +3,7 @@ let vDOM = []; // Our initial vDOM is an empty array
 function createDomElements(existingDOM, currentDOM) {
   var parentElement = document.getElementById("mainArea");
 
+
   let added = 0, deleted = 0, updated = 0;
 
   // Now, we'll compare our new vDOM to our old vDOM
@@ -56,10 +57,15 @@ function createDomElements(existingDOM, currentDOM) {
 }
 
 function updateVirtualDom(data) {
-  let existingDOM = [...vDOM]; // Save the existing state of vDOM
-  vDOM = data.map(item => {
+  let existingDOM = [...vDOM]; // Save the existing state of vDOM   or  copy the current DOM
+  // or
+  // let existingDOM  = [];
+  // for(let i=0;i<vDOM;i++){
+  //   existingDOM.push(vdom[i]);
+  //   }
+  vDOM = data.map(item => { //this function is used to update values of keys
     return {
-      id: item.id,
+      id: item.id, 
       title: item.title,
       description: item.description
     };

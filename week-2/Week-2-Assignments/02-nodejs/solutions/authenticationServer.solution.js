@@ -36,6 +36,9 @@ const app = express();
 
 var users = [];
 
+function generateUniqueID() {
+  return Math.random().toString(36).substr(2, 9);
+}
 app.use(express.json());
 app.post("/signup", (req, res) => {
   var user = req.body;
