@@ -10,6 +10,23 @@ let COURSES = [];
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
+  const { username, password } = req.body;
+
+  //  Check if the username is already taken
+  if ( ADMINS.some(admin => admin.username === username)) {
+    return res.status(409).json({ error: 'Username is already taken' });
+  }
+  // Create a new admin user objec
+  const newAdmin = {
+    username,
+    password, 
+  };
+
+  // Add the new admin to the ADMINS array
+  ADMINS.push(newAdmin);
+
+  return res.status(201).json({ message: 'Admon user created successfully' });
+
 });
 
 app.post('/admin/login', (req, res) => {
