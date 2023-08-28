@@ -57,7 +57,7 @@ function createDomElements() {
 }
 
 
-function updateVirtualDom(data) {
+function updateVirtualDom(data) {  //by using this function we store the current state in the globle variablle
     vDOM = data.map(item => {
         return {
           id: item.id,

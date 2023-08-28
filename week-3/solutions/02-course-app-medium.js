@@ -25,7 +25,6 @@ const authenticateJwt = (req, res, next) => {
       if (err) {
         return res.sendStatus(403);
       }
-
       req.user = user;
       next();
     });
@@ -42,12 +41,15 @@ app.post('/admin/signup', (req, res) => {
   } else {
     ADMINS.push(admin);
     const token = generateJwt(admin);
-    res.json({ message: 'Admin created successfully', token });
-  }
+    res.json({ message: 'Admin created successfully', token  });
+  } 
 });
 
 app.post('/admin/login', (req, res) => {
   const { username, password } = req.headers;
+  console.log("controll here")
+  console.log(username);
+  console.log(password);
   const admin = ADMINS.find(a => a.username === username && a.password === password);
 
   if (admin) {

@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');//express liberry used to conect to mongodb dataabases
 const app = express();
 
 app.use(express.json());
@@ -11,10 +11,10 @@ const SECRET = 'SECr3t';  // This should be in an environment variable in a real
 const userSchema = new mongoose.Schema({
   username: {type: String},
   password: String,
-  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]
+  purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]// this is the type id which is the referal to courrse
 });
 
-const adminSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({ // schema standss for the shape of the data
   username: String,
   password: String
 });
@@ -50,7 +50,7 @@ const authenticateJwt = (req, res, next) => {
 
 // Connect to MongoDB
 // DONT MISUSE THIS THANKYOU!!
-mongoose.connect('mongodb+srv://kirattechnologies:iRbi4XRDdM7JMMkl@cluster0.e95bnsi.mongodb.net/courses', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
+mongoose.connect('mongodb+srv://abdulhafeeztechy:nazima3786@cluster0.rvw6tgr.mongodb.net/courses', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
 
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
@@ -81,13 +81,13 @@ app.post('/admin/login', async (req, res) => {
 });
 
 app.post('/admin/courses', authenticateJwt, async (req, res) => {
-  const course = new Course(req.body);
+  const course = new Course(req.body);//creating the new coursewith new title,description,id,item
   await course.save();
   res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
 app.put('/admin/courses/:courseId', authenticateJwt, async (req, res) => {
-  const course = await Course.findByIdAndUpdate(req.params.courseId, req.body, { new: true });
+  const course = await Course.findByIdAndUpdate(req.params.courseId, req.body, { new: true }); //provided by mongodb
   if (course) {
     res.json({ message: 'Course updated successfully' });
   } else {
@@ -96,7 +96,7 @@ app.put('/admin/courses/:courseId', authenticateJwt, async (req, res) => {
 });
 
 app.get('/admin/courses', authenticateJwt, async (req, res) => {
-  const courses = await Course.find({});
+  const courses = await Course.find({});// find({}) is used to find all cources or if we want the purchesd couses we use .find({purches}
   res.json({ courses });
 });
 
@@ -127,17 +127,17 @@ app.post('/users/login', async (req, res) => {
 
 app.get('/users/courses', authenticateJwt, async (req, res) => {
   const courses = await Course.find({published: true});
-  res.json({ courses });
+  res.json({ courses});
 });
 
 app.post('/users/courses/:courseId', authenticateJwt, async (req, res) => {
-  const course = await Course.findById(req.params.courseId);
+  const course = await Course.findById(req.params.courseId);//find or get the cource
   console.log(course);
   if (course) {
     const user = await User.findOne({ username: req.user.username });
     if (user) {
-      user.purchasedCourses.push(course);
-      await user.save();
+      user.purchasedCourses.push(course);//get the user by courseid andpush it into user.purchasedcourse//push(course) course with the title,description,id,naem
+      await user.save();//only couse id get saved example objectid
       res.json({ message: 'Course purchased successfully' });
     } else {
       res.status(403).json({ message: 'User not found' });
@@ -148,7 +148,7 @@ app.post('/users/courses/:courseId', authenticateJwt, async (req, res) => {
 });
 
 app.get('/users/purchasedCourses', authenticateJwt, async (req, res) => {
-  const user = await User.findOne({ username: req.user.username }).populate('purchasedCourses');
+  const user = await User.findOne({ username: req.user.username }).populate('purchasedCourses');// populated is use to print whole object instead of only id's
   if (user) {
     res.json({ purchasedCourses: user.purchasedCourses || [] });
   } else {
