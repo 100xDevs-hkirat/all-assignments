@@ -90,6 +90,7 @@ app.put('/admin/courses/:courseId', (req, res) => {
 
 app.get('/admin/courses', (req, res) => {
   // logic to get all courses
+  return res.status(200).json({ courses: COURSES});
 });
 
 // User routes
@@ -99,6 +100,7 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+  
 });
 
 app.get('/users/courses', (req, res) => {
