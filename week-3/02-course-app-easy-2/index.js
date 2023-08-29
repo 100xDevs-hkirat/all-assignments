@@ -116,19 +116,54 @@ app.post('/users/signup', (req, res) => {
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
+  const ACTIVE_SESSIONS = [];
 
+  const { username, password } = req.body;
+
+  const user = USERS.find(user => user.user.name === username);
+
+  if (!user || user.password !== password) {
+    return res.status(401).json({ error: 'Invalid credentials '});
+  }
+
+  const seesionToken = Math.random().toString(36).substring(7);
+
+  ACTIVE_SESSIONS.push({ username, sessionToken });
+  
+  return res.status(200).json({ message: 'Login successful', seesionToken});
 });
 
 app.get('/users/courses', (req, res) => {
   // logic to list all courses
+  return res.status(200).json({ course: COURSES });
 });
 
 app.post('/users/courses/:courseId', (req, res) => {
   // logic to purchase a course
+  const courseId = req.params.courseId;
+  const username = req.body.username;
+  // Find the user and course based on provided username and courseId
+  const user = USERS.find( users => user.username === username);
+  const course = COURSES.find(course => course.courseId === courseId);
+
+  //  CHeck if user or course does not exist
+  if (!user || !course) {
+    return res.status(404).json({ error: 'User or course not found' });
+  }
+  // Check if user already purchased the course
+  if (user.purchasedCourse.includes(courseId)) {
+    return res.status(400).json({ error: 'User already purchased htis course' });
+  }
+
+  // Update user's purchased courses
+  user.purchasedCourse.push(courseId);
+
+  return res.status(200).json( { message : 'Course purchased successfully', course: course });
 });
 
 app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
+  return res.status(200).json( purchasedCourse: purchasedCourse )
 });
 
 app.listen(3000, () => {
