@@ -65,6 +65,27 @@ app.post('/admin/courses', (req, res) => {
 
 app.put('/admin/courses/:courseId', (req, res) => {
   // logic to edit a course
+  const courseId = req.params.courseId;
+  const { courseName, instructor, duration } = req.body;
+
+  // Find the index of the course with provides courseId
+  const courseIndex = COURSES.findIndex(course => course.courseId === courseId);
+
+  // Check i the course exists
+  if ( courseIndex === -1) {
+    return res.status(404).json({ error: 'Course not found' });
+  }
+
+  // Update the course details
+  COURSES[courseIndex] = {
+    ...COURSES[courseIndex],
+    courseName: courseName || COURSES[courseIndex].courseName,
+    instructor: instructor || COURSES[courseIndex].instructor,
+    duration: duration || COURSES[courseIndex].duration,
+  };
+
+  return res.status(200).json({ message: 'Course updated successfully', course: COURSES[courseIndex]});
+
 });
 
 app.get('/admin/courses', (req, res) => {
