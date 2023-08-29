@@ -163,7 +163,20 @@ app.post('/users/courses/:courseId', (req, res) => {
 
 app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
-  return res.status(200).json( purchasedCourse: purchasedCourse )
+  const username = req.query.username;
+
+  // Find the user based on the provided username
+  const user = USERS.find(user => user.username === username);
+
+  // Check if user does not exist
+  if (!user) {
+    return res.status(404).json({ error: 'Useer not found' });
+  }
+
+  // Retrieve purchased courses based on user's purchasedCOurses array
+  const purchasedCourse = COURSES.filter(course => user.purchasedCourses.includes(course.courseId));
+  return res.status(200).json({ purchasedCourse: purchasedCourses });
+
 });
 
 app.listen(3000, () => {
