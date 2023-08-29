@@ -96,11 +96,26 @@ app.get('/admin/courses', (req, res) => {
 // User routes
 app.post('/users/signup', (req, res) => {
   // logic to sign up user
+  const { username, password } = req.body;
+
+  if (USERS.some(user => user.username === username)) {
+    return res,status(409).json({ error: 'Username is already taken'});
+  }
+
+  const newUsers = {
+    username, 
+    password,
+  };
+
+  USERS.push(newUsers);
+  
+  return res.status(201).json({ message: 'user succesfully created' });
+
 });
 
 app.post('/users/login', (req, res) => {
   // logic to log in user
-  
+
 });
 
 app.get('/users/courses', (req, res) => {
