@@ -98,12 +98,13 @@ app.post('/users/signup', (req, res) => {
   // logic to sign up user
   const { username, password } = req.body;
 
-  if (USERS.some(user => user.username === username)) {
-    return res,status(409).json({ error: 'Username is already taken'});
+  if (USERS.some(user => user.username === username || user.email === email)) {
+    return res,status(409).json({ error: 'Username or email already taken'});
   }
 
   const newUsers = {
     username, 
+    email,
     password,
   };
 
