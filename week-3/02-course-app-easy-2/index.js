@@ -31,10 +31,36 @@ app.post('/admin/signup', (req, res) => {
 
 app.post('/admin/login', (req, res) => {
   // logic to log in admin
+  const ACTIVE_SESSIONS = [];
+
+  const { username, password} = req.body;
+  // Find the admin with the given username
+  const admin =   ADMINS.find(admin => admin.username === username);
+
+  //  Check if admin exists and tje password matches
+  if (!admin || admin.password !== password) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  // Generate a session token (for simplicity using a random string)
+  
+  const sessionToken = Math.random().toString(36).substring(7);
+
 });
 
 app.post('/admin/courses', (req, res) => {
   // logic to create a course
+  const { courseName, instuctor, duration } = req.body;
+
+  //  Create a new course object 
+  const newCourse = {
+    courseName,
+    instuctor,
+    duration,
+  };
+
+  COURSES.push(newCourse);
+
+  return res.status(201).json( { mesaage: 'Course created successully', course: newCourse });
 });
 
 app.put('/admin/courses/:courseId', (req, res) => {
