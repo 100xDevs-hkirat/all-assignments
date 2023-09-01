@@ -1,6 +1,7 @@
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/index");
-const { Todo } = require("../db");
+import express from 'express';
+import { authenticateJwt, SECRET } from '../middleware/index';
+import { Todo } from '../db';
+
 const router = express.Router();
 
 router.post('/todos', authenticateJwt, (req, res) => {
@@ -48,4 +49,4 @@ router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

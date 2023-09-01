@@ -1,8 +1,9 @@
-const jwt = require("jsonwebtoken");
-const express = require('express');
-const { authenticateJwt, SECRET } = require("../middleware/");
-const { User } = require("../db");
+import jwt from "jsonwebtoken";
+import express from 'express';
+import { authenticateJwt, SECRET } from "../middleware/";
+import { User } from "../db";
 const router = express.Router();
+
 
   router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -37,4 +38,5 @@ const router = express.Router();
       }
     });
 
-  module.exports = router
+
+    export default router;
