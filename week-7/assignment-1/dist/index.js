@@ -17,7 +17,7 @@ app.use("/todo", todo_1.default);
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-mongoose_1.default.connect('mongodb+srv://admin:admin@cluster0.y6dverl.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose_1.default.connect('mongodb+srv://admin:admin@cluster0.y6dverl.mongodb.net/', {});
 const db = mongoose_1.default.connection;
 db.on("error", (error) => {
     console.error("MongoDB connection error:", error);
