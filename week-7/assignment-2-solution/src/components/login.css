@@ -1,0 +1,49 @@
+.card {
+  margin-top: 20px;
+  color: white;
+  /* border-radius: 20px; */
+}
+
+input {
+  padding: 10px;
+  margin: 10px;
+  border: 0px;
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+input:hover {
+  box-shadow: 0 4px 10px rgba(240, 0, 0, 0.2);
+}
+
+button {
+  width: 70px;
+  color: white;
+  /* background-color: whitesmoke; */
+  background-color: black;
+  border: 0px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  padding: 10px;
+  outline: none;
+}
+
+button:focus, button:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(240, 0, 0, 0.4);
+  transform: scale(0.98)
+}
+
+button:active {
+    transform: scale(0.9)
+}
+
+a {
+    transition: .3s;
+}
+
+a:hover {
+    transform: scale(0.98)
+}

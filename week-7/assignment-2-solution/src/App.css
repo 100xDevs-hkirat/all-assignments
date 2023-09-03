@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap");
+.card {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #7272dd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+body {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+  background-color: #37b1ab;
+}
+
+#root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  /* align-items: center; */
+  font-family: Nunito;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.todoCard {
+  min-width: 490px;
+  max-width: 90vw;
+  max-height: max-content;
+  margin: 2px;
+  padding: 4px;
+  /* border: 2px solid ; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  background-color: whitesmoke;
+}
+
+.todoCard:hover {
+  transform: scale(0.99);
+}
+
+.todoCard > button {
+  min-width: 70px;
+  margin: 10px;
+}
+
+.todoCard > p {
+  margin: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.todoContainer {
+  position: absolute;
+  width: max-content;
+  margin: 5px;
+
+  /* min-width: 800px; */
+}
+
+@media (max-width: 768px) {
+  body,
+  #root {
+    overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+    min-width: none;
+  }
+
+  .todoCard {
+    min-width: 90vw;
+    /* flex-wrap: wrap; */
+    /* max-width: max-content; */
+    /* width: 100vh */
+  }
+
+  .todoContainer {
+    overflow-x: hidden; /* Allow horizontal scrolling for the content on mobile */
+    min-width: none;
+    width: 98vw;
+  }
+
+  .todo-header {
+    position: relative;
+  }
+  .todo-header  div button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: red;
+  }
+}

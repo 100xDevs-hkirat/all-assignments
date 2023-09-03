@@ -41,9 +41,11 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
-
+;
+app.use(cors());
 app.use(bodyParser.json());
 
 let todos = [];
@@ -53,6 +55,7 @@ app.get('/todos', (req, res) => {
 });
 
 app.get('/todos/:id', (req, res) => {
+	console.log("hii", req.params);
   const todo = todos.find(t => t.id === parseInt(req.params.id));
   if (!todo) {
     res.status(404).send();
@@ -62,13 +65,20 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.post('/todos', (req, res) => {
-  const newTodo = {
+	console.log("req");
+  try {const newTodo = {
     id: Math.floor(Math.random() * 1000000), // unique random id
     title: req.body.title,
     description: req.body.description
   };
+	console.log(req.body);
+	console.log(newTodo);
   todos.push(newTodo);
   res.status(201).json(newTodo);
+  } catch (err) {
+	  console.log(err);
+	  res.sendStatus(500);
+ }
 });
 
 app.put('/todos/:id', (req, res) => {
@@ -83,7 +93,9 @@ app.put('/todos/:id', (req, res) => {
 });
 
 app.delete('/todos/:id', (req, res) => {
+  console.log(req.params, req.params.id);
   const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+	console.log(todoIndex);
   if (todoIndex === -1) {
     res.status(404).send();
   } else {
@@ -94,7 +106,11 @@ app.delete('/todos/:id', (req, res) => {
 
 // for all other routes, return 404
 app.use((req, res, next) => {
+	console.log("hello", req, req.params);
   res.status(404).send();
 });
 
-module.exports = app;
+app.listen(3000, () => {
+	console.log("http://localhost:3000");
+});
+//module.exports = app;

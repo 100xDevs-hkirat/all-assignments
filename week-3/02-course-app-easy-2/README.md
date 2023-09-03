@@ -1,4 +1,4 @@
-## Create a course selling website
+  ## Create a course selling website
 
 ### Description
 Functionally the same as 02-course-app-easy. Routes are different though. 
