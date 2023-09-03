@@ -29,9 +29,85 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
-const PORT = 3000;
+const express = require("express");
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.json());
+const secretKey = "d@_s3kr3t_k3y";
+
+const USERS = [];
+
+app.post("/signup", (req, res) => {
+  const newUser = req.body;
+  console.log(newUser);
+  if (newUser) {
+    const existingUser = USERS.find(
+      (user) => user.username === newUser.username
+    );
+    if (existingUser) {
+      return res.status(400).send("Username already exists");
+    }
+
+    const id = Math.floor(1000000 * Math.random());
+    USERS.push({
+      id,
+      username: newUser.username,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      password: newUser.password,
+    });
+
+    return res.status(201).send("Created");
+  } else {
+    return res.status(400).send("Bad Request");
+  }
+});
+
+app.post("/login", (req, res) => {
+  const user = req.body;
+  const foundUser = USERS.find(
+    (u) => u.username === user.username && u.password === user.password
+  );
+
+  if (foundUser) {
+    const token = jwt.sign({ username: foundUser.username }, secretKey, {
+      expiresIn: "1h",
+    });
+    return res.status(200).json({ token });
+  } else {
+    return res.status(401).send("Unauthorized");
+  }
+});
+
+app.get("/data", (req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  let userFound = false;
+
+  for (let i = 0; i < USERS.length; i++) {
+    if (USERS[i].username === username && USERS[i].password === password) {
+      userFound = true;
+      break;
+    }
+  }
+
+  if (userFound) {
+    let result = [];
+    for (let i = 0; i < USERS.length; i++) {
+      result.push({
+        firstName: USERS[i].firstname,
+        lastName: USERS[i].lastname,
+        username: USERS[i].username,
+      });
+    }
+    res.json(result).status(200).send("OK");
+  } else res.send("Unauthorized").status(404);
+});
+
+app.use((req, res) => {
+  return res.status(404).send("Not Found");
+});
 
 module.exports = app;
