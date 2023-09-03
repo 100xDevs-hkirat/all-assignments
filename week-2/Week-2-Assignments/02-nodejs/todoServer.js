@@ -39,11 +39,98 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const { nanoid } = require("nanoid");
+const fs = require("fs");
 
 const app = express();
 
+let todoListData = JSON.parse(
+  fs.readFileSync("./files/TodoListData.json", "utf-8", (err, data) => {
+    if (err) {
+      console.log("error occurred");
+      return [];
+    } else {
+      return data;
+    }
+  })
+);
+
 app.use(bodyParser.json());
+
+app.post("/todos", async (req, res) => {
+  const { title, description, completed } = req.body;
+  const id = nanoid(10);
+
+  todoListData.push({ title, description, completed, id });
+
+  fs.writeFileSync("./files/TodoListData.json", JSON.stringify(todoListData));
+
+  res.status(201).json({ id });
+});
+
+app.get("/todos", (req, res) => {
+  res.status(200).json(todoListData);
+});
+
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+
+  const todo = todoListData.find((todo) => todo.id === id);
+
+  if (!todo) {
+    return res.status(404).json({ message: "Todo not found" });
+  } else {
+    return res.status(200).json(todo);
+  }
+});
+
+app.put("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  const { title, completed } = req.body;
+
+  const todoIndex = todoListData.findIndex((todo) => todo.id === id);
+
+  if (todoIndex === -1) {
+    return res.status(404).json({ message: "Todo not found" });
+  }
+
+  const selectedTodo = todoListData[todoIndex];
+
+  todoListData[todoIndex] = {
+    title,
+    completed,
+    description: selectedTodo.description,
+    id: selectedTodo.id,
+  };
+
+  fs.writeFileSync("./files/TodoListData.json", JSON.stringify(todoListData));
+
+  return res.status(200).json({
+    status: "Success",
+    selectedTodo,
+    updatedTodo: todoListData[todoIndex],
+  });
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const _id = req.params.id;
+
+  const deletedTodo = todoListData.filter((todo) => todo.id === _id);
+  const todoIndex = todoListData.findIndex((todo) => todo.id === _id);
+
+  if (deletedTodo.length === 0) {
+    return res.status(404).json({ message: "Todo Not Found" });
+  }
+
+  todoListData.splice(todoIndex, 1);
+
+  return res.status(200).json({
+    status: "Success",
+    message: "Todo Found and Deleted",
+    deletedTodo,
+  });
+});
 
 module.exports = app;
