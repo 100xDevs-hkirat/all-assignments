@@ -42,6 +42,9 @@ const authenticateJwt = (req, res, next) => {
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
+    if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' }); //to check if username and password is not empty
+  }
   const admin = ADMINS.find(a => a.username === username);
   console.log("admin signup");
   if (admin) {
