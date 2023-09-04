@@ -1,6 +1,6 @@
 ## Assignment 2
 Move this JS project to typescript.
-
+ 
  - It's harder to move a react project to TS, although totally possible with the naive approach of moving files from jsx => tsx, and then fixing all the errors.
  - It's easier to re-bootstrap the initial configuration using vite, and then move the files over.
    - This is because the initial configuration is a lot of work, and it's easier to just re-bootstrap it.
