@@ -4,7 +4,7 @@
   "description": "Convert this from JS to typescript.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "nodemon dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,7 +15,8 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
