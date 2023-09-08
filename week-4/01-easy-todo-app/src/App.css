@@ -1,0 +1,38 @@
+.todo-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: aquamarine;
+    margin: auto;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    padding: 30px;
+}
+#title{
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px 20px;
+}
+#description{
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px 20px;
+}
+.todo-container button{
+    background-color: rgb(224, 178, 146);
+    padding: 10px 20px;
+    margin: auto;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+}
+.todo-container button:hover{
+    background-color: rgb(199, 124, 71);
+    
+}

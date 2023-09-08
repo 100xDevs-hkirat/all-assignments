@@ -1,0 +1,42 @@
+[
+  {
+    "title": "updated course title",
+    "description": "updated course description",
+    "price": 100,
+    "imageLink": "https://updatedlinktoimage.com",
+    "published": false,
+    "id": 1688579758276
+  },
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688579770074
+  },
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688614996889
+  },
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688614998390
+  },
+  {
+    "title": "course title",
+    "description": "course description",
+    "price": 100,
+    "imageLink": "https://linktoimage.com",
+    "published": true,
+    "id": 1688614999215
+  }
+]

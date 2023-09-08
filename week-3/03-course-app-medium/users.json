@@ -1,0 +1,17 @@
+[
+  { "username": "kitty", "password": "12345" },
+  {
+    "username": "kitty1",
+    "password": "12345",
+    "purchasedCourse": [
+      {
+        "title": "course title",
+        "description": "course description",
+        "price": 100,
+        "imageLink": "https://linktoimage.com",
+        "published": true,
+        "id": 1688614999215
+      }
+    ]
+  }
+]
