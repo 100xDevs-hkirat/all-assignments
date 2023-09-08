@@ -1,8 +1,6 @@
 const express = require('express');
-const app = express();
 const jwt = require('jsonwebtoken');
-const { decode } = require('punycode');
-const secretKey = 'password'
+const app = express();
 
 app.use(express.json());
 
@@ -10,148 +8,70 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
+const secret = "supersecret";
+
+const generateJwt = (user) => {
+  const payload = { username: user.username, };
+  return jwt.sign(payload, secretKey, { expiresIn: '1h'});
+};
+
 const authenticateJwt = (req, res, next) => {
-  const token = req.heaader.authorization?.split('')[1];
+  const authHeader = req.headers.authorization;
 
-  if (token) {
-    jwt.verify(token, secretKey, (err, decoded) => {
+  if (authHeader) {
+    const token = authHeader.aplit(' ')[1];
+
+    jwt.verify(token, secretKey, (err, user) => {
       if (err) {
-        return res.status(403).json({ message: 'Authentication failed' });
+        return res.sendStatus(403);
       }
-
-      req.user = decode;
+      req.user =  user;
       next();
-    });
-  } else {
-    res.status(401).json({ message: 'Unauthorized '})
+    })
+  } else{
+    res.sendStatus(401);
   }
-}
+};
 
-// Admin routes
 app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
-  const {username, password } = req.body;
-  if (adminAccounts.some((admin) => admin.username === username)) {
-    return res.status(400).json({ message: 'Username already exists'});
+  const admin = req.body;
+  const existingAdmin = ADMINS.find(a => a.username === admin.username);
+  if (existingAdmin) {
+    res.status(403).json({ message: 'Admin already exists ' });
+  } else {
+    ADMINS.push(admin);
+    const token = generateJwt(admin);
+    res.json({ message: 'Admin created successfully', token });
   }
-
-  const newAdmin = { username, password };
-  ADMINS.push(newAdmin);
-  const token = jwt.sign({ username }, secretKey, {expiresIn: '1h'});
-
-  res.status(201).json({ message: 'Admin created successfuly', token});
-
 });
 
 app.post('/admin/login', (req, res) => {
-  // logic to log in admin
-  const {username, password} = req.header;
-  if (username === adminCredentials.username && password === adminCredentials.password) {
-    const token = jwt.sign({ username }, secretKey, { expireIn: '1h'});
+  const {usename, password } = req.headers;
+  const admin = ADMINS.find( a => a.username === username && a.password === password);
 
-    return res.status(200).json({ message: 'Logged in successfully', token });
+  if (admin) {
+    const token = generateJwt(admin);
+    res.json({ message: 'Logged in successfully', token });
+  } else {
+    res.status(403).json({ message: 'Admin authnetication failed' });
   }
-  res.status(401).json({ message: 'Authentication failed' });
 });
 
-
-app.post('/admin/courses', authenticateJwt, (req, res) => {
-  // logic to create a course
-  const { body } = req;
-
-  const newCourse = {
-    courseId: courseIdCounter++,
-    title: body.title,
-    description: body.description,
-    price: body.price,
-    imageLink: body.imageLink,
-    published: body.published,
-  };
-
-  COURSES.push(newCourse);
-
-  res.status(201).json({ message: 'COurse created successfully', courseId: newCourse.courseId });
+app.post('/admin/course', authenticateJwt, (req, res) => {
+  const course =  req.body;
+  course.id = COURSES.length + 1;
+  COURSES.push(course);
+  res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
-app.put('/admin/courses/:courseId',authenticateJwt, (req, res) => {
-  // logic to edit a course
-  const {params, body} = req;
-  const courseId = parseInt(params.courseId);
+app.put('/admin/courses/:courseId', authenticateJwt, (req, res) = {
+  const courseId  = parseInt(req.params.courseId);
 
-  if (!courseToUpdate) {
-    return res.status(404).json({ message: 'Course not found' });
+  const courseIndex = COURSES.findIndex(c => c.id === courseId);
+
+  if (courseIndex > -1) {
+    const updatedCourse = { ...COURSES[courseIndex], ...req.body };
+    COURSES[courseIndex] = updatedCourse;
+    res.json({ message: 'COurse updated'})
   }
-
-  courseToUpdate.title = body.title;
-  courseToUpdate.description = body.description;
-  courseToUpdate.price = body.price;
-  courseToUpdate.imageLink = body.imageLink;
-  courseToUpdate.published = body.published;
-
-});
-
-app.get('/admin/courses', authenticateJwt, (req, res) => {
-  // logic to get all courses
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied' });
-  }
-
-  res.json({ COURSES });
-
-});
-
-// User routes
-app.post('/users/signup', (req, res) => {
-  // logic to sign up user
-  const { username , password} = req.body;
-  if (USERS.some((user) => user.username === username)) {
-    return res.status(400).json({ message: 'Username already exists'});
-  }
-
-  const newUser = { username, password};
-  USERS.push(newUser);
-  const token = jwt.sign({ username }, secretKey, { expiresIn: '1h'});
-
-  res.status(201).json({ message: 'User created successfully', token});
-
-
-});
-
-app.post('/users/login', (req, res) => {
-  // logic to log in user
-  const { username, password } = req.headers;
-
-  const user = USERS.find((u) => u.username === username && u.password === password);
-
-  if (!USERS) {
-    return res.status(401).json({ message: 'Authentication failed' });
-
-  }
-
-  const token = jwt.sign({ username }, secretKey, { expireIn: '1h' });
-
-  res.status(200).json({ message: 'Logged in successfully', token});
-});
-
-app.get('/users/courses', authenticateJwt, (req, res) => {
-  // logic to list all courses
-  res.json({ COURSES });
-});
-
-app.post('/users/courses/:courseId', (req, res) => {
-  // logic to purchase a course
-  const{ params } = req;
-  const courseId = parseInt(params.courseId);
-  const courseToPurchase = COURSES.find((course) => course.id === courseId);
-});
-
-app.get('/users/purchasedCourses', authenticateJwt, (req, res) => {
-  // logic to view purchased courses
-  const userPurchasedCourses = purchasedCourses.filter((course) => course.username === req.user.username);
-
-  res.json({ purchasedCourses: userPurchasedCourses });
-});
-
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+})
