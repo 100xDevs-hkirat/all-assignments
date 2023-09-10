@@ -41,9 +41,70 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const {v4:uuidv4}=require('uuid');
 
 const app = express();
 
 app.use(bodyParser.json());
+
+let todoData = [];
+
+app.get('/todos',(req,res)=>{
+  res.send(todoData);
+})
+
+app.get('/todo/:id', (req, res) => {
+  let currId = Number(req.params.id);
+  const isExist = todoData.find(todo=>todo.id===currId);
+  if(isExist){
+    res.send(isExist);
+  }
+  else{
+    res.status(404).send({error:"The id does not exits."});
+  }
+});
+
+app.post('/todos',(req,res)=>{
+  let newtitle = req.body.title;
+  let newdiscription = req.body.discription;
+  let newTask = {
+    id: uuidv4(),
+    title: newtitle,
+    discription: newdiscription
+  }
+  todoData.push(newTask);
+  res.send("successfully added to the database.");
+})
+
+app.put('/todos/:id',(req,res)=>{
+  let currId = req.params.id;
+  const isExist = todoData.find(todo=>todo.id===currId);
+  if(isExist){
+    isExist.title=req.body.title;
+    isExist.discription=req.body.discription;
+    res.send("The data is successfully updated.");
+  }
+  else{
+    res.status(404).send("Todo not found.");
+  }
+})
+
+app.delete('/todos/:id',(req,res)=>{
+  let currId = req.params.id;
+  const isExist = todoData.find(todo=>todo.id===currId);
+  if(isExist){
+    todoData=todoData.filter(todo=>todo!=isExist);
+
+    res.send(todoData);
+  }
+  else{
+    res.send(404).send({error:"Todo item with given id not found."});
+  }
+})
+
+const port = 3000;
+app.listen(port,()=>{
+  console.log(`The app is running at ${port}.`);
+})
 
 module.exports = app;

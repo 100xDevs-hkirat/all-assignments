@@ -1,0 +1,55 @@
+{
+    "username": "admin_username",
+    "password": "admin_password"
+  }
+
+  
+  {
+    "username": "user_username",
+    "password": "user_password"
+  }
+  
+
+
+{
+    "title": "Sample Course 1",
+    "description": "This is the first sample course.",
+    "price": 50,
+    "imageLink": "https://sampleimage1.com",
+    "published": true
+  }
+
+  {
+    "title": "Sample Course 2",
+    "description": "This is the second sample course.",
+    "price": 75,
+    "imageLink": "https://sampleimage2.com",
+    "published": true
+  }
+
+  {
+    "title": "Sample Course 3",
+    "description": "This is the third sample course.",
+    "price": 120,
+    "imageLink": "https://sampleimage3.com",
+    "published": false
+  }
+
+  {
+    "title": "Sample Course 4",
+    "description": "This is the fourth sample course.",
+    "price": 90,
+    "imageLink": "https://sampleimage4.com",
+    "published": true
+  }
+
+  
+  {
+    "title": "Sample Course 5",
+    "description": "This is the fifth sample course.",
+    "price": 200,
+    "imageLink": "https://sampleimage5.com",
+    "published": false
+  }
+
+  

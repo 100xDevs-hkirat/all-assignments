@@ -21,5 +21,33 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+app.get('/files',(req,res)=>{
+  const fileLocation = "./files";
+  fs.readdir(fileLocation,(err,files)=>{
+    if(err){
+      console.log("Error while reading file :",err);
+    }
+    const fileIndex = files.map((file)=>{
+      return file;
+    })
+    res.json({fileIndex});
+  })
+})
+
+app.get('/file/:filename',(req,res)=>{
+  const fileName = req.params.filename;
+  const fileLocation="./files/"+fileName;
+
+  fs.readFile(fileLocation,'utf8',(err,data)=>{
+    if(err){
+      console.log("Error occur while reading the file:",err);
+    }
+    res.send(data);
+  })
+})
+
+app.listen(3000,()=>{
+  console.log("Server is successfully started.");
+})
 
 module.exports = app;

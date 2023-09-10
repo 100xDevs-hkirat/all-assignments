@@ -1,4 +1,3 @@
-
 function createDomElements(data) {
   var parentElement = document.getElementById("mainArea");
 
