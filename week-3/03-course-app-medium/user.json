@@ -1,0 +1,36 @@
+[
+  {
+    "username": "neeruuser",
+    "pass": 1234
+  },
+  {
+    "username": "neeruuu",
+    "pass": 12
+  },
+  {
+    "username": "userxyz",
+    "pass": 1234
+  },
+  {
+    "username": "userxyz1",
+    "pass": 1234,
+    "purchasedCourses": [
+      {
+        "title": "Learning",
+        "Description": "earning from learning",
+        "price": 100,
+        "image": "https://image.png",
+        "published": true,
+        "id": 2
+      },
+      {
+        "title": "Learning",
+        "Description": "earning from learning",
+        "price": 100,
+        "image": "https://image.png",
+        "published": true,
+        "id": 2
+      }
+    ]
+  }
+]
