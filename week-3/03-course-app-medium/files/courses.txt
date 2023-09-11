@@ -1,0 +1,1 @@
+[{"id":"6b508378-09fc-4704-883c-38bf248b248c","title":"course title","description":"course descriptionn","price":"100","imageLink":"https://linktoimage.com","published":"true"}]
