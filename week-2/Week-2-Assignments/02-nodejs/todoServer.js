@@ -41,12 +41,14 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const fs = require('fs');
 const {v1 : uuid} = require('uuid');
 const path = require('path');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 var todos = [
   {id:1,title:'phone', description: 'get an Apple Iphone',},
