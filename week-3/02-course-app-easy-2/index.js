@@ -31,7 +31,7 @@ const authenticateAdminJWT = (req,res, next) => {
       if (err){
         console.log(err);
       }else {
-        console.log("decryptedData : ", decrypt)
+        console.log("decryptedData : ", decrypt);
         req.user = decrypt;
         next();
       }
@@ -90,7 +90,7 @@ app.post('/admin/login', (req, res) => {
   // logic to log in admin
   const token = generateAdminJWT(req.body);
     res.json({
-      admin: req.body.username, 
+      admin: req.body.username,
       message: "Welcome You are succesfully Signed In !",
       token
     })
