@@ -2,14 +2,26 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const { randomUUID } = require("crypto");
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 let secret = "dont touch me !";
+
+try {
+  ADMINS = JSON.parse(fs.readFileSync("./admins.json", "utf8"));
+  USERS = JSON.parse(fs.readFileSync("./users.json", "utf8"));
+  COURSES = JSON.parse(fs.readFileSync("./courses.json", "utf8"));
+} catch {
+  ADMINS = [];
+  USERS = [];
+  COURSES = [];
+}
 
 // verifying users and admins authentication using jwt
 
@@ -20,15 +32,18 @@ const generateJWT = (e) => {
 
 const adminAuth = (req, res, next) => {
   const encryptedData = req.headers.authorization.split(" ")[1];
-  console.log("auth : ", encryptedData);
-  jwt.verify(encryptedData, secret, (err, decrypted) => {
-    if (err) {
-      res.send("please login before using this route !");
-    } else {
-      console.log(decrypted);
-      next();
-    }
-  });
+  if (encryptedData != 'undefined') {
+    jwt.verify(encryptedData, secret, (err, decrypted) => {
+      if (err) {
+        res.send("please login before using this route !");
+      } else {
+        console.log(decrypted);
+        next();
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
 };
 
 const userAuth = (req, res, next) => {
@@ -90,8 +105,11 @@ app.post("/admin/login", (req, res) => {
       let adminExists = parsedAdmins.some((a) => a.username == admin.username);
 
       if (adminExists) {
-        res.send(admin.username + " logged in succesfully !");
-        req.headers.authorization = generateJWT(admin.username);
+        let authToken = generateJWT(admin.username);
+        res.json({
+          message: admin.username + " logged in succesfully !",
+          authToken
+        });
       } else {
         res.send("error while loggin in !");
       }
@@ -249,29 +267,33 @@ app.get("/users/courses", userAuth, (req, res) => {
   });
 });
 
-app.post("/users/courses/:courseId", (req, res) => {
+app.post("/users/courses/:courseId", userAuth, (req, res) => {
   // logic to purchase a course
-  const courseId = Number(req.params.courseId);
-  const course = COURSES.find(c => c.id === courseId);
+  const course = COURSES.find((c) => c.id === parseInt(req.params.courseId));
   if (course) {
-    req.user.purchasedCourses.push(courseId);
-    res.json({ message: 'Course purchased successfully' });
+    const user = USERS.find((u) => u.username === req.user.username);
+    if (user) {
+      if (!user.purchasedCourses) {
+        user.purchasedCourses = [];
+      }
+      user.purchasedCourses.push(course);
+      fs.writeFileSync("users.json", JSON.stringify(USERS));
+      res.json({ message: "Course purchased successfully" });
+    } else {
+      res.status(403).json({ message: "User not found" });
+    }
   } else {
-    res.status(404).json({ message: 'Course not found or not available' });
+    res.status(404).json({ message: "Course not found" });
   }
 });
 
-app.get("/users/purchasedCourses", (req, res) => {
-  // logic to view purchased courses
-  var purchasedCourseIds = req.user.purchasedCourses; [1, 4];
-  var purchasedCourses = [];
-  for (let i = 0; i<COURSES.length; i++) {
-    if (purchasedCourseIds.indexOf(COURSES[i].id) !== -1) {
-      purchasedCourses.push(COURSES[i]);
-    }
+app.get("/users/purchasedCourses", userAuth, (req, res) => {
+  const user = USERS.find((u) => u.username === req.user.username);
+  if (user) {
+    res.json({ purchasedCourses: user.purchasedCourses || [] });
+  } else {
+    res.status(403).json({ message: "User not found" });
   }
-
-  res.json({ purchasedCourses });
 });
 
 app.listen(3000, () => {
