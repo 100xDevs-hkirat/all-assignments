@@ -41,9 +41,80 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+require('dotenv').config();
 
 const app = express();
-
+const PORT = 3001;
 app.use(bodyParser.json());
 
+mongoose.connect(process.env.MONGOOSE_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
+
+let TodosSchema = new mongoose.Schema({
+  title: {
+    type:String
+  },
+  description: {
+    type:String
+  }
+});
+
+const Todos = mongoose.model('Todos', TodosSchema);
+
+app.get("/todos", async (req,res) => {
+  const todo = await Todos.find({});
+  res.json({Todos: todo});
+})
+
+app.get("/todos/:id", async (req,res) => {
+  const id = req.params.id;
+  const todo = await Todos.findById(id);
+  if(todo) {
+    res.json({Todo: todo});
+  }
+  else {
+    res.status(402).json({message: "Todo Id not found"});
+  }
+})
+
+app.post("/todos", (req,res) => {
+  const todo = req.body;
+  const newTodo = new Todos({
+    title:todo.title,
+    description:todo.description});
+  newTodo.save();
+  res.json({message:'Todo Created Successfully', newTodo});
+});
+
+
+app.put("/todos/:id", async (req,res) => {
+  const todo = await Todos.findByIdAndUpdate(req.params.id, req.body,  {new: true});
+  if(todo) {
+    res.json({message: "Updated Successfully", todo});
+  }
+  else {
+    res.status(404).json({ message: 'Id not found' });
+  }
+})
+
+app.delete("/todos/:id", async (req, res) => {
+  const deletedTodo = await Todos.findOneAndDelete({ _id: req.params.id});
+  if(deletedTodo) {
+    res.json({message: 'Deleted Successfully'});
+  }
+  else {
+    res.json({message: 'Id not found'});
+  }
+})
+
 module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Server Listing at Port ${PORT}`);
+})
