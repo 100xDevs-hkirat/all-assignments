@@ -17,6 +17,41 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+
+  constructor() {
+    this.result = 0;
+}
+add(number) {
+    this.result = this.result + number;
+}
+subtract(number) {
+    this.result = this.result - number;
+}
+multiply(number) {
+    this.result = this.result * number;
+}
+divide(number) {
+    if (number === 0) {
+        throw Error("Zero division error");
+    }
+    this.result = this.result / number;
+}
+clear() {
+    this.result = 0;
+}
+getResult() {
+    return this.result;
+}
+calculate(string) {
+    let ans = eval(string);
+    if (ans === Infinity || ans === -Infinity) {
+        throw Error("Zero divison error");
+    }
+    this.result = eval(string);
+}
+
+
+}
 
 module.exports = Calculator;
