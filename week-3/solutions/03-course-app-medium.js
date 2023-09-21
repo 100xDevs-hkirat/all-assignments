@@ -1,9 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const fs = require('fs');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -19,15 +21,16 @@ try {
     USERS = [];
     COURSES = [];
 }
-console.log(ADMINS);
+// console.log(ADMINS);
 
-const SECRET = 'my-secret-key';
+const SECRET1 = 'my-secret-key-1';
+const SECRET2 = 'my-secret-key-2';
 
-const authenticateJwt = (req, res, next) => {
+const authenticateAdminJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, SECRET, (err, user) => {
+    jwt.verify(token, SECRET1, (err, user) => {
       if (err) {
         return res.sendStatus(403);
       }
@@ -39,6 +42,27 @@ const authenticateJwt = (req, res, next) => {
   }
 };
 
+const authenticateUserJwt = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, SECRET2, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+app.get('/admin/profile', authenticateAdminJwt, (req, res) => {
+  res.json({
+    username: req.user.username
+  })
+})
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
@@ -50,7 +74,7 @@ app.post('/admin/signup', (req, res) => {
     const newAdmin = { username, password };
     ADMINS.push(newAdmin);
     fs.writeFileSync('admins.json', JSON.stringify(ADMINS));
-    const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'admin' }, SECRET1, { expiresIn: '1h' });
     res.json({ message: 'Admin created successfully', token });
   }
 });
@@ -59,14 +83,15 @@ app.post('/admin/login', (req, res) => {
   const { username, password } = req.headers;
   const admin = ADMINS.find(a => a.username === username && a.password === password);
   if (admin) {
-    const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'admin' }, SECRET1, { expiresIn: '1h' });
     res.json({ message: 'Logged in successfully', token });
   } else {
     res.status(403).json({ message: 'Invalid username or password' });
   }
 });
 
-app.post('/admin/courses', authenticateJwt, (req, res) => {
+
+app.post('/admin/courses', authenticateAdminJwt, (req, res) => {
   const course = req.body;
   course.id = COURSES.length + 1;
   COURSES.push(course);
@@ -74,7 +99,7 @@ app.post('/admin/courses', authenticateJwt, (req, res) => {
   res.json({ message: 'Course created successfully', courseId: course.id });
 });
 
-app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
+app.put('/admin/courses/:courseId', authenticateAdminJwt, (req, res) => {
   const course = COURSES.find(c => c.id === parseInt(req.params.courseId));
   if (course) {
     Object.assign(course, req.body);
@@ -85,7 +110,7 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
   }
 });
 
-app.get('/admin/courses', authenticateJwt, (req, res) => {
+app.get('/admin/courses', authenticateAdminJwt, (req, res) => {
   res.json({ courses: COURSES });
 });
 
@@ -99,7 +124,7 @@ app.post('/users/signup', (req, res) => {
     const newUser = { username, password };
     USERS.push(newUser);
     fs.writeFileSync('users.json', JSON.stringify(USERS));
-    const token = jwt.sign({ username, role: 'user' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'user' }, SECRET2, { expiresIn: '1h' });
     res.json({ message: 'User created successfully', token });
   }
 });
@@ -108,18 +133,18 @@ app.post('/users/login', (req, res) => {
   const { username, password } = req.headers;
   const user = USERS.find(u => u.username === username && u.password === password);
   if (user) {
-    const token = jwt.sign({ username, role: 'user' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'user' }, SECRET2, { expiresIn: '1h' });
     res.json({ message: 'Logged in successfully', token });
   } else {
     res.status(403).json({ message: 'Invalid username or password' });
   }
 });
 
-app.get('/users/courses', authenticateJwt, (req, res) => {
+app.get('/users/courses', authenticateUserJwt, (req, res) => {
   res.json({ courses: COURSES });
 });
 
-app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
+app.post('/users/courses/:courseId', authenticateUserJwt, (req, res) => {
   const course = COURSES.find(c => c.id === parseInt(req.params.courseId));
   if (course) {
     const user = USERS.find(u => u.username === req.user.username);
@@ -138,7 +163,7 @@ app.post('/users/courses/:courseId', authenticateJwt, (req, res) => {
   }
 });
 
-app.get('/users/purchasedCourses', authenticateJwt, (req, res) => {
+app.get('/users/purchasedCourses', authenticateUserJwt, (req, res) => {
   const user = USERS.find(u => u.username === req.user.username);
   if (user) {
     res.json({ purchasedCourses: user.purchasedCourses || [] });
