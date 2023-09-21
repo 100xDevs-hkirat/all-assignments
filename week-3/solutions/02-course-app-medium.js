@@ -13,10 +13,11 @@ const secretKey = "superS3cr3t1"; // replace this with your own secret key
 const generateJwt = (user) => {
   const payload = { username: user.username, };
   return jwt.sign(payload, secretKey, { expiresIn: '1h' });
-};
+}; 
 
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  console.log(authHeader);
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
