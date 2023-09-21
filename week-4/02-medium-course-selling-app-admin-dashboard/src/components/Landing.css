@@ -1,0 +1,66 @@
+/* Reset default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply styles to the body */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  padding: 20px;
+}
+
+/* Apply styles to the container div */
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply styles to the heading */
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Apply styles to the links */
+.link {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #4c87c6;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #366aa5;
+}
+
+/* Apply styles to the login link */
+.link[href="/login"] {
+  background-color: #d95b43;
+}
+
+.link[href="/login"]:hover {
+  background-color: #b54632;
+}
+
+/* Apply styles to the register link */
+.link[href="/register"] {
+  background-color: #68a357;
+}
+
+.link[href="/register"]:hover {
+  background-color: #528944;
+}

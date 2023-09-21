@@ -1,18 +1,24 @@
-import React from "react";
+import { Link } from "react-router-dom";
+import "./Register.css";
 
-/// File is incomplete. You need to add input boxes to take input for users to login.
 function Login() {
-    const [email, setEmail] = React.useState("");
+  return (
+    <div className="container">
+      <h1>Login</h1>
+      <form>
+        <label htmlFor="username">Username:</label>
+        <input type="text" id="username" name="username" />
 
-    return <div>
-        <h1>Login to admin dashboard</h1>
-        <br/>
-        Email - <input type={"text"} onChange={e => setEmail(e.target.value)} />
-        <br/>
-        <button>Login</button>
-        <br/>
-        New here? <a href="/register">Register</a>
+        <label htmlFor="password">Password:</label>
+        <input type="password" id="password" name="password" />
+
+        <button type="submit">Login</button>
+      </form>
+      <p>
+        Create an account? <Link to="/register">Register</Link>
+      </p>
     </div>
+  );
 }
 
 export default Login;
