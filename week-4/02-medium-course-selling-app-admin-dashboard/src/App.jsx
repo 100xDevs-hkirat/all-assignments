@@ -4,6 +4,7 @@ import Landing from "./components/Landing";
 import CreateCourse from './components/CreateCourse';
 import Register from './components/Register';
 import ShowCourses from './components/ShowCourses';
+import Signup from './Signup.jsx'
 
 // This file shows how you can do routing in React.
 // Try going to /login, /register, /about, /courses on the website and see how the html changes
@@ -12,7 +13,8 @@ import ShowCourses from './components/ShowCourses';
 function App() {
     return (
         <Router>
-            <Routes>
+            <Routes> 
+                <Singup></Singup>
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
