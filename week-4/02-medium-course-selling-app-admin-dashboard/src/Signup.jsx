@@ -1,5 +1,7 @@
 function Signup() {
     return <div>
-        Hello World
+        Hello World here
     </div>
 }
+
+export default Signup;
