@@ -7,6 +7,17 @@ Try running it for
 Hint - use Date class exposed in JS
 */
 
-function calculateTime(n) {
-    return 0.01;
+function calculate(n){
+  var time1=new Date;
+  var before=time1.getMilliseconds();
+  var sum=0;
+  for(var i=0;i<n;i++){
+    sum=sum+i;
+  }
+  var time2=new Date;
+  var after=time2.getMilliseconds();
+  return after-before;
+}
+//better to use performance.now() function 
+console.log(calculate(1000000));
 }
