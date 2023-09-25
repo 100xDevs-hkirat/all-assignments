@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const jwt = require('jsonwebtoken');
+const cors = require("cors");
 
 require('dotenv').config();
 
@@ -16,6 +17,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true, u
 
 
 app.use(express.json());
+app.use(cors());
 
 let AdminSchema = new mongoose.Schema({
   username: {
