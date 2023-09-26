@@ -1,9 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const cors= require ("cors")
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 const SECRET = 'SECr3t';  // This should be in an environment variable in a real application
 
@@ -24,7 +26,8 @@ const courseSchema = new mongoose.Schema({
   description: String,
   price: Number,
   imageLink: String,
-  published: Boolean
+  published: Boolean ,
+  createdBy: String, 
 });
 
 // Define mongoose models
@@ -38,8 +41,9 @@ const authenticateJwt = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     jwt.verify(token, SECRET, (err, user) => {
       if (err) {
-        return res.sendStatus(403);
+        return res.sendStatus( 403 , "tokenexpired");
       }
+      
       req.user = user;
       next();
     });
@@ -50,8 +54,19 @@ const authenticateJwt = (req, res, next) => {
 
 // Connect to MongoDB
 // DONT MISUSE THIS THANKYOU!!
-mongoose.connect('mongodb+srv://kirattechnologies:iRbi4XRDdM7JMMkl@cluster0.e95bnsi.mongodb.net/courses', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "courses" });
+mongoose.connect('mongodb+srv://admin:ctrl4545@cluster0.0tn1hlx.mongodb.net/Courses', { useNewUrlParser: true, useUnifiedTopology: true, dbName: "Courses" })
+  .then(() => {
+    console.log('MongoDB connected successfully');
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+  });
 
+
+
+app.get("/admin/me" , authenticateJwt  , (req , res)=>{
+  res.json({username : req.user.username})
+})
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
   function callback(admin) {
@@ -61,7 +76,7 @@ app.post('/admin/signup', (req, res) => {
       const obj = { username: username, password: password };
       const newAdmin = new Admin(obj);
       newAdmin.save();
-      const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '24h' });
       res.json({ message: 'Admin created successfully', token });
     }
 
@@ -70,10 +85,10 @@ app.post('/admin/signup', (req, res) => {
 });
 
 app.post('/admin/login', async (req, res) => {
-  const { username, password } = req.headers;
+  const { username, password } = req.headers; 
   const admin = await Admin.findOne({ username, password });
   if (admin) {
-    const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'admin' }, SECRET, { expiresIn: '24h' });
     res.json({ message: 'Logged in successfully', token });
   } else {
     res.status(403).json({ message: 'Invalid username or password' });
@@ -81,7 +96,16 @@ app.post('/admin/login', async (req, res) => {
 });
 
 app.post('/admin/courses', authenticateJwt, async (req, res) => {
-  const course = new Course(req.body);
+  const { title, description, price, imageLink, published } = req.body;
+  const createdBy = req.user.username; 
+  const course = new Course({
+    title,
+    description,
+    price,
+    imageLink,
+    published,
+    createdBy,
+  });
   await course.save();
   res.json({ message: 'Course created successfully', courseId: course.id });
 });
@@ -96,9 +120,18 @@ app.put('/admin/courses/:courseId', authenticateJwt, async (req, res) => {
 });
 
 app.get('/admin/courses', authenticateJwt, async (req, res) => {
-  const courses = await Course.find({});
+ const adminUsername = req.user.username;
+
+const courses = await Course.find({ createdBy: adminUsername });
+
   res.json({ courses });
 });
+app.get('/admin/course/:id' , authenticateJwt , async(req , res)=>{
+  const id = req.params.id;
+  const course = await Course.find({ _id : id });
+  res.json({ course})
+  
+})
 
 // User routes
 app.post('/users/signup', async (req, res) => {
@@ -109,7 +142,7 @@ app.post('/users/signup', async (req, res) => {
   } else {
     const newUser = new User({ username, password });
     await newUser.save();
-    const token = jwt.sign({ username, role: 'user' }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ username, role: 'user' }, SECRET, { expiresIn: '5h' });
     res.json({ message: 'User created successfully', token });
   }
 });
@@ -133,9 +166,13 @@ app.get('/users/courses', authenticateJwt, async (req, res) => {
 app.post('/users/courses/:courseId', authenticateJwt, async (req, res) => {
   const course = await Course.findById(req.params.courseId);
   console.log(course);
+  
   if (course) {
     const user = await User.findOne({ username: req.user.username });
-    if (user) {
+    if(user.purchasedCourses.includes(course._id)){
+      res.status(404).json({message : " course already purchased "})
+    }
+    else if (user) {
       user.purchasedCourses.push(course);
       await user.save();
       res.json({ message: 'Course purchased successfully' });
