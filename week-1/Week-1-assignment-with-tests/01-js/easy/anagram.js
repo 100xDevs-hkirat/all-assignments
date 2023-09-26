@@ -8,7 +8,19 @@
 */
 
 function isAnagram(str1, str2) {
-
+const news1 = str1.toLowerCase().
+            replace(/\s/g , "")
+           .split('')
+           .sort()
+           .join('') ;
+const news2= str2.toLowerCase() .replace(/\s/g , "")
+           .split('')
+           .sort()
+           .join('') ;
+           
+console.log(news1 );
+console.log(news2 );
+  return news1==news2 ;
 }
-
+console.log(isAnagram('openai' , 'open!'));
 module.exports = isAnagram;
