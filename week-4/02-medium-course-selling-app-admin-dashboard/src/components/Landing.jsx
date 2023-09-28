@@ -35,8 +35,8 @@ function Landing() {
             <button
               className="bg-blue-400 hover:text-gray-900 rounded-md text-[0.9rem] text-white px-3 py-0 text-semibold"
               onClick={() => {
-                window.location = '/'
-                localStorage.setItem('token', null);
+                window.location = "/";
+                localStorage.setItem("token", null);
               }}
             >
               SignOut
@@ -59,9 +59,21 @@ function Landing() {
           </div>
         )}
       </div>
-      <h1 className="mt-40 mx-auto text-[2.6rem] text-white">
-        Welcome to course selling website!
-      </h1>
+      <div
+        className="flex flex-col justify-center items-center
+       mt-40 mx-auto"
+      >
+        <h1 className="text-[2.6rem] text-white">
+          Welcome to course selling website!
+        </h1>
+        <button
+          className="bg-gray-900 hover:text-white text-gray-200 
+          px-4 py-1 rounded-md"
+          onClick={() => navigate("/courses")}
+        >
+          View Courses
+        </button>
+      </div>
     </div>
   );
 }

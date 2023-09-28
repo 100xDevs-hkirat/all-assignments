@@ -70,6 +70,9 @@ function CreateCourse() {
     }
   };
 
+  console.log('courses : ', courses)
+
+
   return (
     <div className="px-4">
       <div className="flex justify-between items-center">
@@ -140,7 +143,9 @@ function CreateCourse() {
           {courses &&
             courses.map((c, i = i + 1) => (
               <div
-                className="flex py-4 border-b border-gray-300 flex-col space-y-1"
+                onClick={()=>navigate(`/course/${c.id}`)}
+                className="flex hover:bg-gray-200 rounded-md px-2
+                cursor-pointer py-4 border-b border-gray-300 flex-col space-y-1"
                 key={i}
               >
                 {/* name */}

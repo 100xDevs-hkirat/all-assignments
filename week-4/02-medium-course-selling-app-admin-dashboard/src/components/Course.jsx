@@ -1,75 +1,62 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+
+// ? recoil concept !
+const couresState = atom({
+  key: "courseState", // unique ID (with respect to other atoms/selectors)
+  default: [], // default value (aka initial value)
+});
 
 const Course = () => {
   const { courseId } = useParams();
-  const [courses, setCourses] = useState("");
+  // const [courses, setCourses] = useState("");
+  const setCourses = useSetRecoilState(couresState);
+  console.log("COURSE re-rendering !");
 
   const getCourses = async () => {
     let courses = await axios.get("http://localhost:3000/admin/courses");
     setCourses(courses.data);
     return courses;
   };
+  console.log("course details !");
   useEffect(() => {
     getCourses();
-  }, [courses]);
-  let course = null;
-  if (courses) {
-    for (let i = 0; i < courses.length; i++) {
-      if (courses[i].id == courseId) {
-        console.log("courseFound : ", courses[i]);
-        course = courses[i];
-      }
-    }
-  }
-
-  if (!course) {
-    return (
-      <div className="w-full mx-auto">
-        Searching for your couse Hang on tight !!!
-      </div>
-    );
-  }
+  }, []);
 
   return (
     <div className="w-full">
+      <UpdateCourse courseId={courseId} />
       <h1>{courseId}</h1>
-          <UpdateCourse courseId={course} />
-        <div className="flex bg-gray-200 py-4 border-b border-gray-300 flex-col space-y-1">
-          {/* name */}
-          {/* <div className="flex space-x-2"> */}
-          <h4>Name : {course.name}</h4>
-          <h4>Description : {course.desc}</h4>
-          <h4>Author : {course.author}</h4>
-          {/* </div> */}
-        </div>
-      </div>
+      <CourseCard courseId={courseId} />
+    </div>
   );
 };
 
 export default Course;
 
-import React from "react";
-
 export const UpdateCourse = (props) => {
+  console.log("update course re-rendering !");
+
+  // eslint-disable-next-line react/prop-types
   const courseId = props?.courseId;
-  const [course, setCourse] = React.useState({
-    name: "",
-    desc: "",
-    author: "",
-  });
+
+  const [courses, setCourses] = useRecoilState(couresState);
+  const [course, setCourse] = useState({id: courseId, name: "", desc: "", author: "" });
   const [status, setStatus] = useState("");
 
   useEffect(() => {}, []);
 
+  const updatedCourses = [...courses];
+
   const updateCourse = async (e) => {
     e.preventDefault();
-    console.log("course : ", course);
+    // console.log("course : ", course);
     try {
       await axios
         .put(
-          "http://localhost:3000/admin/courses/" + courseId.id,
+          "http://localhost:3000/admin/courses/" + courseId,
           {
             name: course.name,
             desc: course.desc,
@@ -83,12 +70,15 @@ export const UpdateCourse = (props) => {
         )
         .then((e) => {
           console.log(e);
+          updatedCourses.push(course);
           setStatus(course.name + " updated in succesfully !");
         })
+
         .catch((err) => {
           console.log(err);
           setStatus("Please Login before accessing this page !");
         });
+      setCourses(updatedCourses);
     } catch (e) {
       console.log(e);
       setStatus("this course already exists in courses.json file !");
@@ -136,6 +126,51 @@ export const UpdateCourse = (props) => {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// ! courseCard
+// eslint-disable-next-line react/prop-types
+export const CourseCard = ({ courseId }) => {
+  const courses = useRecoilValue(couresState);
+  console.log("courses : ", courses);
+  console.log("Course updated so re-rendering !");
+
+  let course = null;
+  if (courses.length > 0) {
+    for (let i = 0; i < courses.length; i++) {
+      if (courses[i].id == courseId) {
+        course = courses[i];
+      }
+    }
+  }
+
+  console.log("course : ", course);
+
+  if (!course) {
+    return (
+      <div
+        className="w-full pl-10 mx-auto font-semibold 
+      text-red-400"
+      >
+        Searching for your course Hang on tight !!!
+      </div>
+    );
+  }
+  return (
+    <div>
+      <div
+        className="flex bg-gray-200 px-6 py-4 border-b
+       border-gray-300 flex-col space-y-1"
+      >
+        {/* name */}
+        {/* <div className="flex space-x-2"> */}
+        <h4>Name : {course.name}</h4>
+        <h4>Description : {course.desc}</h4>
+        <h4>Author : {course.author}</h4>
+        {/* </div> */}
       </div>
     </div>
   );

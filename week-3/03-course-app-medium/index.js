@@ -31,14 +31,14 @@ const generateJWT = (e) => {
 };
 
 const adminAuth = (req, res, next) => {
-  console.log('req : ', req.headers.authorization);
+  console.log("req : ", req.headers.authorization);
   const encryptedData = req.headers.authorization.split(" ")[1];
-  if (encryptedData != 'undefined') {
+  if (encryptedData != "undefined") {
     jwt.verify(encryptedData, secret, (err, user) => {
       if (err) {
         res.send("please login before using this route !");
       } else {
-        console.log("user : ",user);
+        console.log("user : ", user);
         req.user = user;
         next();
       }
@@ -63,12 +63,11 @@ const userAuth = (req, res, next) => {
 };
 
 // this route will tell if the user is logged in or not and if logged then it will send the user details
-app.get('/admin/me',adminAuth ,(req, res) => {
+app.get("/admin/me", adminAuth, (req, res) => {
   res.json({
-    username: req.user
-  })
-})
-
+    username: req.user,
+  });
+});
 
 // Admin routes
 app.post("/admin/signup", (req, res) => {
@@ -112,13 +111,15 @@ app.post("/admin/login", (req, res) => {
       res.send("error while reading admins.json file !");
     } else {
       let parsedAdmins = JSON.parse(data);
-      let adminExists = parsedAdmins.some((a) => a.username == admin.username && a.password == admin.password);
+      let adminExists = parsedAdmins.some(
+        (a) => a.username == admin.username && a.password == admin.password
+      );
 
       if (adminExists) {
         let authToken = generateJWT(admin.username);
         res.json({
           message: admin.username + " logged in succesfully !",
-          authToken
+          authToken,
         });
       } else {
         res.status(404).send("username or password is incorrect !");
