@@ -29,9 +29,113 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
+const e = require("express");
 const express = require("express")
 const PORT = 3000;
 const app = express();
+const bodyParser = require("body-parser");
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(bodyParser.urlencoded({extended: true}));
+
+let users = [];
+
+app.post("/signup", (req, res) => {
+  
+  if(users.length == 0){
+    let obj = {
+      id: Math.floor((Math.random() * 10000) +1),
+      username: req.body.username,
+      password: req.body.password,  
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    }
+    users.push(obj);
+    res.status(201).send("Successfully Created");
+  }else{
+    let verify = users.findIndex((value) => {
+      return (value.username === req.body.username);
+    })
+    if(verify !== -1){
+      res.status(400).send("Bad request, Username already exist");
+    }
+    else{
+      let obj = {
+        id: Math.floor((Math.random() * 10000) +1),
+        username: req.body.username,
+        password: req.body.password,  
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+      }
+      users.push(obj);
+      res.status(201).send("Successfully Created");
+    }
+  }
+})
+
+app.post("/login", (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  let userOne = users.find((value) => {
+    return (value.username === username);
+  })
+  if(userOne){
+    if(userOne.password === password){
+      let obj = {
+        id: userOne.id,
+        firstName: userOne.firstName,
+        lastName: userOne.lastName
+      }
+      res.status(200).send(obj);
+    }
+    else{
+      res.status(401).send("Password is wrong");
+    }
+  }
+  else{
+      res.status(401).send("Username is invalid");
+  }
+
+})
+
+app.get("/data", (req, res) => {
+  
+  let username = req.headers.username;
+  let password = req.headers.password;
+
+  let userOne = users.find((value) => {
+    return (value.username === username);
+  })
+  if(userOne){
+    if(userOne.password === password){
+      
+      let obj = {
+        users: users.map((value) => {
+          return {
+            firstName: value.firstName,
+            username: value.username,
+            lastName: value.lastName
+          }
+        })
+      };
+
+      res.status(200).send(obj);
+    }
+    else{
+      res.status(401).send("Password is wrong");
+    }
+  }
+  else{
+      res.status(401).send("Username is invalid");
+  }
+})
+
+app.use((req, res, next) => {
+  res.status(404).send("Url invalid");
+})
+
+// app.listen(PORT, () => {
+//   console.log("Server running");
+// })
 
 module.exports = app;
