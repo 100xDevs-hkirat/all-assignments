@@ -44,6 +44,90 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-module.exports = app;
+let ArrayDatabase = [];
+
+app.get('/todos', (req, res) => { 
+  let AnsArr = ArrayDatabase.map((value) => {
+    return {title: value.title,
+           description: value.description}
+  })
+  res.status(200).send(AnsArr);
+})
+
+app.get('/todos/:idc', (req, res) => {
+  let idc = parseInt(req.params.idc);
+  let ans = ArrayDatabase.find((value) => {
+    return (value.id === Number(idc));
+  })
+  if(ans){
+    let final = {
+      title: ans.title,
+      description: ans.description
+    }
+    res.status(200).send(final);
+  }
+  else{
+    res.status(404).send("Invalid id");
+  }
+})
+
+app.post('/todos', (req, res) => {
+  let titleA = req.body.titleB;
+  let completedA = req.body.completedB;
+  let descriptionA = req.body.descriptionB;
+
+  let randomId = Math.floor((Math.random() * 100) + 1);
+  let obj = {
+    id: randomId,
+    title: titleA,
+    completed: completedA,
+    description: descriptionA
+  }
+  ArrayDatabase.push(obj);
+  let response = {
+    id: randomId
+  }
+  res.status(201).send(response);
+})
+
+app.put("/todos/:idc", (req, res) => {
+  let idc = parseInt(req.params.idc);
+  let obj = ArrayDatabase.findIndex((value) => {
+    return (value.id === idc);
+  });
+  if(obj !== -1){
+    ArrayDatabase[obj].title = req.body.titleB;
+    ArrayDatabase[obj].completed = req.body.completedB;
+    res.status(200).send("Title updated");
+  }
+  else{
+    res.status(404).send("Error Id not found");
+  }
+})
+
+app.delete("/todos/:idc", (req, res) => {
+  let idc = parseInt(req.params.idc);
+  let findId = ArrayDatabase.find((value) => {
+    return (value.id === idc);
+  });
+  if(findId){
+    ArrayDatabase = ArrayDatabase.filter((value) => {
+      return (value.id !== idc);
+    })
+    res.status(200).send("Deleted");
+  }
+  else{
+    res.status(404).send("Id not found");
+  }
+})
+
+app.use((req, res) => {
+  res.status(404).send("Invalid URL");
+})
+
+// app.listen(3000, () => {
+//   console.log("Server running");
+// })
+// module.exports = app;
