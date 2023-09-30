@@ -95,7 +95,6 @@ const authenticateJwtUser = (req,res,next) => {
       }
       else {  
         req.user = user;
-        console.log("here- " + user);
         next();
       }
     })
@@ -210,14 +209,21 @@ app.post('/users/courses/:courseId', authenticateJwtUser, async (req, res) => {
   // logic to purchase a course
   const courseId = req.params.courseId;
   const course = await Courses.findById(courseId);
-  console.log(course);
   if(course) {
-    console.log("yaha-"+req.user);
     const user = await Users.findOne({username: req.user.username});
     if(user) {
-      user.coursesPurchased.push(course);
-      await user.save();
-      res.json({ message: 'Course purchased successfully' });
+      const existingCourse = await Users.findOne({
+        username: req.user.username,
+        coursesPurchased: { $in: [courseId] }
+      }).exec();
+      if(existingCourse) {
+        res.status(403).json({message: 'Course already purchased'});
+      }
+      else {
+        user.coursesPurchased.push(course);
+        await user.save();
+        res.json({ message: 'Course purchased successfully' });
+      }
     }
     else {
       res.status(403).json({ message: 'User not found' });
