@@ -1,0 +1,26 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+  }
+  
+  .header {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 32px;
+    color: #333;
+  }
+  
+  .form-container {
+    margin-bottom: 32px;
+  }
+  
+  .list-container {
+    width: 100%;
+    max-width: 400px;
+  }
+  

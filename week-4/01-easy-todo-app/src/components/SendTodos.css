@@ -1,0 +1,29 @@
+.todo-form-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .input-field {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .submit-button {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 8px;
+  }
+  
+  .submit-button:hover {
+    background-color: #45a947;
+  }
+  
+  
