@@ -16,10 +16,36 @@
 
     Testing the server - run `npm run test-fileServer` command in terminal
  */
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const app = express();
 
+app.get("/file/:filename", (req, res) => {
+  const fileName = req.params.filename;
+  const filePath = path.join(__dirname, "./files", fileName); // path.join() in Node.js makes sure file paths are written correctly, no matter the operating system you're using. 
+
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    if (err) {
+      res.status(404).send("Cannot Read the file " + filePath);
+      return;
+    }
+
+    res.send(data);
+  });
+});
+
+app.get("/files", (req, res) => {
+  fs.readdir("./files", (err, files) => {
+    if (err) {
+      res.send(500).send(" ERROR while getting the files names");
+    }
+    res.json(files);
+  });
+});
+
+// app.listen(3000, () => {
+//   console.log("listeing you dear !!!");
+// });
 
 module.exports = app;

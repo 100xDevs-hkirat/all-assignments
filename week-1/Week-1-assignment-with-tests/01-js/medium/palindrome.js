@@ -6,8 +6,20 @@
   - `npm run test-palindrome`
 */
 
+let regex = /[a-z]/g;
+
+// let str1 = 'string';
+// let f = str1.split('');
+
 function isPalindrome(str) {
-  return true;
+  let lower = str.toLowerCase();
+  if(str.length > 2) {
+    let string = lower.match(regex);
+    return string.join('') === string.reverse().join('')
+  }else {
+    return true;
+  }
 }
+
 
 module.exports = isPalindrome;

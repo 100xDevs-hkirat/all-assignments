@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Todos</title>
+  </head>
+  <script>
+    function deleteTodo(todoId) {
+      fetch("http://localhost:3000/todos/" + todoId, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(() => {
+          console.log(todoId + " Todo Deleted!"); // make sure not write res.json() unlike other 96+method
+        })
+        .catch((err) => {
+          console.log("Error in action !");
+        });
+    }
+
+    function getTodos() {
+      console.log("hello there !");
+      fetch("http://localhost:3000/todos", {
+        method: "GET",
+      })
+        .then((res) =>
+          res.json().then((data) => {
+            data.forEach((todo) => {
+              let parentElement = document.getElementById("displayTodos");
+              let div = document.createElement("div");
+              let id = document.createElement("span");
+              let title = document.createElement("span");
+              let deleteBtn = document.createElement("button");
+              let description = document.createElement("span");
+              id.innerText = "Todo : " + todo.id + "\n";
+              title.innerText = "\t\t Title : " + todo.title + "\n";
+              description.innerText =
+                "\t\t Description : " + todo.description + "\t";
+              deleteBtn.innerText = "DeleteTodo";
+              deleteBtn.setAttribute("onclick", "deleteTodo(" + todo.id + ")");
+              div.appendChild(id);
+              div.appendChild(title);
+              div.appendChild(description);
+              div.appendChild(deleteBtn);
+              parentElement.append(div);
+            });
+            let divA = document.createElement("div");
+            parentElement.innerText = JSON.stringify(data);
+          })
+        )
+        .catch((error) => console.error(error));
+    }
+    getTodos();
+    function addTodos() {
+      fetch("http://localhost:3000/todos", {
+        method: "POST",
+        body: JSON.stringify({
+          title: document.getElementById("title").value,
+          description: document.getElementById("description").value,
+        }),
+      })
+        .then((res) =>
+          res.json().then((data) => {
+            console.log("working ! : ", data);
+            getTodos();
+          })
+        )
+        .catch((err) => {
+          console.log("error in action !");
+        });
+    }
+  </script>
+  <body>
+    <h1 style="text-align: center">Add Todos to the Json File :)</h1>
+    <h2>Title :</h2>
+    <input type="text" id="title" />
+    <h2>Description :</h2>
+    <input type="text" id="description" />
+    <br />
+    <br />
+    <button onclick="addTodos()">Add Todo</button>
+    <button onclick="getTodos()">Get Todo</button>
+    <br />
+    <br />
+    <div id="displayTodos"></div>
+  </body>
+</html>

@@ -29,9 +29,108 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+app.use(express.json());
+
+var users = [];
+var password = "";
+
+const signup = (req, res) => {
+  let userExist = false;
+  for (let existingUser of users) {
+    if (existingUser.username === req.body.username) {
+      userExist = true;
+    }
+  }
+
+  if (userExist) {
+    // message and response status
+    let message = req.body.username + " user already exist !";
+    res.status(400).send(message);
+  } else {
+    const uid = uuidv4();
+    const newUser = {
+      id: uid,
+      username: req.body.username,
+      password: req.body.password,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+    };
+    users.push(newUser);
+
+    //! Importing the new Users data in json file
+    const usersInJson = JSON.stringify(users, null, 2); // conversts the js array to json format
+
+    fs.writeFile("users.json", usersInJson, "utf-8", (err) => {
+      err
+        ? console.error(" error writing json file")
+        : console.log("JSON file has been saved!");
+    });
+
+    res.status(200).send(req.body.username + " registered succesfully");
+  }
+};
+
+app.post("/signup", signup);
+
+// ! LOGIN
+
+const login = (req, res) => {
+  const { username, password } = req.body;
+  let userExist = false;
+  for (let user of users) {
+    if (user.username === username && user.password === password) {
+      userExist = true;
+      break;
+    }
+  }
+  if (userExist) {
+    res.send(JSON.stringify(req.body));
+    console.log("user exists");
+  } else {
+    res.status(401).send("first register before logging in !");
+  }
+};
+
+app.post("/login", login);
+
+// ! GET DATA
+
+const getData = (req, res) => {
+  fs.readFile("users.json", (err, data) => {
+    if (err) {
+      console.error("error while reading users data");
+      res.send("error while reading users data");
+    }
+    res.send(data);
+  });
+};
+
+app.get("/data", getData);
+
+// ! Delete the data from the json file
+
+const deleteData = (req, res) => {
+  fs.writeFile("users.json", "", (err) => {
+    err
+      ? console.log("error while emptying the users data")
+      : res.send("Deleted the users data succesfully !");
+  });
+};
+
+app.get("/delete", deleteData);
+
+app.get("/", (req, res) => {
+  res.send("Authentication Server Page !");
+});
+
+app.listen(PORT, () => {
+  console.log("the app is listening");
+});
 
 module.exports = app;
