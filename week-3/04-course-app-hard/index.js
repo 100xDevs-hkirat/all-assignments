@@ -32,8 +32,6 @@ const User = mongoose.model("User", userSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Courses = mongoose.model("Courses", coursesSchema);
 
-//mongodb connection string
-mongoose.connect('mongodb+srv://atinder007:QguoeT36MPkZQ9FH@cluster0.ap2renn.mongodb.net/courses', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const authenticateJWT = (req,res,next) => {
   const auth = req.headers.authorization;
