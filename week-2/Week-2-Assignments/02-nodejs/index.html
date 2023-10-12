@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Todo App</title>
+  </head>
+  <body class="bg-gray-300 flex flex-col items-center justify-center gap-4">
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-1">
+        <label for="title">Todo Title: </label>
+        <input type="text" id="title" name="title" class="rounded-lg p-1" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="description">Todo Description: </label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          class="rounded-lg p-1"
+        />
+      </div>
+      <button
+        onclick="submitTodo()"
+        class="border border-black rounded-lg py-1"
+      >
+        Submit Todo
+      </button>
+    </div>
+
+    <div>
+      <h1 class="font-bold text-[42px] text-center">Todo List</h1>
+      <div
+        id="todo-list"
+        class="border border-black w-[100vw] flex flex-wrap gap-4 p-6"
+      >
+        <!-- Todos -->
+      </div>
+    </div>
+
+    <script>
+      const todoList = document.getElementById("todo-list");
+
+      // Submit Todo
+      const submitTodo = () => {
+        let titleInput = document.getElementById("title");
+        let descriptionInput = document.getElementById("description");
+        let title = titleInput.value;
+        let description = descriptionInput.value;
+
+        const sendObj = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+          }),
+        };
+        if (title && description) {
+          fetch("http://localhost:3000/todos", sendObj).then((res) =>
+            res
+              .json()
+              .then((data) => {
+                todoList.innerHTML += `
+                  <div
+                    class="border border-black rounded-[8px] flex flex-col items-center gap-2 p-4"
+                    id=${data.id}
+                  >
+                    <div class="flex items-center gap-2 w-full">
+                      <p class="font-bold text-xl">Title:</p>
+                      <p>${data.title}</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full">
+                      <p class="font-bold text-xl">Description:</p>
+                      <p>${data.description}</p>
+                    </div>
+                    <button
+                      class="border border-black rounded-lg p-1"
+                      onClick=deleteTodo(${data.id})
+                    >
+                      Delete Todo
+                    </button>
+                  </div>
+                `;
+
+                titleInput.value = "";
+                descriptionInput.value = "";
+              })
+              .catch((error) => console.error(error))
+          );
+        }
+      };
+
+      const getTodo = () => {
+        fetch("http://localhost:3000/todos", { method: "GET" }).then((res) =>
+          res.json().then((data) => {
+            data.forEach((todo) => {
+              const todoDiv = document.createElement("div");
+              todoDiv.classList.add(
+                "border",
+                "border-black",
+                "rounded-[8px]",
+                "flex",
+                "flex-col",
+                "items-center",
+                "gap-2",
+                "p-4"
+              );
+              todoDiv.setAttribute("id", `${todo.id}`);
+
+              const titleDiv = document.createElement("div");
+              titleDiv.classList.add("flex", "items-center", "gap-2", "w-full");
+              titleDiv.innerHTML = `
+                <p class="font-bold text-xl">Title:</p>
+                <p>${todo.title}</p>
+              `;
+
+              const descriptionDiv = document.createElement("div");
+              descriptionDiv.classList.add(
+                "flex",
+                "items-center",
+                "gap-2",
+                "w-full"
+              );
+              descriptionDiv.innerHTML = `
+                <p class="font-bold text-xl">Description:</p>
+                <p>${todo.description}</p>
+              `;
+
+              const deleteButton = document.createElement("button");
+              deleteButton.classList.add(
+                "border",
+                "border-black",
+                "rounded-lg",
+                "p-1"
+              );
+              deleteButton.setAttribute("onClick", `deleteTodo(${todo.id})`);
+              deleteButton.innerHTML = `Delete Button`;
+
+              todoDiv.appendChild(titleDiv);
+              todoDiv.appendChild(descriptionDiv);
+              todoDiv.appendChild(deleteButton);
+
+              todoList.appendChild(todoDiv);
+            });
+          })
+        );
+      };
+
+      // Get Todo
+      getTodo();
+
+      // Delete Todo
+      const deleteTodo = (id) => {
+        fetch(`http://localhost:3000/todos/${id}`, { method: "DELETE" }).then((res) => {
+            document.getElementById(`${id}`).remove();
+          }
+        ).catch((error) => console.error(error));
+      };
+    </script>
+  </body>
+</html>
