@@ -72,7 +72,7 @@ app.post("/admin/login", (req, res) => {
   }
 });
 
-app.post("/admin/courses", (req, res) => {
+app.post("/admin/courses", authenticateJwt, (req, res) => {
   // logic to create a course
   const course = req.body;
   course.id = COURSES.length + 1;
@@ -81,7 +81,7 @@ app.post("/admin/courses", (req, res) => {
   res.json({ message: "Course created successfully", courseId: course.id });
 });
 
-app.put("/admin/courses/:courseId", (req, res) => {
+app.put("/admin/courses/:courseId", authenticateJwt, (req, res) => {
   // logic to edit a course
   const course = COURSES.find((c) => c.id === parseInt(req.params.courseId));
   if (course) {
@@ -93,7 +93,7 @@ app.put("/admin/courses/:courseId", (req, res) => {
   }
 });
 
-app.get("/admin/courses", (req, res) => {
+app.get("/admin/courses", authenticateJwt, (req, res) => {
   // logic to get all courses
   res.json({ courses: COURSES });
 });
@@ -132,12 +132,12 @@ app.post("/users/login", (req, res) => {
   }
 });
 
-app.get("/users/courses", (req, res) => {
+app.get("/users/courses", authenticateJwt, (req, res) => {
   // logic to list all courses
   res.json({ courses: COURSES });
 });
 
-app.post("/users/courses/:courseId", (req, res) => {
+app.post("/users/courses/:courseId", authenticateJwt, (req, res) => {
   // logic to purchase a course
   const course = COURSES.find((c) => c.id === parseInt(req.params.courseId));
   if (course) {
@@ -157,7 +157,7 @@ app.post("/users/courses/:courseId", (req, res) => {
   }
 });
 
-app.get("/users/purchasedCourses", (req, res) => {
+app.get("/users/purchasedCourses", authenticateJwt, (req, res) => {
   // logic to view purchased courses
   const user = USERS.find((u) => u.username === req.user.username);
   if (user) {
