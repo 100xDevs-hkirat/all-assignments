@@ -7,10 +7,24 @@ const path = require('path');
 const envFile = path.join(__dirname, '..', '..', '.env');
 require('dotenv').config({path: envFile});
 
-const generateTokenForAdmin = (username) => {
-    const data = { username };
+const generateTokenForAdmin = (user) => {
+    const data = { user };
     return jwt.sign(data, process.env.JWT_SECRET_KEY_ADMIN, {expiresIn: '1h'});
 }  
+
+router.get('/me', authenticateJwtAdmin, async (req,res) => {
+  console.log("idhar");
+  console.log(req.user);
+  const admin = await Admin.findOne({username: req.user.user});
+  if(!admin) {
+    return res.status(403).json({msg: "Admin doesn't exist"});
+  }
+  console.log("yaha")
+  console.log(admin.username)
+  return res.json({
+    username: admin.username
+  })
+})
 
 router.post('/signup', async (req, res) => {
   // logic to sign up admin
@@ -19,7 +33,7 @@ router.post('/signup', async (req, res) => {
   const existingAdmin = await Admin.findOne({username, password:pass});
   console.log(existingAdmin);
   if(existingAdmin) {
-    res.json({message: "User Already exist"});
+    return res.json({message: "User Already exist"});
   }
   else {
     const admin = new Admin({

@@ -9,6 +9,7 @@ const authenticateJwtAdmin = (req,res,next) => {
         if(err) {
             res.status(403).send("Got Authenticatoin Error");
         }
+        req.user = user;
         next();
         })
     }

@@ -15,10 +15,10 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <Nav></Nav>
+    <div style={{width:"100vw", height:"100vh", backgroundColor:"#eeeeee"}}>
       <Router>
         <Routes>
+          <Nav></Nav>
           <Route path="/" element={<Landing/>}/>
           <Route path="/courses" element={<Courses/>}/>
           <Route path="/login" element={<Login/>}/>
@@ -26,7 +26,7 @@ function App() {
           <Route path="/register" element={<Register/>}/>
         </Routes>
       </Router>
-    </>
+    </div>
   )
 }
 
