@@ -21,13 +21,13 @@ catch{
 }
 //console.log(ADMINS);
 
-const secretKey = 'my-secret-key';
+const SECRET = 'my-secret-key';
 
 const authenticateJwt = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if(authHeader){
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, secretKey, (err, user) => {
+    jwt.verify(token, SECRET, (err, user) => {
       if(err){
         return res.status(403);
       }
