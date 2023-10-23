@@ -1,0 +1,27 @@
+.navbar{
+    display: flex;
+}
+
+.navLogo{
+    margin-left: 0;
+    padding: 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+
+}
+
+.navItems{
+    margin-right: 2rem;
+    display: flex;
+}
+.navItem{
+    padding: 10px;
+    font-size: 1.2rem;
+   
+}
+
+.navItem:hover{
+    cursor: pointer;
+    color: teal;
+    
+}

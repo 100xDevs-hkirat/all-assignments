@@ -1,0 +1,34 @@
+.course{
+
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.courseTitle{
+    font-size: 1.4rem;
+    padding: 50px;
+}
+
+.courseDescription
+{
+    text-align: center;
+    width: 50%;
+}
+
+.courseButton{
+    padding: 30px;
+}
+
+.courseButton button{
+
+    font-size: 1.2rem;
+    cursor: pointer;
+    
+}
+
+.courseButton button:hover{
+
+    background-color: black;
+    color: white;
+}

@@ -1,0 +1,64 @@
+.createCourse{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.createCourseContainer{
+padding-top: 10rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.createCourseHeading{
+    padding: 20px;
+}
+
+.inputContainer{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    text-align: start;
+}
+.createCourseLable{
+    font-size: 1.4rem;
+    padding: 10px;
+    margin: 0;
+    
+
+}
+.inputContainer input[type = "text"]{
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.inputContainer input[type = "number"]{
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.inputContainer input[type = "date"]{
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.createCourseButton{
+    margin-top: 3rem;
+    padding: 10px;
+    font-size: 1.2rem;
+    background-color: rgb(86, 191, 191);
+    color: black;
+    border-radius: 20px;
+    border: none;
+}
+
+.createCourseButton:hover{
+   
+    color: rgb(86, 191, 191);
+    background-color: black;
+    cursor: pointer;
+    border: 1px solid rgb(86, 191, 191);
+   
+}
