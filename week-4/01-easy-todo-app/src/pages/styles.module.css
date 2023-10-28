@@ -1,0 +1,43 @@
+.todoPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    justify-content: center;
+}
+.todoApp {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.todoInput {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 80%;
+}
+.todoInput input {
+    padding: 1%;
+    margin: 2%;
+    
+}
+.todoHeaderInput {
+    display: flex;
+    width: 100%;
+    border: 1px solid black;
+    padding: 1%;
+    background-color: antiquewhite;
+}
+.todoButton {
+    width: 20%;
+    padding: 1%;
+    margin: 3%;
+}
+.todoBody {
+    padding: 2%;
+    border: 1px solid black;
+    width: 100%;
+    background-color: rgb(222, 224, 244);
+}
