@@ -9,7 +9,26 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  return [];
+
+  // length of output array not predefined. Dict -> Array
+  catTots = {}
+
+  for (let i=0; i<transactions.length; i++){
+    transaction = transactions[i]
+    if (transaction['category'] in catTots){
+      catTots[transaction['category']] += transaction['price']
+    }
+    else{
+      catTots[transaction['category']] = transaction['price']
+    }
+  }
+
+  resultList = Object.keys(catTots).map(category => ({
+    'category': category,
+    'totalSpent': catTots[category]
+  }))
+
+  return resultList;
 }
 
 module.exports = calculateTotalSpentByCategory;

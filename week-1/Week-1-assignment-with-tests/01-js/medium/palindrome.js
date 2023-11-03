@@ -7,7 +7,10 @@
 */
 
 function isPalindrome(str) {
-  return true;
+  // remove punctuations & spaces
+  const tok_str = str.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()\s]+/g, '')
+
+  return tok_str.toLowerCase() === tok_str.toLowerCase().split('').reverse().join('');
 }
 
 module.exports = isPalindrome;
