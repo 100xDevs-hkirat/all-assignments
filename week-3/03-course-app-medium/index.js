@@ -1,8 +1,10 @@
 const express = require("express");
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const app = express();
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json());
 
 let ADMINS = [];
@@ -36,6 +38,12 @@ const authenticateJwt = (req, res, next) => {
     res.sendStatus(401);
   }
 };
+
+app.get("/admin/me", authenticateJwt, (req, res) => {
+  res.json({
+    username: req.user.username,
+  });
+});
 
 // Admin routes
 app.post("/admin/signup", (req, res) => {
@@ -75,6 +83,7 @@ app.post("/admin/login", (req, res) => {
 app.post("/admin/courses", authenticateJwt, (req, res) => {
   // logic to create a course
   const course = req.body;
+  
   course.id = COURSES.length + 1;
   COURSES.push(course);
   fs.writeFileSync("courses.json", JSON.stringify(COURSES));
