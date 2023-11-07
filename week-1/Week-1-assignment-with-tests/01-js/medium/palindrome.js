@@ -5,8 +5,25 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-palindrome`
 */
+function isaValidLetter(str) {
+  return str.length === 1 && str.match(/[a-z]/);
+}
 
 function isPalindrome(str) {
+  str = str.toLowerCase();
+  var len = str.length;
+  var i = 0,
+    j = len - 1;
+  while (i < j) {
+    if (!isaValidLetter(str[i])) {
+      i++;
+    } else if (!isaValidLetter(str[j])) {
+      j--;
+    } else if (str[i] === str[j]) {
+      i++;
+      j--;
+    } else return false;
+  }
   return true;
 }
 
