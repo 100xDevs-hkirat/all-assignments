@@ -1,0 +1,30 @@
+{
+    "name": "@types/webidl-conversions",
+    "version": "7.0.2",
+    "description": "TypeScript definitions for webidl-conversions",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/webidl-conversions",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "ExE Boss",
+            "githubUsername": "ExE-Boss",
+            "url": "https://github.com/ExE-Boss"
+        },
+        {
+            "name": "BendingBender",
+            "githubUsername": "BendingBender",
+            "url": "https://github.com/BendingBender"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/webidl-conversions"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "5fde2d873865ba667e5b41392e643c0339da97264c28049b168d5384554d248d",
+    "typeScriptVersion": "4.5"
+}
