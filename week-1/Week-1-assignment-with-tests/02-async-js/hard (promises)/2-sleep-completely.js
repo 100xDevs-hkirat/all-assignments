@@ -3,6 +3,11 @@
  * During this time the thread should not be able to do anything else.
  */
 
-function sleep (seconds) {
-
+function sleep(seconds) {
+  setTimeout(() => {
+    // anything
+    console.log('hello world');
+  }, seconds);
 }
+
+sleep(1000);

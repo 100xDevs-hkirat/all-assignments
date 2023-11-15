@@ -17,6 +17,49 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor() {
+    this.result = 0
+  }
 
-module.exports = Calculator;
+  add(num) {
+    this.result += num
+  }
+  subtract(num) {
+    this.result -= num
+  }
+  multiply(num) {
+    this.result *= num
+  }
+  divide(num) {
+    try {
+      if (num === 0) throw new Error('Dividing by 0 is not valid')
+      this.result = parseFloat((this.result / num).toFixed(6))
+    } catch (error) {
+      console.log(`Error: ${error.message}`)
+    }
+  }
+  clear() {
+    this.result = 0
+  }
+  getResult() {
+    return this.result
+  }
+  calculate(str) {
+    try {
+      str = str.replace(/\s/g, '')
+      if (/[a-zA-Z]/.test(str))
+        throw new Error('Expression contains invalid characters')
+      if (str.includes('/0')) throw new Error('Dividing by 0 is not valid')
+      this.result = eval(str)
+    } catch (error) {
+      console.log(`Error: ${error.message}`)
+    }
+  }
+}
+
+let calc = new Calculator()
+
+calc.calculate('10 / 0')
+console.log(calc.getResult())
+module.exports = Calculator
