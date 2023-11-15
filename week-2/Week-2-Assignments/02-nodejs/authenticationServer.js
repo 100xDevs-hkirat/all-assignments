@@ -29,9 +29,83 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+let users = [];
+app.use(express.json());
+
+// route for signup
+app.post("/signup", (req, res) => {
+  let newUser = req.body;
+  let isUserExist = false;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].email === newUser.email) isUserExist = true;
+    break;
+  }
+
+  if (isUserExist)
+    res.sendStatus(400);
+    // res.status(400).send("User already exist");
+  else;
+  users.push(newUser);
+  res.status(201).send("Signup successful");
+});
+
+// route for login
+app.post("/login", (req, res) => {
+  let user = req.body;
+  let userFound = null;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].email === user.email && users[i].password === user.password)
+      userFound = users[i];
+    break;
+  }
+  if (userFound) {
+    res.status(200).json({
+      firstName: userFound.firstName,
+      lastName: userFound.lastName,
+      email: userFound.email,
+    });
+  } else res.sendStatus(401); //isko check krna, apn res.status(401).send("apn msg") bhi kr skte he
+});
+
+// route for getting all user data
+app.get("/data", (req, res) => {
+  let email = req.headers.email;
+  let password = req.headers.password;
+  let userFound = false;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].email === email && users[i].password === password) {
+      userFound = true;
+      break;
+    }
+  }
+  if (userFound) {
+    let returnUsers = [];
+    for (let i = 0; i < users.length; i++) {
+      returnUsers.push({
+        firstName: users[i].firstName,
+        lastName: users[i].lastName,
+        email: users[i].email,
+      });
+    }
+    res.json(returnUsers );
+  } else res.sendStatus(401);
+});
+
+// for route not defined
+app.all("*", (req, res) => {
+  res.status(404).send("Route not found");
+});
+
+// for testing my server
+/*
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+*/
 
 module.exports = app;

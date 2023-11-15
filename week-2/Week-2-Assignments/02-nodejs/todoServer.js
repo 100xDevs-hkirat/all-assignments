@@ -39,11 +39,112 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
+const express = require("express");
 const app = express();
+const fs = require("fs");
 
-app.use(bodyParser.json());
+// Array for storing todos
+
+app.use(express.json());
+
+// function for finding index
+function findIndex(arr, id) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].id === id) return i;
+  }
+  return -1;
+}
+
+app.get("/todos", (req, res) => {
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    if (err) throw err;
+    res.json(JSON.parse(data));
+  });
+});
+
+// Route for Retrieve a specific todo item by ID
+app.get("/todos/:id", (req, res) => {
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    if (err) throw err;
+    const todo = JSON.parse(data);
+    const todoIndex = findIndex(todo, parseInt(req.params.id));
+    if (todoIndex === -1) res.status(404).send();
+    else res.json(todo[todoIndex]);
+  });
+});
+
+// Route for Create a new todo item
+app.post("/todos", (req, res) => {
+  const newTodo = {
+    id: Math.floor(Math.random() * 10000) + 1, //generate a random id
+    title: req.body.title,
+    description: req.body.description,
+  };
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    if (err) throw err;
+    const todo = JSON.parse(data);
+    todo.push(newTodo);
+    fs.writeFile("todo.json", JSON.stringify(todo), (err, data) => {
+      if (err) throw err;
+      res.status(201).json(newTodo);
+    });
+  });
+});
+
+// Update an existing todo item by ID
+app.put("/todos/:id", (req, res) => {
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    if (err) throw err;
+    const todo = JSON.parse(data);
+    const todoIndex = findIndex(todo, parseInt(req.params.id));
+    if (todoIndex === -1) res.status(404).send();
+    else {
+      const updatedTodo = {
+        id: todo[todoIndex].id,
+        title: req.body.title,
+        description: req.body.description,
+      };
+      todo[todoIndex] = updatedTodo;
+      fs.writeFile("todo.json", JSON.stringify(todo), (err, data) => {
+        if (err) throw err;
+        res.status(200).json(updatedTodo);
+      });
+    }
+  });
+});
+
+// Route for Delete a todo item by ID
+app.delete("/todos/:id", (req, res) => {
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    if (err) throw err;
+    const todo = JSON.parse(data);
+    const todoIndex = findIndex(todo, parseInt(req.params.id));
+    if (todoIndex === -1) res.status(404).send();
+    else {
+      todo.splice(todoIndex, 1);
+      fs.writeFile("todo.json", JSON.stringify(todo), (err, data) => {
+        if (err) throw err;
+        res.status(200).send();
+      });
+    }
+  });
+});
+
+// Starting Landing Page
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
+// handling other routes
+app.use((req, res, next) => {
+  res.status(404).send("route not found");
+});
+
+/* for starting my server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+*/
 
 module.exports = app;

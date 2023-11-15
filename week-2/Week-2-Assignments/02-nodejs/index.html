@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO APP</title>
+  </head>
+  <body>
+    <h3>TODO Title</h3>
+    <br />
+    <input id="title" type="text" />
+    <h3>description</h3>
+    <br />
+    <input id="description" type="text" />
+    <br />
+    <button onclick="saveTodo()">Save it</button>
+    <div id="mainArea"></div>
+
+    <!-- Script -->
+
+    <script>
+      // function for delete todo
+      function deleteTodo(id) {
+        fetch("/todos/" + id, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((response) => {
+          if (response.status === 200) alert(`todo with id ${id} deleted`);
+          else alert("wrong id");
+        });
+      }
+
+      // get TODO callback and rendering in UI
+      function todoCallback(data) {
+        // console.log(data);
+        let parentElement = document.getElementById("mainArea");
+
+        for (let i = 0; i < data.length; i++) {
+          let childElement = document.createElement("div");
+
+          let grandChildElement1 = document.createElement("span");
+          grandChildElement1.innerHTML = `<b>Title</b>: ${data[i].title} <br>`;
+
+          let grandChildElement2 = document.createElement("span");
+          grandChildElement2.innerHTML = `<b>Description</b>: ${data[i].description} <br>`;
+
+          let grandChildElement3 = document.createElement("button");
+          grandChildElement3.innerHTML = "Delete";
+          grandChildElement3.setAttribute(
+            "onclick",
+            "deleteTodo(" + data[i].id + ")"
+          );
+
+          childElement.appendChild(grandChildElement1);
+          childElement.appendChild(grandChildElement2);
+          childElement.appendChild(grandChildElement3);
+
+          parentElement.appendChild(childElement);
+        }
+      }
+
+      // get TODO function
+      function getData() {
+        fetch("/todos", {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then(todoCallback);
+      }
+
+      getData();
+
+      // save TODO callback and rendering in UI
+      function parsedResponse(data) {
+        console.log("TODO Created :", data);
+
+        let parentElement = document.getElementById("mainArea");
+        let childElement = document.createElement("div");
+
+        let grandChildElement1 = document.createElement("span");
+        grandChildElement1.innerHTML = `<b>Title</b>: ${data.title} <br>`;
+
+        let grandChildElement2 = document.createElement("span");
+        grandChildElement2.innerHTML = `<b>Description</b>: ${data.description} <br>`;
+
+        let grandChildElement3 = document.createElement("button");
+        grandChildElement3.innerHTML = "Delete";
+
+        childElement.appendChild(grandChildElement1);
+        childElement.appendChild(grandChildElement2);
+        childElement.appendChild(grandChildElement3);
+
+        parentElement.appendChild(childElement);
+      }
+
+      // function for saving TODO
+      function saveTodo() {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+
+        fetch("/todos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: title,
+            description: description,
+          }),
+        })
+          .then((response) => response.json())
+          .then(parsedResponse);
+      }
+    </script>
+  </body>
+</html>
