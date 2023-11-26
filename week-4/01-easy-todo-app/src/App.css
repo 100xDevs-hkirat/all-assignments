@@ -1,0 +1,33 @@
+body {
+  display: grid;
+  place-items: center;
+}
+.table {
+  display: grid;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr; /* Adjust the column widths as desired */
+  gap: 4px; /* Adjust the gap between cells */
+}
+
+.cell {
+  /*border: 1px solid #ccc; /* Add borders to cells for visual separation */
+  padding: 8px; /* Add padding to cells for spacing */
+  word-wrap: break-word; /* Allow long text to wrap to the next line */
+  font-size: small;
+  display: inline-grid;
+}
+
+.custom-button {
+  padding: 8px 16px;
+  background-color: #d8b74a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.hideCompleted {
+  display: none;
+}

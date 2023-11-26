@@ -2,6 +2,10 @@
 
 ### Description
 Functionally the same as 03-course-app-medium. Routes are the same as well.
+<<<<<<< HEAD
+But now you need to store data in files vs in memory.
+=======
+>>>>>>> 004324b41af0180dd19c005f6e400017f19a8171
 Rather than storing data in files, store them in MongoDB. 
 We will be covering this in the extra class next week but would be good for you to run ahead.
 
