@@ -18,7 +18,7 @@ const adminAuthentication = (req, res, next) => {
   else res.status(403).json({ message: "Admin authentication failed" });
 };
 
-// user authentication middleware
+// middleware for user authentication
 const userAuthentication = (req, res, next) => {
   const { username, password } = req.headers;
   const user = USERS.find(
