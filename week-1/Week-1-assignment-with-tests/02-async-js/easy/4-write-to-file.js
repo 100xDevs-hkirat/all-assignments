@@ -4,7 +4,7 @@
 
 var fs=require('fs');
 
-var content="I am the greatest coder to ever exist";
+var content="Some random content";
 
 fs.writeFile('kiran.txt',content,'utf-8',(err)=>{
     if(err){

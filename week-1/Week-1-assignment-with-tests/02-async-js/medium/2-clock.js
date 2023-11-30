@@ -7,17 +7,22 @@
 
 //  - HH:MM::SS AM/PM (Eg 01:45:23 PM)
 function updateClock(){
+    
     const now=new Date();
+//get time for hours,minutes and seconds
+
 
     let hours12=now.getHours()%12||12;
     let minutes12=now.getMinutes();
     let seconds12=now.getSeconds();
-    let ampm=now.getHours()>=12?'PM':'AM';
+    let ampm=now.getHours()>=12?'PM':'AM';  //find ampm
 
     let hours24=now.getHours();
     let minutes24=now.getMinutes();
     let seconds24=now.getSeconds();
 
+
+//if the numbers are less than 10 then concatenate a 0 before the number
     hours12=hours12<10?'0'+hours12:hours12;
     minutes12=minutes12<10?'0'+minuter12:minutes12;
     seconds12=seconds12<10?'0'+seconds12:seconds12;
