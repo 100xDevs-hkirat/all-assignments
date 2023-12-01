@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.3.2"
+  }
 }
