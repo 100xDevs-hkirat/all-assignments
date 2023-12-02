@@ -3,4 +3,19 @@
 */
 
 function wait(n) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(`Promise resolved afte ${seconds} seconds`);
+        }, seconds * 1000);
+    });
 }
+
+const waitInSecond = 3;
+
+wait(waitInSecond)
+    .then(result => {
+        console.log(result);
+    })
+    .catch(error => {
+        console.log("Error", error);
+    });

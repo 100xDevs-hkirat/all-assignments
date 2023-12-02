@@ -29,9 +29,79 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
-const PORT = 3000;
-const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
-
-module.exports = app;
+  const express = require("express")
+  const PORT = 3000;
+  const app = express();
+  // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+  
+  var users = [];
+  
+  app.use(express.json());
+  app.post("/signup", (req, res) => {
+    var user = req.body;
+    let userAlreadyExists = false;
+    for (var i = 0; i<users.length; i++) {
+      if (users[i].email === user.email) {
+          userAlreadyExists = true;
+          break;
+      }
+    }
+    if (userAlreadyExists) {
+      res.sendStatus(400);
+    } else {
+      users.push(user);
+      res.status(201).send("Signup successful");
+    }
+  });
+  
+  app.post("/login", (req, res) => {
+    var user = req.body;
+    let userFound = null;
+    for (var i = 0; i<users.length; i++) {
+      if (users[i].email === user.email && users[i].password === user.password) {
+          userFound = users[i];
+          break;
+      }
+    }
+  
+    if (userFound) {
+      res.json({
+          firstName: userFound.firstName,
+          lastName: userFound.lastName,
+          email: userFound.email
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  });
+  
+  app.get("/data", (req, res) => {
+    var email = req.headers.email;
+    var password = req.headers.password;
+    let userFound = false;
+    for (var i = 0; i<users.length; i++) {
+      if (users[i].email === email && users[i].password === password) {
+          userFound = true;
+          break;
+      }
+    }
+  
+    if (userFound) {
+      let usersToReturn = [];
+      for (let i = 0; i<users.length; i++) {
+          usersToReturn.push({
+              firstName: users[i].firstName,
+              lastName: users[i].lastName,
+              email: users[i].email
+          });
+      }
+      res.json({
+          users
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  });
+  
+  module.exports = app;
+  

@@ -8,7 +8,8 @@
 */
 
 function isAnagram(str1, str2) {
-
-}
+    sortstr1  = str1.sort();
+    sortstr2 = str2.srot();
+}11
 
 module.exports = isAnagram;
