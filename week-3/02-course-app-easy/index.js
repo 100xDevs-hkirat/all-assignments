@@ -7,17 +7,45 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
+
+const adminAuthentication = (req, res, next) => {
+  const { username, password } = req.headers;
+  const admin = ADMINS.find(
+    (a) => a.username === username && a.password === password
+  );
+  if (admin) next();
+  else res.status(403).json({ massage: "Admin authentication failed" });
+};
+app.get('/',(req,res)=> {
+  res.status(465).json({massage: 'ajfdskfks'})
+
+})
+
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
+  const admin = req.body;
+  if (ADMINS.find((a) => a.username === admin.username)) {
+    res.status(403).json({ massage: "Admin already exists" });
+  } else {
+    ADMINS.push(admin);
+    res.json({ massage: "Admin created succesfully" });
+  }
 });
 
-app.post('/admin/login', (req, res) => {
+app.post('/admin/login',adminAuthentication, (req, res) => {
   // logic to log in admin
+  res.json({ masssge: "Admin login succesfully" });
+
 });
 
-app.post('/admin/courses', (req, res) => {
+app.post('/admin/courses',adminAuthentication, (req, res) => {
   // logic to create a course
+  const course = req.body;
+  course.id = Date.now();
+  COURSES.push(course);
+
+  res.json({massage : 'Course created succesfully', Courseid : course.id})
 });
 
 app.put('/admin/courses/:courseId', (req, res) => {
@@ -26,6 +54,7 @@ app.put('/admin/courses/:courseId', (req, res) => {
 
 app.get('/admin/courses', (req, res) => {
   // logic to get all courses
+  res.json({coures: COURSES})
 });
 
 // User routes
