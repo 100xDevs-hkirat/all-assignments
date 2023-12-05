@@ -7,7 +7,25 @@
 */
 
 function isPalindrome(str) {
+  var left=0;
+  var right=str.length-1;
+  while(left<right){
+    if(str[right]!=str[left]){
+      return 0;
+    }
+    left++;
+    right--;
+  }
   return true;
+}
+
+var string="Madam";
+var sort=string.toLowerCase();
+if(isPalindrome(sort)){
+  console.log("It is a palindrome");
+}
+else{
+  console.log("It is not a palindrome");
 }
 
 module.exports = isPalindrome;
