@@ -9,6 +9,7 @@
 
 function isAnagram(str1, str2) {
   console.log(4);
+  console.log(4);
 }
 
 module.exports = isAnagram;
