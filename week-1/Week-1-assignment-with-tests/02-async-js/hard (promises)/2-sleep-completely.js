@@ -4,5 +4,13 @@
  */
 
 function sleep (seconds) {
+    const start=Date.now();
+    while(Date.now()-start<seconds){
+        //busy 
+    }
+    
 
 }
+console.log("start");
+sleep(3000);
+console.log("end");
