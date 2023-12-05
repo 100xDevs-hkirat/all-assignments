@@ -17,6 +17,91 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor(){
+    this.result=0;
+  }
+  addition(num){
+    this.result+=num;
+  }
+  subtraction(num){
+    this.result-=num;
+  }
+  multiply(num){
+    this.result*=num;
+  }
+  divide(num){
+    if(num===0){
+      console.log("Can't divide a number with zero!");
+    
+    }
+    this.result/=num;
+  }
+  clear(){
+    this.result=0;
+  }
+  getResult(){
+    return this.result;
+  }
+  calculate(expression){
+    const sanitizedExpression=expression.replace(/\s+/g,' ');
+    const numericRegex=/^[+-]?\d+(\.\d+)?$/;
+
+    const token=[];
+    let currentToken='';
+
+    for(let char of sanitizedExpression){
+      if(char.match(/[0-9.]|\+|\-|\*|\//)){
+        currentToken+=char;
+      }
+      else{
+        if(currentToken){
+          if(!currentToken.match(numericRegex)){
+            throw new Error('Invalid input:Non numerical value detected');
+          }
+          tokens.push(Number(currentToken));
+          currentToken='';
+        }
+
+        if(char!==''){
+          tokens.push(char);
+        }
+      }
+    }
+
+    if(currentToken){
+      if(!currentToken.match(numericRegex)){
+        throw new Error('Invalid input:Non-numerical value detected');
+      }
+      token.push(Number(currentToken))
+    }
+
+    const stack=[];
+    let operator='+';
+
+    for(let token of tokens){
+      if(typeof token==='number'){
+        if(operator==='+'){
+          this.addition(token);
+        }else if(operator==='-'){
+          this.subtraction(token);
+        }else if(operator==='*'){
+          this.multiply(token);
+        }else if(operator==='/'){
+          this.divide(token);
+        }
+
+
+      }else if(['+','-','*','/'].includes(token)){
+        operator=token;
+      }
+      
+    }
+
+    return this.result;
+    
+  }
+
+}
 
 module.exports = Calculator;
