@@ -7,7 +7,17 @@
 */
 
 function isPalindrome(str) {
+  str=str.replace(/ /g,'');
+  var punctuation = /[\.,?!]/g;
+  str=str.replace(punctuation,"");
+  var str2=str.toLowerCase();
+  for(var i=0;i<str2.length/2;i++){
+     if(str2[str2.length-1-i]!=str2[i]){
+      return false;
+    }
+  }
   return true;
 }
 
 module.exports = isPalindrome;
+
