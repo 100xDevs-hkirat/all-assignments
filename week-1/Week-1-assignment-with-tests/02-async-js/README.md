@@ -4,6 +4,8 @@ This folder contains assignments related to asynchronous JavaScript.
 
 ### Assignments
 
+
+
 Recommended order below but feel free to make a mess in any order you like.
 1. Easy
    1. Counter

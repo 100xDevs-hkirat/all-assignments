@@ -3,4 +3,14 @@
 */
 
 function wait(n) {
+  return new Promise((res, rej) => {
+    setTimeout(() => {
+        res('promis resolved')
+    }, n * 1000);
+  });
 }
+
+const p = wait(5);
+p.then((a) => {
+    console.log(a)
+})
