@@ -7,7 +7,14 @@
 */
 
 function isPalindrome(str) {
+  if(str.toLowerCase()===str.split("").reverse().join("").toLowerCase())
+  {
   return true;
+  }
+  else{
+    return false;
+  }
 }
 
-module.exports = isPalindrome;
+console.log(isPalindrome("level"))
+
