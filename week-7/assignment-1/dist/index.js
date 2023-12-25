@@ -17,4 +17,4 @@ app.use("/todo", todo_1.default);
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-mongoose_1.default.connect('mongodb+srv://varshaatechnologies:vejulabula@cluster0.hm0dotp.mongodb.net/todo-list', { dbName: "todo-list" });
+mongoose_1.default.connect("mongodburl")
