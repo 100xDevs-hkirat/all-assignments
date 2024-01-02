@@ -20,7 +20,7 @@
 const students = {
   name: "sunita",
   printname: function (){
-    console.log(this.name);
+    console.log(this);
   }
 }
 
