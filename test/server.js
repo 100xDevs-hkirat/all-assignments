@@ -31,3 +31,11 @@ const student2 = {
 }
 
 students.printname.call(student2)
+
+console.log('start')
+
+setTimeout(function cb() {
+  console.log("callback")
+}, 5000);
+
+console.log("end")
