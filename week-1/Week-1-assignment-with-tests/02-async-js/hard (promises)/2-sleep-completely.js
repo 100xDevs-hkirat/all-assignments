@@ -6,3 +6,11 @@
 function sleep (seconds) {
 
 }
+
+function sleep(seconds) {
+  const milliseconds = 1000 * seconds;
+  const start = new Date().getTime();
+  while (new Date().getTime() - start < milliseconds) {
+    // Busy wait for the specified time
+  }
+}

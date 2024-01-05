@@ -3,4 +3,13 @@
 */
 
 function wait(n) {
+  return new Promise((resolve, reject) => {
+    if (n < 0) {
+      reject("rejected");
+    } else {
+      setTimeout(() => {
+        resolve(` resolved after ${n} seconds`);
+      }, n * 1000); 
+    }
+  });
 }
