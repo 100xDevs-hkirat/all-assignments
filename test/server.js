@@ -17,25 +17,31 @@
 // });
 //
 
-const students = {
-  name: "sunita",
-  printname: function (){
-    console.log(this);
-  }
+// const students = {
+//   name: "sunita",
+//   printname: function (){
+//     console.log(this);
+//   }
+// }
+//
+// students.printname()
+//
+// const student2 = {
+//   name: "randheer"
+// }
+//
+// students.printname.call(student2)
+// //
+// // console.log('start')
+//
+// setTimeout(function cb() {
+//   console.log("callback")
+// }, 5000);
+// //
+// // console.log("end")
+const toBinary = function () {
+    const arr = [1,2,3,4,5,6]
+    const output = arr.map((item) => item.toString(2))
+    console.log(output)
 }
-
-students.printname()
-
-const student2 = {
-  name: "randheer"
-}
-
-students.printname.call(student2)
-
-console.log('start')
-
-setTimeout(function cb() {
-  console.log("callback")
-}, 5000);
-
-console.log("end")
+toBinary()
