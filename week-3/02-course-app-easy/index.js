@@ -16,6 +16,15 @@ const adminAuthentication = (req, res, next) => {
   if (admin) next();
   else res.status(403).json({ massage: "Admin authentication failed" });
 };
+
+const userAuthentication = (req, res, next) => {
+  const { username, password } = req.headers;
+  const user = USERS.find(
+    (u) => u.username === username && u.password === password
+  );
+  if (user) next();
+  else res.status(403).json({ massage: "User authentication failed" });
+};
 app.get('/',(req,res)=> {
   res.status(465).json({massage: 'ajfdskfks'})
 
@@ -54,7 +63,7 @@ app.put('/admin/courses/:courseId', (req, res) => {
 
 app.get('/admin/courses', (req, res) => {
   // logic to get all courses
-  res.json({coures: COURSES})
+  res.json({course: COURSES})
 });
 
 // User routes
