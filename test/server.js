@@ -78,4 +78,3 @@ Promise.allSettled([p1, p2, p3]).then(res=>{
 }).catch((err)=>{
     console.error(err)
 })
-
