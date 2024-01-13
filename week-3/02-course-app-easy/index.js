@@ -161,9 +161,7 @@ app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
   const username=headers['username'];
   const password=headers['password'];
-  if(!checkUser(username,password)){
-    
-  }
+  res.json({courses: COURSES.filter(c=>req.user.purchasedCourses.includes(c.id))});
 });
 
 app.listen(3000, () => {
