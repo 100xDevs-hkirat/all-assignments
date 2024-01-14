@@ -39,27 +39,91 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const port =3000;
-
-app.use(bodyParser.json());
-
-
-
-
-
-function reading_all(req,res){
+  const express = require('express');
+  const bodyParser = require('body-parser');
+  const fs = require('fs');
+  const path = require('path');
   
+  const app = express();
+  const port = 3000;
+  
+  app.use(express.static(path.join(__dirname, 'public')));
+
+  app.use(bodyParser.json());
+  
+  const filePath = path.join(__dirname, 'todos.txt');
+  const delimiter = '|';
+  let todos = []; // Initialize an empty array to store todos
+  
+  function readTodosFromFile() {
+      try {
+          if (fs.existsSync(filePath)) {
+              const fileContent = fs.readFileSync(filePath, 'utf-8');
+              const lines = fileContent.split('\n');
+  
+              todos = lines.map(line => {
+                  const [id, title, ...descriptionParts] = line.split(delimiter);
+                  const description = descriptionParts.join(delimiter).trim();
+                  return { id: parseInt(id), title, description };
+              });
+          } else {
+              console.error('File not found:', filePath);
+              todos = [];
+          }
+      } catch (error) {
+          console.error('Error reading file:', error);
+          todos = [];
+      }
+  }
+  
+  function saveTodosToFile() {
+      const todosString = todos.map(todo => `${todo.id}${delimiter}${todo.title}${delimiter}${todo.description}`).join('\n');
+      fs.writeFileSync(filePath, todosString, 'utf-8');
+  }
+  
+
+  function getTodoById(req, res) {
+    const todoId = parseInt(req.params.id);
+
+    try {
+        // Read todos from the file
+        readTodosFromFile();
+
+        const todo = todos.find(item => item.id === todoId);
+
+        if (todo) {
+            res.status(200).json(todo);
+        } else {
+            res.status(404).send('Not Found');
+        }
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
-
-function started(){
-  console.log(`app listening on port ${port}`);
+function addTodo(req,res){
+    
 }
 
-app.listen(port,started)
-
-module.exports = app;
+  
+  function reading_all(req, res) {
+      try {
+          readTodosFromFile();
+          res.status(200).json(todos);
+      } catch (error) {
+          res.status(500).send("Internal Server Error");
+      }
+  }
+  
+  app.get('/todos', reading_all);
+  app.get('/todos/:id', getTodoById);
+  
+  function started() {
+      console.log(`app listening on port ${port}`);
+  }
+  
+  app.listen(port, started);
+  
+  module.exports = app;
+  
