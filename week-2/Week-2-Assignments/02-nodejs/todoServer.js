@@ -41,9 +41,25 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const app = express();
+const port =3000;
 
 app.use(bodyParser.json());
+
+
+
+
+
+function reading_all(req,res){
+  
+}
+
+
+
+function started(){
+  console.log(`app listening on port ${port}`);
+}
+
+app.listen(port,started)
 
 module.exports = app;
