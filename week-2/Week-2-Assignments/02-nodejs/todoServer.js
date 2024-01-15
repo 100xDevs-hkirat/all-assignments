@@ -114,7 +114,7 @@ function addTodo(req, res) {
             id: newId,
             title,
             description,
-            completed: !!completed // Convert to boolean
+            completed: !!completed, // Convert to boolean
         };
 
         todos.push(newTodo);
@@ -128,6 +128,37 @@ function addTodo(req, res) {
     }
 }
 
+function updateTodoById(req, res) {
+    console.log("hello")
+    const todoId = parseInt(req.params.id);
+    console.log("hello1")
+    try {
+        readTodosFromFile();
+
+        const todoIndex = todos.findIndex(item => item.id === todoId);
+
+        if (todoIndex !== -1) {
+            const { title, description, completed } = req.body;
+            todos[todoIndex] = {
+                id: todoId,
+                title: title || todos[todoIndex].title,
+                description: description || todos[todoIndex].description,
+                completed: completed !== undefined ? !!completed : todos[todoIndex].completed,
+            };
+            console.log("hello3")
+            saveTodosToFile();
+            console.log("hello4")
+            res.status(200).json({ id: todoId });
+        } else {
+            res.status(404).send('Not Found');
+        }
+    } catch (error) {
+        console.error('Error updating todo:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
 function reading_all(req, res) {
     try {
         readTodosFromFile();
@@ -140,6 +171,7 @@ function reading_all(req, res) {
 app.get('/todos', reading_all);
 app.get('/todos/:id', getTodoById);
 app.post('/todos', addTodo);
+app.put('/todos/:id', updateTodoById);
 
 function started() {
     console.log(`app listening on port ${port}`);
@@ -148,5 +180,4 @@ function started() {
 app.listen(port, started);
 
 module.exports = app;
-
   
