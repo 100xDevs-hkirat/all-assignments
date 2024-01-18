@@ -17,4 +17,4 @@ function isAnagram(str1, str2) {
 }
 
 isAnagram('Debit Card', 'Bad Credit')
-module.export = isAnagram
+module.exports = isAnagram
