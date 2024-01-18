@@ -19,4 +19,4 @@
 
 class Calculator {}
 
-module.exports = Calculator;
+export default Calculator;
