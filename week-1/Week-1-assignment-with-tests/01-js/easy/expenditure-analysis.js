@@ -12,4 +12,4 @@ function calculateTotalSpentByCategory(transactions) {
   return [];
 }
 
-module.exports = calculateTotalSpentByCategory;
+export default calculateTotalSpentByCategory;
