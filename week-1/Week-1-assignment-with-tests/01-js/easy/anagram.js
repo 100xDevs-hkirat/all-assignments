@@ -13,8 +13,6 @@ function isAnagram(str1, str2) {
     }
     let temp1 = str1.split(" ").join("").toLowerCase().split("").sort().join("");
     let temp2 = str2.split(" ").join("").toLowerCase().split("").sort().join("");
-    console.log(temp1)
-    console.log(temp2)
     return temp1 === temp2;
 }
 
