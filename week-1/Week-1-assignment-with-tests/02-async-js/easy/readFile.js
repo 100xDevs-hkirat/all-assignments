@@ -8,3 +8,8 @@ fs.readFile("text.txt", "utf8", (err, data) => {
         console.log(data)
     }
 });
+counter = 0
+for (let i = 0; i < 100000000; i++){
+   counter = counter+1 
+}
+console.log(counter)
