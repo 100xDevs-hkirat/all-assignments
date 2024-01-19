@@ -1,3 +1,4 @@
+// this keeps increasing counter after each one second till stopped mannually
 function counterIncrement() {
     let counter = 0;
     setInterval(() => {
@@ -7,7 +8,8 @@ function counterIncrement() {
 }
 
 // counterIncrement()
-//
+//in this setTiimeout waits for 1 miliseconds decreases the value of n and then
+//calls the counter function itself again.
 function counter(n) {
     console.log(n)
     if (n > 0) {
