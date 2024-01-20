@@ -5,22 +5,41 @@
  */
 
 function waitOneSecond() {
-    return new Promise((res) => {
-        setTimeout(() => {
-            res("promise resolved");
-        }, 1 * 1000);
-    });
+  return new Promise((res) => {
+    setTimeout(() => {
+      res("promise resolved");
+    }, 1 * 1000);
+  });
 }
 
-function waitTwoSecond() { 
-
-    return new Promise((res) => {
-        setTimeout(() => {
-            res("promise resolved");
-        }, 2 * 1000);
-    });
+function waitTwoSecond() {
+  return new Promise((res) => {
+    setTimeout(() => {
+      res("promise resolved");
+    }, 2 * 1000);
+  });
 }
 
-function waitThreeSecond() { }
+function waitThreeSecond() {
+  return new Promise((res) => {
+    setTimeout(() => {
+      res("promise resolved");
+    }, 3 * 1000);
+  });
+}
 
-function calculateTime() { }
+function calculateTime() {
+  Promise.all([waitOneSecond(), waitTwoSecond(), waitThreeSecond()])
+    .then((results) => {
+      console.log("all task done");
+      console.log("results: ", results);
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
+}
+const startTime = performance.now()
+calculateTime()
+const endTime = performance.now()
+console.log(endTime-startTime);
+
