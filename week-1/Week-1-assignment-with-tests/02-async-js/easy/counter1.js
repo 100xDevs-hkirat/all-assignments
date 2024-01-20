@@ -11,12 +11,13 @@ function counterIncrement() {
 //in this setTiimeout waits for 1 miliseconds decreases the value of n and then
 //calls the counter function itself again.
 function counter(n) {
-    console.log(n)
+    console.log(n);
     if (n > 0) {
         setTimeout(() => {
-            counter(n - 1)
-        }, 1000)
+            counter(n - 1);
+        }, 1000);
     }
+    console.log("something");
 }
 
-counter(10)
+counter(10);
