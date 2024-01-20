@@ -28,18 +28,16 @@ function waitThreeSecond() {
   });
 }
 
+const startTime = performance.now();
 function calculateTime() {
   Promise.all([waitOneSecond(), waitTwoSecond(), waitThreeSecond()])
     .then((results) => {
-      console.log("all task done");
       console.log("results: ", results);
+      const endTime = performance.now();
+      console.log(endTime - startTime);
     })
     .catch((error) => {
       console.error(error.message);
     });
 }
-const startTime = performance.now()
-calculateTime()
-const endTime = performance.now()
-console.log(endTime-startTime);
-
+calculateTime();
