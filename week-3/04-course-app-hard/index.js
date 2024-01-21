@@ -56,7 +56,7 @@ function authenticateJwt(req,res,next){
 
 //connecting to MongoDB 
 
-mongoose.connect('mongodb+srv://naman19feb:YnuqdC_aiWj5kcn@cluster0.hl1az2k.mongodb.net/',{useNewUrlParser : true, useUnifiedTopology: true, dbName:"courses"});
+mongoose.connect('EnterYourMongoURL',{useNewUrlParser : true, useUnifiedTopology: true, dbName:"courses"});
 
 
 
