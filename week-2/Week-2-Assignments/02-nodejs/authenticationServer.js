@@ -29,9 +29,16 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
+
+app.listen(PORT, () => {
+  console.log(`listening at localhost://${PORT}`);
+});
 
 module.exports = app;
