@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "init": "^0.1.2",
+    "inti": "^0.0.0",
+    "jsonwebtoken": "^9.0.1"
+  }
 }
