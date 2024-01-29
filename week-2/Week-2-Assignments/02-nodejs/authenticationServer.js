@@ -61,8 +61,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/data", (req, res) => {
-  let email = req.headers.email;
-  let password = req.headers.password;
+  let {email, password} = req.headers;
   let user = users.find((item = item.email === email));
   if (user) {
     res.status(200).json({ users: users });
@@ -71,9 +70,9 @@ app.get("/data", (req, res) => {
   }
 });
 
-app.get("/*", (req, res)=>{
-    res.status(404).send("page not found")
-})
+app.get("/*", (req, res) => {
+  res.status(404).send("page not found");
+});
 
 app.listen(PORT, () => {
   console.log(`listening at localhost://${PORT}`);
