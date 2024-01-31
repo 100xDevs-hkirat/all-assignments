@@ -73,8 +73,14 @@ const p3 = new Promise((res, rej)=>{
 //
 
 
-Promise.allSettled([p1, p2, p3]).then(res=>{
-    console.log(res)
-}).catch((err)=>{
-    console.error(err)
-})
+// Promise.allSettled([p1, p2, p3]).then(res=>{
+//     console.log(res)
+// }).catch((err)=>{
+//     console.error(err)
+// })
+//
+function calculateSum(a, b){
+    return a + b
+}
+result = calculateSum(4,5)
+console.log(result)
