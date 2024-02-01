@@ -6,9 +6,9 @@ function createDomElements(existingDOM, currentDOM) {
   let added = 0, deleted = 0, updated = 0;
 
   // Now, we'll compare our new vDOM to our old vDOM
-  currentDOM.forEach(function(item) {
+  currentDOM.forEach(function (item) {
     // Check if an element with this ID already exists in the old vDOM
-    var existingItem = existingDOM.find(function(oldItem) {
+    var existingItem = existingDOM.find(function (oldItem) {
       return oldItem.id === item.id;
     });
 
@@ -42,7 +42,7 @@ function createDomElements(existingDOM, currentDOM) {
   });
 
   // Any item left in the existingDOM array no longer exist in the data, so remove them
-  existingDOM.forEach(function(oldItem) {
+  existingDOM.forEach(function (oldItem) {
     if (!currentDOM.some(item => item.id === oldItem.id)) {
       deleted++;
       var childToRemove = document.querySelector(`[data-id='${oldItem.id}']`);
@@ -69,11 +69,11 @@ function updateVirtualDom(data) {
 
 window.setInterval(() => {
   let todos = [];
-  for (let i = 0; i<Math.floor(Math.random() * 100); i++) {
+  for (let i = 0; i < Math.floor(Math.random() * 100); i++) {
     todos.push({
       title: "Go to gym",
       description: "Go to gym from 5",
-      id: i+1
+      id: i + 1
     })
   }
 

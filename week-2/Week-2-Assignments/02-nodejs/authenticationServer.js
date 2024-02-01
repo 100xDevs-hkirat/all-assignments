@@ -29,9 +29,53 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
+const bodyParser = require("body-parser");
+const { v4: uuidv4 } = require("uuid");
 const PORT = 3000;
 const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+// app.get("/", (req, res) => {
+//   res.send("hello world");
+// });
+app.use(bodyParser.json());
+let users = [];
+app.post("/signup", (req, res) => {
+  let { email, password, firstName, lastName } = req.body;
+  let user = users.find((item) => item.email === email);
+  if (!user) {
+    let newUser = { id: uuidv4(), email, password, firstName, lastName };
+    users.push(newUser);
+    res.status(201).send("Signup successful");
+  }
+});
+
+app.post("/login", (req, res) => {
+  let { email, password } = req.body;
+  let user = users.find((item) => item.email === email);
+  if (user) {
+    res.status(200).send("LoggedIn successfully");
+  } else {
+    res.status(401).send("user not found");
+  }
+});
+
+app.get("/data", (req, res) => {
+  let {email, password} = req.headers;
+  let user = users.find((item = item.email === email));
+  if (user) {
+    res.status(200).json({ users: users });
+  } else {
+    res.status(401).json({ error: "user is invalid" });
+  }
+});
+
+app.get("/*", (req, res) => {
+  res.status(404).send("page not found");
+});
+
+app.listen(PORT, () => {
+  console.log(`listening at localhost://${PORT}`);
+});
 
 module.exports = app;

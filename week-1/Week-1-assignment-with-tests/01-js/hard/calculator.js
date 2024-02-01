@@ -16,7 +16,46 @@
   Once you've implemented the logic, test your code by running
   - `npm run test-calculator`
 */
-
-class Calculator {}
+class Calculator {
+    constructor() {
+        this.result = 0;
+    }
+    add(num) {
+        this.result += num;
+    }
+    subtract(num) {
+        this.result -= num;
+    }
+    multiply(num) {
+        this.result *= num;
+    }
+    divide(num) {
+        if (num === 0) {
+            throw new Error("can't divide by zeor");
+        } else {
+            this.result /= num;
+        }
+    }
+    clear() {
+        this.result = 0;
+    }
+    getResult() {
+        return this.result;
+    }
+    calculate(expression) {
+        let temp = expression.split(" ");
+        let exp = temp.filter((item) => item !== "");
+        exp = exp.join(" ");
+        try {
+            if (exp.includes("/ 0")) {
+                throw new Error("invalid expression");
+            } else {
+                this.result = eval(exp);
+            }
+        } catch (error) {
+            throw new Error("invalid expression");
+        }
+    }
+}
 
 module.exports = Calculator;

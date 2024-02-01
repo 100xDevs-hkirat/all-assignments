@@ -7,7 +7,39 @@
 */
 
 function isPalindrome(str) {
-  return true;
+    if (str.length - 1 < 0) return true;
+    let start = 0;
+    let end = str.length - 1;
+    let isPal = true;
+    while (start < end) {
+        if (
+            str[start] === "!" ||
+            str[start] === "," ||
+            str[start] === " " ||
+            str[start] === "." ||
+            str[start] === "?"
+        ) {
+            start += 1;
+            continue;
+        } else if (
+            str[end] === "!" ||
+            str[end] === "," ||
+            str[end] === " " ||
+            str[end] === "." ||
+            str[end] === "?"
+        ) {
+            end -= 1;
+            continue;
+        }
+        if (str[start].toLowerCase() === str[end].toLowerCase()) {
+            start += 1;
+            end -= 1;
+        } else {
+            isPal = false;
+            break;
+        }
+    }
+    return isPal;
 }
 
 module.exports = isPalindrome;

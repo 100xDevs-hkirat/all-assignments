@@ -4,7 +4,7 @@ Without using setInterval, try to code a counter in Javascript. There is a hint 
 
 
 
-
+Ans: you can use setTimeout
 
 
 
