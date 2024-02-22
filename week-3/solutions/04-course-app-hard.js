@@ -9,7 +9,7 @@ const SECRET = 'SECr3t';  // This should be in an environment variable in a real
 
 // Define mongoose schemas
 const userSchema = new mongoose.Schema({
-  username: {type: String},
+  username: { type: String },
   password: String,
   purchasedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]
 });
@@ -126,7 +126,7 @@ app.post('/users/login', async (req, res) => {
 });
 
 app.get('/users/courses', authenticateJwt, async (req, res) => {
-  const courses = await Course.find({published: true});
+  const courses = await Course.find({ published: true });
   res.json({ courses });
 });
 
