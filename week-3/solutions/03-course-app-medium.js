@@ -1,9 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let ADMINS = [];
 let USERS = [];
@@ -42,6 +44,7 @@ const authenticateJwt = (req, res, next) => {
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   const { username, password } = req.body;
+  console.log(req.body);
   const admin = ADMINS.find(a => a.username === username);
   console.log("admin signup");
   if (admin) {
@@ -67,6 +70,7 @@ app.post('/admin/login', (req, res) => {
 });
 
 app.post('/admin/courses', authenticateJwt, (req, res) => {
+  console.log("surpasses...");
   const course = req.body;
   course.id = COURSES.length + 1;
   COURSES.push(course);
