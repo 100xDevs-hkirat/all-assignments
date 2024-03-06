@@ -41,9 +41,9 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const cors = require("cors");
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.json());
 
 let todos = [];
@@ -95,6 +95,10 @@ app.delete('/todos/:id', (req, res) => {
 // for all other routes, return 404
 app.use((req, res, next) => {
   res.status(404).send();
+});
+
+app.listen(3000, () => {
+   console.log("listening on 3000");
 });
 
 module.exports = app;

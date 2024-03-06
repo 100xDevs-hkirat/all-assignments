@@ -1,5 +1,8 @@
+require("dotenv").config();
+const Admin = require("./models/ADMINS");
 const express = require('express');
 const app = express();
+const connectDb = require('./utils/database');
 
 app.use(express.json());
 
@@ -8,8 +11,20 @@ let USERS = [];
 let COURSES = [];
 
 // Admin routes
-app.post('/admin/signup', (req, res) => {
-  // logic to sign up admin
+app.post('/admin/signup', async (req, res) => {
+    const username = req.headers.username;
+    const password = req.headers.password;
+
+    const adminExist = await Admin.findOne({username : username});
+    console.log(adminExist);
+    
+    if(adminExist) {
+        res.send(401);
+    } 
+    else {
+        await Admin.create({username, password});
+        res.json( {message : "Admin sgined up successfully." });
+    }
 });
 
 app.post('/admin/login', (req, res) => {
@@ -49,6 +64,8 @@ app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
 });
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
+connectDb().then( () => {
+  app.listen(3000, () => {
+    console.log('Server is listening on port 3000');
+  });
 });
