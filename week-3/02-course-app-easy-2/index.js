@@ -14,28 +14,22 @@ const jwtToken=(user)=>{
   return jwt.sign(tokenData,secretKey,{ expiresIn:'1h' });
 }
 
-const adminAuthentication = (req,res,next)=>{
-  const {username,password}=req.headers;
-  const admin= ADMINS.find((a)=>{
-    return a.username===username && a.password===password
-  })
-
-  if(admin) next();
-
-  else res.status(403).json({message:"Admin Authentication Failed"});
-}
-
-const userAuthentication=(req,res,next)=>{
-  const {username,password}=req.headers;
-  const user= USERS.find((u)=>{
-    return u.username===username && u.password===password
-  })
-  if(user) 
+const jwtAuthentication = (req,res,next)=>{
+  const authHead=req.headers.Authorization;
+  if(authHead)
   {
-    req.user=user;
-    next();
+    const authtoken=authHead.split(' ')[1];
+
+    jwt.verify(authtoken,secretKey,(err,data)=>{
+      if(err)
+      {
+        res.sendStatus(403);
+      }
+        req.user=data;
+        next();
+    });
   }
-  else res.status(403).json({message:"User Authentication Failed"});
+  else res.status(401);
 }
 
 // Admin routes
@@ -51,16 +45,25 @@ app.post('/admin/signup', (req, res) => {
   else
   {
     ADMINS.push(admin);
-    res.json({message: "Admin Created Successfully"});
+    const token=jwtToken(admin);
+    res.json({message: "Admin Created Successfully", token});
   }
 });
 
-app.post('/admin/login', adminAuthentication, (req, res) => {
+app.post('/admin/login', (req, res) => {
   // logic to log in admin
-  res.json({message: "Admin Login Successful"});
+  const {username,password}=req.headers;
+  const admin = ADMINS.find(a => a.username === username && a.password === password);
+
+  if (admin) {
+    const token = jwtToken(admin);
+    res.json({ message: 'Logged in successfully', token });
+  } else {
+    res.status(403).json({ message: 'Admin authentication failed' });
+  }
 });
 
-app.post('/admin/courses', adminAuthentication, (req, res) => {
+app.post('/admin/courses', jwtAuthentication, (req, res) => {
   // logic to create a course
   const course=req.body;
   course.id=Date.now();
@@ -69,7 +72,7 @@ app.post('/admin/courses', adminAuthentication, (req, res) => {
   res.json({message:"Course created successfully", courseId:course.id});
 });
 
-app.put('/admin/courses/:courseId', adminAuthentication, (req, res) => {
+app.put('/admin/courses/:courseId', jwtAuthentication, (req, res) => {
   // logic to edit a course
   const courseId= parseInt(req.params.courseId);
   const editing=req.body;
@@ -85,7 +88,7 @@ app.put('/admin/courses/:courseId', adminAuthentication, (req, res) => {
   }
 });
 
-app.get('/admin/courses',adminAuthentication, (req, res) => {
+app.get('/admin/courses',jwtAuthentication, (req, res) => {
   // logic to get all courses
   res.json({courses: COURSES});
 });
@@ -103,18 +106,29 @@ app.post('/users/signup', (req, res) => {
   else
   {
     USERS.push(user);
-    res.json({message: "User Created Successfully"});
+    const token= jwtToken(user);
+    res.json({message: "User Created Successfully",token});
   }
 });
 
-app.post('/users/login',userAuthentication, (req, res) => {
+app.post('/users/login', (req, res) => {
   // logic to log in user
+  const {username,password}=req.headers;
+  const user= USERS.find(a => a.username===username && a.password===password); 
 
-  res.json({message: "User login successful"})
+  if(user)
+  {
+    const token=jwtToken(user);
+    res.json({message: "User login successful",token});
+  }
+  else
+  {
+    res.status(403).json({ message: 'User authentication failed' });
+  }
 
 });
 
-app.get('/users/courses',userAuthentication, (req, res) => {
+app.get('/users/courses',jwtAuthentication, (req, res) => {
   // logic to list all courses
   let filteredCourses = [];
   for (let i = 0; i<COURSES.length; i++) {
@@ -125,7 +139,7 @@ app.get('/users/courses',userAuthentication, (req, res) => {
   res.json({ courses: filteredCourses });
 });
 
-app.post('/users/courses/:courseId',userAuthentication, (req, res) => {
+app.post('/users/courses/:courseId',jwtAuthentication, (req, res) => {
   // logic to purchase a course
   const courseId= req.params.courseId;
   const course= COURSES.find(c=>c.id===courseId && c.published);
@@ -142,7 +156,7 @@ app.post('/users/courses/:courseId',userAuthentication, (req, res) => {
 
 });
 
-app.get('/users/purchasedCourses',userAuthentication, (req, res) => {
+app.get('/users/purchasedCourses',jwtAuthentication, (req, res) => {
   // logic to view purchased courses
   let purchasedID=req.user.purchased;
   let purchasedCourses=[];
