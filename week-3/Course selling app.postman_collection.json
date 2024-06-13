@@ -263,11 +263,6 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "username",
-								"value": "harkirat@gmail.com",
-								"type": "text"
-							},
-							{
 								"key": "Authorization",
 								"value": "Bearer ",
 								"type": "text"
