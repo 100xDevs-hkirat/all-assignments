@@ -25,13 +25,83 @@
     Example: GET http://localhost:3000/data
 
   - For any other route not defined in the server return 404
-
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
-
 const express = require("express")
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+const bodyParser = require('body-parser')
+app.use(express.json())
+
+
+let users = [];
+
+
+app.get('/users' , (req ,res) => {
+  res.json(users)
+})
+
+app.post('/signup' , (req , res) => {
+  const newUser = req.body
+
+  const found = users.find(users => users.email === newUser.email)
+
+  if(found){
+     res.status(401).json({err : "User already exists"})
+  } else {
+    users.push(newUser)
+    res.status(201).send('Signup successful')
+  }
+
+  
+})
+
+app.post('/login' , (req , res) => {
+  const { email , password } = req.body 
+
+  const validUser = users.find(user => user.email === email && user.password === password)
+
+  if(validUser){
+    const { email , firstName , lastName } = validUser
+    res.status(200).json({ email , firstName , lastName })
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+  
+})
+
+app.get('/data' , (req , res) => {
+  const emailFromBody = req.body.email;
+  const passwordFromBody = req.body.password;
+  const emailFromHeaders = req.headers.email;
+  const passwordFromHeaders = req.headers.password;
+
+  // Use the values obtained from both body and headers
+  const email = emailFromBody || emailFromHeaders;
+  const password = passwordFromBody || passwordFromHeaders;
+
+      const found = users.find(user => user.email === email && user.password === password)
+
+      if(found){
+        const arr2Return = [];
+        users.forEach(user => {
+          arr2Return.push({
+            firstName: user.firstName ,
+            lastName : user.lastName ,
+            email : user.email
+          })
+
+          res.status(200).json({users: arr2Return})
+        })
+      } else {
+        res.status(401).send('Unauthorized')
+      }
+})
+
+
+// app.listen(3000 , () => {
+//   console.log(`Server is running in PORT 3000`)
+// })
 
 module.exports = app;
