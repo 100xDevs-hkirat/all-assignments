@@ -10,26 +10,26 @@
     Description: Returns a list of all todo items.
     Response: 200 OK with an array of todo items in JSON format.
     Example: GET http://localhost:3000/todos
-    
+
   2.GET /todos/:id - Retrieve a specific todo item by ID
     Description: Returns a specific todo item identified by its ID.
     Response: 200 OK with the todo item in JSON format if found, or 404 Not Found if not found.
     Example: GET http://localhost:3000/todos/123
-    
+
   3. POST /todos - Create a new todo item
     Description: Creates a new todo item.
     Request Body: JSON object representing the todo item.
     Response: 201 Created with the ID of the created todo item in JSON format. eg: {id: 1}
     Example: POST http://localhost:3000/todos
     Request Body: { "title": "Buy groceries", "completed": false, description: "I should buy groceries" }
-    
+
   4. PUT /todos/:id - Update an existing todo item by ID
     Description: Updates an existing todo item identified by its ID.
     Request Body: JSON object representing the updated todo item.
     Response: 200 OK if the todo item was found and updated, or 404 Not Found if not found.
     Example: PUT http://localhost:3000/todos/123
     Request Body: { "title": "Buy groceries", "completed": true }
-    
+
   5. DELETE /todos/:id - Delete a todo item by ID
     Description: Deletes a todo item identified by its ID.
     Response: 200 OK if the todo item was found and deleted, or 404 Not Found if not found.
@@ -39,11 +39,123 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-
-app.use(bodyParser.json());
-
-module.exports = app;
+  const express = require('express');
+  const bodyParser = require('body-parser');
+  const fs = require('fs');
+  const path = require('path');
+  const app = express();
+  const cors = require('cors');
+  
+  app.use(cors());
+  app.use(bodyParser.json());
+  app.use(express.static('assets'));
+  const port = 3000;
+  
+  
+  function readFileFn(callback) {
+    const filePath = path.join(__dirname, 'todoServerHard.txt');
+    fs.readFile(filePath, 'utf-8', (err, data) => {
+      if (err) {
+        console.log('error reading to file', err);
+        return;
+      }
+      callback(null, data);
+    });
+  }
+  
+  function writeFileFn(todoLists) {
+    const filePath = path.join(__dirname, 'todoServerHard.txt');
+    fs.writeFile(filePath, JSON.stringify(todoLists), err => {
+      if (err) {
+        console.log('error writing to file', err);
+        return;
+      }
+    });
+  }
+  
+  function filterTodoByID(id) {
+    return todoLists.findIndex(todo => todo.id === parseInt(id));
+  }
+  
+  function getAllTodo(req, res) {
+    readFileFn((err, data) => {
+      if (err) {
+        console.error('Error:', err);
+        return;
+      }
+      todoLists = JSON.parse(data);
+      return res.status(200).send(todoLists);
+    });
+  }
+  
+  app.get('/todos',getAllTodo);
+  
+  function createTodoList(req, res) {
+    readFileFn((err, data) => {
+      if (err) {
+        console.error('Error:', err);
+        return;
+      }
+      let todoLists = JSON.parse(data);
+      const body = req.body;
+      body["id"] = todoLists.length + 1;
+      todoLists.push(body);
+      writeFileFn(todoLists);
+      return res.status(201).send();
+    });
+    
+  }
+  app.post('/todos', createTodoList);
+  
+  function updateTodoList(req, res) {
+    readFileFn((err, data) => {
+      if (err) {
+        console.error('Error:', err);
+        return;
+      }
+      let todoLists = JSON.parse(data);
+      var requiredTodoId = req.params.id;
+      const reqBody = req.body;
+      const requiredTodoIdx = filterTodoByID(requiredTodoId);
+      if (requiredTodoIdx == -1) {
+        return res.status(404).send("please give a valid todo id " + requiredTodoId);
+      }
+      todoLists[requiredTodoIdx]["title"] = reqBody.title;
+      todoLists[requiredTodoIdx]["completed"] = reqBody.completed;
+      writeFileFn(todoLists);
+      return res.status(200).send("success!");
+    });
+  
+  }
+  app.put('/todos/:id', updateTodoList);
+  
+  function deleteTodoItem(req, res) {
+    readFileFn((err, data) => {
+      if (err) {
+        console.error('Error:', err);
+        return;
+      }
+      let todoLists = JSON.parse(data);
+      
+      var requiredTodoIdx = filterTodoByID(req.params.id);
+      if (requiredTodoIdx == -1) {
+        return res.status(404).send("NOT FOUND");
+      }
+      todoLists.splice(requiredTodoIdx, 1);
+      writeFileFn(todoLists);
+      res.status(200).send("successfully deleted")
+    });
+  
+  }
+  app.delete('/todos/:id', deleteTodoItem);
+  
+  app.get('/', (req, res) => {
+    const filePath = path.join(__dirname, "assets", "todo.html")
+   
+    res.sendFile(filePath);
+  })
+  
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
+  module.exports = app;
