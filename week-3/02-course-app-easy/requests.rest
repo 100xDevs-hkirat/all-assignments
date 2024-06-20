@@ -1,0 +1,28 @@
+###
+POST http://localhost:3000/admin/signup
+Content-Type: application/json
+
+{
+    "username": "admin" , 
+    "password": "pass"
+}
+###
+POST http://localhost:3000/admin/login
+username: "admin"
+password: "pass"
+###
+POST http://localhost:3000/admin/courses
+Content-Type: "application/json"
+
+{ 
+    "title": "course title", 
+    "description": "course description",
+    "price": 100, 
+    "imageLink": "https://linktoimage.com",
+    "published": true 
+}
+
+
+###
+GET http://localhost:3000/admin/courses
+
