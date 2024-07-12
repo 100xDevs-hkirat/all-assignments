@@ -16,10 +16,17 @@
 
     Testing the server - run `npm run test-fileServer` command in terminal
  */
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+import express from "express"
+import fs from "fs"
+import path from "path"
+
+
+// const express = require('express');
+// const fs = require('fs');
+// const path = require('path');
 const app = express();
 
+//GET /files - Returns a list of files present in `./files/` directory
 
-module.exports = app;
+
+// module.exports = app;

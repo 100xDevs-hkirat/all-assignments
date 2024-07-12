@@ -7,7 +7,26 @@
 */
 
 function isPalindrome(str) {
-  return true;
+  var isPali = true;
+
+
+  for (var i = 0; i < (str.length) / 2; i++) {
+    if (str[i].toLowerCase() != str[str.length - 1 - i].toLowerCase()) {
+      isPali = false;
+
+    }
+  }
+  if (isPali) {
+
+    return true;
+
+
+  } else {
+    isPali = true;
+
+    return false;
+  }
+
 }
 
 module.exports = isPalindrome;

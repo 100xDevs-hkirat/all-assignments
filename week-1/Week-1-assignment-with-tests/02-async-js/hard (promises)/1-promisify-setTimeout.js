@@ -3,4 +3,14 @@
 */
 
 function wait(n) {
+    return new Promise((a) => {
+        setTimeout(() => {
+            a('What is This');
+        }, n + 5000);
+    },)
 }
+async function runn() {
+    var aa = await wait(1000);
+    console.log(aa);
+}
+runn()

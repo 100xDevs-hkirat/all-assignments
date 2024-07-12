@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Course</title>
+    <link rel="stylesheet" href="../../main.css">
+</head>
+
+<body>
+    <h1>Add Course</h1>
+    <div class="card">
+        <label for="courseNameInput"> Enter course Name </label>
+        <input id="courseNameInput" class="courseNameClass" type="text">
+        <label for="courseDetailsInput"> Enter Details Name </label>
+        <input id="courseDetailsInput" class="courseDetailsClass" type="text">
+        <label for="amountInput"> Enter Amount for Course </label>
+        <input id="amountInput" class="amountClass" type="number">
+        <button class="admin_add_course" onclick="onCourseCreatedPressed()"> Add Course</button>
+
+        <div id="content"></div>
+    </div>
+</body>
+<script src="./admin_add_course.js"></script>
+
+</html>

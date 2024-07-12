@@ -1,0 +1,101 @@
+* {
+    /* color: antiquewhite; */
+}
+
+body {
+    /* background-color: grey; */
+    background: -webkit-linear-gradient(right, #2254df, #5bb5f0);
+
+}
+
+.card {
+    background: #fbfbfb;
+    border-radius: 8px;
+    /* box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65); */
+    height: 410px;
+    margin: 6rem auto 8.1rem auto;
+    width: 329px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.signUp_button,
+.signIn_button,
+.admin_add_course,
+button {
+    width: 200px;
+    height: 40px;
+    border-radius: 10px;
+    transition: .3;
+    margin-top: 30px;
+    background-color: lightcyan;
+
+}
+
+/* .nameInput,
+.passInput */
+input {
+    /* width: 200px;
+    height: 40px; */
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+
+    border-radius: 10px;
+    border: 5px;
+    border-color: black;
+    background-color: lightcyan;
+    display: flex;
+
+}
+
+.boxx {
+    border-width: 5px;
+    padding-left: 50%;
+    margin-left: 50px;
+    margin-top: 500px;
+
+
+}
+
+nav {
+    /* background: lightblue; */
+    width: 500px;
+    height: 70px;
+    font-size: large;
+    /* justify-content: space-between; */
+}
+
+/* .navBar {
+    height: 50px;
+    background-color: aquamarine;
+} */
+
+a {
+    /* padding: 18px; */
+    padding-right: 18px;
+    padding-left: 18px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+
+    text-decoration: none;
+    /* height: 10px; */
+    border-radius: 20px;
+    background-color: lightcyan;
+
+}
+
+.navBar {
+    padding-top: 23px;
+    padding-left: 20px;
+
+    /* width: 500px;
+    
+    height: 500px;
+    background-color: antiquewhite;
+    justify-content: space-between; */
+}

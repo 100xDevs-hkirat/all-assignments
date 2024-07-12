@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../main.css">
+    <title>Admin</title>
+</head>
+
+<body>
+    <nav>
+        <div class="navBar">
+            <a href="./admin_course/admin_course.html">Get My Courses</a>
+            <a href="./admin_add_course/admin_add_course.html">Add Courses</a>
+            <!-- <a href="#">Add Courses</a> -->
+
+        </div>
+
+    </nav>
+    <h1>Admin Auth</h1>
+    <div class="card">
+        <label for="AdmName">Name</label>
+        <input id="AdmName" class="nameInput" type="text">
+        <label for="AdmPassword">Password</label>
+        <input id="AdmPassword" class="passInput" type="password">
+        <button class="signUp_button" onclick="onSignUp()">SignUp</button>
+        <button class="signIn_button" onclick="onSignIn()">SignIn</button>
+        <div id="parent"></div>
+
+    </div>
+
+</body>
+<script src="./admin.js"></script>
+
+</html>

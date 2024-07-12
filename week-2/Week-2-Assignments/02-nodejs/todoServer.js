@@ -39,11 +39,117 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
+// const express = require('express');
+// const bodyParser = require('body-parser');
+import express from "express"
+import body_parser from "body-parser"
+import jwt from "jsonwebtoken"
+import { v4 as uuidv4 } from "uuid"
 const app = express();
+app.use(body_parser.json())
+var allData = [{ id: 12345, name: "Name", password: "Password", todos: [{ id: 1, title: "title", description: "description" }] }];
+var allTodos = [{ "id": 1, "title": "title", "description": "description" }];
+const jwt_secret_code = "tOdo@JWt"
 
-app.use(bodyParser.json());
+function generateToken(dataTosign) {
+  return jwt.sign(dataTosign, jwt_secret_code);
+}
+function verifyToken(dataToVerify) {
+  var userverify = jwt.verify(dataToVerify, jwt_secret_code);
+  return userverify;
 
-module.exports = app;
+}
+
+///User middleware
+const userMiddleware = (req, res, next) => {
+  const { token } = req.headers;
+  var tokenExpiry = verifyToken(token);
+  const { name, password } = tokenExpiry;
+
+  console.log(tokenExpiry);
+  var user = allData.find((ele) => (ele.name === name && ele.password === password));
+
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(403).send({
+      statusCode: 0, message: "Session Expired Please Login"
+    });
+  }
+};
+
+app.post("/signup", (req, res) => {
+  const { name, password } = req.body;
+  var checkUser = allData.find((ele) => (ele.name === name && ele.password === password));
+  if (checkUser) {
+    res.send({ statusCode: 0, message: "User Already Exist", token: generateToken({ name: name, password: password }) });
+  } else {
+    allData.push({
+      id: uuidv4(),
+      name: name, password: password, todos: []
+    });
+    res.status(200).send({ statusCode: 1, message: "Account Created Successfully", token: generateToken({ name: name, password: password }) })
+  }
+
+});
+
+// GET /todos
+app.get("/todos", userMiddleware, (req, res) => {
+  if (req.user.todos.length > 0) {
+    res.send({ statusCode: 1, data: req.user.todos });
+  } else {
+    res.send({ statusCode: 0, message: "No Records Found" });
+  }
+});
+
+// POST /todos - Create a new todo item
+app.post("/todos", userMiddleware, (req, res) => {
+  const { title, description } = req.body;
+  req.user.todos.push({
+    id: uuidv4(), title: title, description: description
+  });
+  res.send({ statusCode: 1, message: "Todo Added" })
+});
+
+// .GET /todos/:id - Retrieve a specific todo item by ID
+app.get("/todos/:id", userMiddleware, (req, res) => {
+  var id = req.params.id;
+  var checkTodoWithId = req.user.todos.find((eachTodo) => (eachTodo.id === id));
+  if (checkTodoWithId) {
+    res.send({ statusCode: 1, data: checkTodoWithId })
+  } else {
+    res.send({ statusCode: 0, message: "Todo Not Found" });
+  }
+});
+
+// PUT /todos/:id - Update an existing todo item by ID
+app.put("/todos/:id", userMiddleware, (req, res) => {
+  const id = req.params.id;
+  const { title, description } = req.body;
+
+  var updateTodoIdData = req.user.todos.find((eachTodo) => (eachTodo.id === id));
+  if (updateTodoIdData) {
+    updateTodoIdData.title = title;
+    updateTodoIdData.description = description;
+    res.send({ statusCode: 1, message: "Updated Successfully" });
+  } else {
+    res.send({ statusCode: 0, message: "Todo Not Found" });
+  }
+
+
+})
+//DELETE /todos/:id - Delete a todo item by IDs
+app.delete("/todos/:id", userMiddleware, (req, res) => {
+  var id = req.params.id;
+  var newList = req.user.todos.filter(ele => ele.id != id);
+  req.user.todos = newList;
+  res.send({ statusCode: 1, message: "Deleted successfully" });
+});
+
+app.listen(3000, () => {
+  console.log("Server Started At 3000");
+})
+
+
+// module.exports = app;

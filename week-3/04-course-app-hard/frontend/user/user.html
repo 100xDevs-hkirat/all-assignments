@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../main.css">
+    <title>User</title>
+</head>
+
+<body>
+    <nav>
+        <div class="navBar">
+            <a href="./all_courses/all_courses.html">All Courses</a>
+            <a href="./purchsed_courses/purchsed_courses.html">Purchsed Courses</a>
+        </div>
+    </nav>
+    <h1>Welcome User</h1>
+    <div class="card">
+        <label for=" UrsName">Name</label>
+        <input id="UrsName" class="nameInput" type="text">
+        <label for="UrsPassword">Password</label>
+        <input id="UrsPassword" class="passInput" type="password">
+        <button class="signUp_button" onclick="onSignUp()">SignUp</button>
+        <button class="signIn_button" onclick="onSignIn()">SignIn</button>
+        <div id="content"></div>
+    </div>
+</body>
+<script src="./user.js"></script>
+
+</html>
