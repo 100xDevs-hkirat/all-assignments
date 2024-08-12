@@ -20,6 +20,29 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-
-
+// const cors = require("cors");
+// app.use(cors());
+let fileList = [];
+let errorFound;
+fs.readdir("../02-nodejs/files", (err, files) => {
+  if (err) errorFound = true;
+  else fileList = files;
+});
+app.get("/files", (req, res) => {
+  fs.readdir("../02-nodejs/files", (err, files) => {
+    if (err) res.status(500).send();
+    else res.status(200).send(files);
+  });
+});
+app.get("/file/:filename", (req, res) => {
+  if (fileList.findIndex((file) => file === req.params.filename) >= 0) {
+    res
+      .status(200)
+      .sendFile(path.join(__dirname, "/files/", req.params.filename));
+  } else {
+    res.status(404).send("File not found");
+  }
+});
+app.use((req, res, next) => res.status(404).send("Route not found"));
+// app.listen(3000, () => console.log(`App started at port 3000`));
 module.exports = app;
