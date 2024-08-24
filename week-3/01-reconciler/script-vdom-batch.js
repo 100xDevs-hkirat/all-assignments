@@ -1,3 +1,11 @@
+
+/**
+ * THIS IS SIMILAR TO SCRIPT VDOM COMPARISON BUT INSTEAD OF UPDATING THE DOM IMMEDIATELY AFTER EACH CHANGE IS DETECTED,
+ * WE BATCH MULTIPLE UPDATES TOGETHER AND APPLY THEM TO THE DOM IN A SINGLE OPERATION. THIS FURTHER REDUCES THE NUMBER
+ * OF DOM MANIPULATIONS, LEADING TO EVEN BETTER PERFORMANCE.
+ */
+
+
 let vDOM = []; // Our initial vDOM is an empty array
 
 function createDomElements() {
@@ -77,10 +85,10 @@ window.setInterval(() => {
     }
   
     updateVirtualDom(todos);
-  }, 5000);
+  }, 5000);   // Every 5 seconds, we'll update our vDOM with new data
 
 window.setInterval(() => {
     createDomElements();
-}, 1000);
+}, 1000);  // Every second, we'll update our actual DOM with the new vDOM
 
 

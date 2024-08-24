@@ -1,3 +1,12 @@
+
+/**
+ * THIS IS SIMILAR TO SCRIPT VDOM BUT INSTEAD OF DIRECTLY UPDATING THE DOM BASED ON THE VIRTUAL DOM,
+ * WE COMPARE THE NEW VIRTUAL DOM (currentDOM) WITH THE OLD VIRTUAL DOM (existingDOM) TO IDENTIFY
+ * THE CHANGES AND THEN UPDATE THE DOM ACCORDINGLY. THIS MAKES THE UPDATES MORE EFFICIENT BY ONLY
+ * MODIFYING THE PARTS OF THE DOM THAT HAVE CHANGED.
+ */
+
+
 let vDOM = []; // Our initial vDOM is an empty array
 
 function createDomElements(existingDOM, currentDOM) {
@@ -49,6 +58,29 @@ function createDomElements(existingDOM, currentDOM) {
       parentElement.removeChild(childToRemove);
     }
   });
+
+
+
+  // for (let i = 0; i < existingDOM.length; i++) {
+  //   let oldItem = existingDOM[i];
+  //   let found = false;
+  
+  //   for (let j = 0; j < currentDOM.length; j++) {
+  //     let currentItem = currentDOM[j];
+  //     if (currentItem.id === oldItem.id) {
+  //       found = true;
+  //       break;
+  //     }
+  //   }
+  
+  //   if (!found) {
+  //     deleted++;
+  //     let childToRemove = document.querySelector(`[data-id='${oldItem.id}']`);
+  //     parentElement.removeChild(childToRemove);
+  //   }
+  // }
+
+
 
   console.log(added);
   console.log(updated);
