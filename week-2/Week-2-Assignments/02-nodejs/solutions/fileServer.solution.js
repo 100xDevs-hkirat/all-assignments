@@ -17,9 +17,14 @@
     Testing the server - run `npm run test-fileServer` command in terminal
  */
 const express = require('express');
+const cors = require('cors')
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 const fs = require('fs');
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 const path = require('path');
 const app = express();
+
+app.use(cors)
 
 app.get('/files', (req, res) => {
   fs.readdir(path.join(__dirname, './files/'), (err, files) => {
@@ -45,4 +50,5 @@ app.all('*', (req, res) => {
   res.status(404).send('Route not found');
 });
 
-module.exports = app;
+// module.exports = app;
+app.listen(3000)
