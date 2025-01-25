@@ -39,11 +39,119 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-
-app.use(bodyParser.json());
+  const express = require('express');
+  const bodyParser = require('body-parser');
+  const fs = require('fs');
+  const path = require('path');
+  
+  const app = express();
+  app.use(bodyParser.json());
+  
+  const dataFilePath = path.join(__dirname, 'todos.json');
+  
+  // Load todos from file or initialize an empty array
+  let todos = [];
+  if (fs.existsSync(dataFilePath)) {
+    const data = fs.readFileSync(dataFilePath, 'utf-8');
+    todos = JSON.parse(data);
+  }
+  
+  // Save todos to file
+  const saveTodosToFile = () => {
+    fs.writeFileSync(dataFilePath, JSON.stringify(todos, null, 2));
+  };
+  
+  // Generate unique ID
+  const generateId = () => {
+    return todos.length > 0 ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
+  };
+  
+  // 1. GET /todos - Retrieve all todo items
+  app.get('/todos', (req, res) => {
+    res.status(200).json(todos);
+  });
+  
+  // 2. GET /todos/:id - Retrieve a specific todo item by ID
+  app.get('/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const todo = todos.find((todo) => todo.id === id);
+  
+    if (!todo) {
+      return res.status(404).send('Todo not found');
+    }
+  
+    res.status(200).json(todo);
+  });
+  
+  // 3. POST /todos - Create a new todo item
+  app.post('/todos', (req, res) => {
+    const { title, description } = req.body;
+  
+    if (!title || !description) {
+      return res.status(400).send('Title and description are required');
+    }
+  
+    const newTodo = {
+      id: generateId(),
+      title,
+      description,
+      completed: false,
+    };
+  
+    todos.push(newTodo);
+    saveTodosToFile();
+  
+    res.status(201).json({ id: newTodo.id });
+  });
+  
+  // 4. PUT /todos/:id - Update an existing todo item by ID
+  app.put('/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const { title, description, completed } = req.body;
+  
+    const todo = todos.find((todo) => todo.id === id);
+  
+    if (!todo) {
+      return res.status(404).send('Todo not found');
+    }
+  
+    if (title) todo.title = title;
+    if (description) todo.description = description;
+    if (typeof completed === 'boolean') todo.completed = completed;
+  
+    saveTodosToFile();
+    res.status(200).send('Todo updated successfully');
+  });
+  
+  // 5. DELETE /todos/:id - Delete a todo item by ID
+  app.delete('/todos/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const index = todos.findIndex((todo) => todo.id === id);
+  
+    if (index === -1) {
+      return res.status(404).send('Todo not found');
+    }
+  
+    todos.splice(index, 1);
+    saveTodosToFile();
+  
+    res.status(200).send('Todo deleted successfully');
+  });
+  
+  // Handle undefined routes - 404 error
+  app.use((req, res) => {
+    res.status(404).send('Not Found');
+  });
+  
+  // Export the app for testing or further usage
+  module.exports = app;
+  
+  // Run the server on port 3000
+  if (require.main === module) {
+    app.listen(3000, () => {
+      console.log('Server is running on http://localhost:3000');
+    });
+  }
+  
 
 module.exports = app;
