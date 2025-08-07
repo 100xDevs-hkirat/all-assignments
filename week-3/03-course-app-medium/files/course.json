@@ -1,0 +1,43 @@
+[
+  {
+    "courseId": 3,
+    "title": "course title",
+    "description": "course description",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false
+  },
+  {
+    "courseId": 2,
+    "title": "Introduction to JavaScript",
+    "description": "Welcome handbook to introduce you to the world of JavaScript",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false
+  },
+  {
+    "courseId": 5,
+    "title": "course title",
+    "description": "course description",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false
+  },
+  {
+    "courseId": 4,
+    "title": "Introduction to JavaScript",
+    "description": "Welcome handbook to introduce you to the world of JavaScript",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false
+  },
+  {
+    "courseId": 1,
+    "title": "course title",
+    "description": "course description",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false,
+    "purchased": true
+  }
+]

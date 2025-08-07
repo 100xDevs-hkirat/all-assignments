@@ -1,0 +1,11 @@
+[
+  {
+    "courseId": 1,
+    "title": "course title",
+    "description": "course description",
+    "price": "100",
+    "imageLink": "https://linktoimage.com",
+    "published": false,
+    "purchased": true
+  }
+]
